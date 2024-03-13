@@ -5,7 +5,9 @@
     "target": "ES2022",
     "moduleResolution": "NodeNext",
     "sourceMap": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    "allowImportingTsExtensions": true,
+    "noEmit": true
   },
   "include": ["src/**/*"]
 }
