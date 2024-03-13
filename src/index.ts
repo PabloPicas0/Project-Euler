@@ -1,9 +1,8 @@
 import inquirer from "inquirer";
-import algorithms from "./algorithms/main.js";
+import algorithms from "./algorithms/main.ts";
 
 type PromptsType<T> = {
-  [key: string]: T | Boolean;
-  isFastMode: Boolean;
+  [key: string]: T ;
 };
 
 const prompt = inquirer.createPromptModule();
@@ -15,7 +14,7 @@ const { isFastMode }: PromptsType<Boolean> = await prompt({
   message: "Enable fast algorithm picking ?",
 });
 
-const prompts: PromptsType<string> = await prompt([
+const { pickedSet, pickedAlgorithm }: PromptsType<string> = await prompt([
   {
     type: "list",
     message: "Pick one problem form sets",
@@ -41,4 +40,4 @@ const prompts: PromptsType<string> = await prompt([
   },
 ]);
 
-console.log(prompts);
+const algo = algorithms[pickedSet][pickedAlgorithm]
