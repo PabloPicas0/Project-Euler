@@ -3,11 +3,12 @@
     [
       "@babel/preset-env",
       {
+        "modules": false,
         "targets": {
           "node": "current"
         }
       }
     ],
-    "@babel/preset-typescript"
+    ["@babel/preset-typescript", { "rewriteImportExtensions": true }]
   ]
 }
