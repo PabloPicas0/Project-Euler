@@ -1,18 +1,27 @@
+import { spawn, exec } from "child_process";
+
 import inquirer from "inquirer";
 import algorithms from "./algorithms/main.ts";
 
 type PromptsType<T> = {
-  [key: string]: T ;
+  [key: string]: T;
 };
 
 const prompt = inquirer.createPromptModule();
 const problemSets = ["1 - 100", "101 - 200", "201 - 300", "301 - 400", "401 - 480"];
 
-const { isFastMode }: PromptsType<Boolean> = await prompt({
-  type: "confirm",
-  name: "isFastMode",
-  message: "Enable fast algorithm picking ?",
-});
+const { isFastMode, testsEnabled }: PromptsType<Boolean> = await prompt([
+  {
+    type: "confirm",
+    name: "isFastMode",
+    message: "Enable fast algorithm picking ?",
+  },
+  {
+    type: "confirm",
+    name: "testsEnabled",
+    message: "Enable tests after picking ?",
+  },
+]);
 
 const { pickedSet, pickedAlgorithm }: PromptsType<string> = await prompt([
   {
@@ -40,4 +49,26 @@ const { pickedSet, pickedAlgorithm }: PromptsType<string> = await prompt([
   },
 ]);
 
-const algo = algorithms[pickedSet][pickedAlgorithm]
+if (testsEnabled) {
+  // const child = spawn(`npm`, [`test --t ${pickedAlgorithm}.test.ts`], { shell: true });
+
+  // child.stdout.on("data", (data) => {
+  //   console.log(`child stdout:\n${data}`);
+  // });
+
+  // child.stderr.on("data", (data) => {
+  //   console.log(data);
+  // });
+
+  exec(`npm test --t ${pickedAlgorithm}`, (err, stdout, stderr) => {
+    if (err) {
+      console.error(`exec error: ${err}`);
+      return;
+    }
+
+    console.log(`Number of files ${stdout}`);
+  });
+}
+
+console.log(pickedSet);
+const algo = algorithms[pickedSet][pickedAlgorithm];
