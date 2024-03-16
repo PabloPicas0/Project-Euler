@@ -1,4 +1,4 @@
-import { spawn, exec } from "child_process";
+import { exec } from "child_process";
 
 import inquirer from "inquirer";
 import algorithms from "./algorithms/main.ts";
@@ -50,25 +50,12 @@ const { pickedSet, pickedAlgorithm }: PromptsType<string> = await prompt([
 ]);
 
 if (testsEnabled) {
-  // const child = spawn(`npm`, [`test --t ${pickedAlgorithm}.test.ts`], { shell: true });
-
-  // child.stdout.on("data", (data) => {
-  //   console.log(`child stdout:\n${data}`);
-  // });
-
-  // child.stderr.on("data", (data) => {
-  //   console.log(data);
-  // });
-
-  exec(`npm test --t ${pickedAlgorithm}`, (err, stdout, stderr) => {
+  exec(`npm test --t ${pickedAlgorithm}.test`, (err, stdout, stderr) => {
     if (err) {
-      console.error(`exec error: ${err}`);
+      console.error(err);
       return;
     }
 
     console.log(`Number of files ${stdout}`);
   });
 }
-
-console.log(pickedSet);
-const algo = algorithms[pickedSet][pickedAlgorithm];
