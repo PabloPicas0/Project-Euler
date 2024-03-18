@@ -122,20 +122,20 @@ function sieve(n: number) {
 // The product of these numbers is 26 × 63 × 78 × 14 = 1788696.
 // What is the greatest product of four adjacent numbers in the same direction (up, down, left, right, or diagonally) in a given arr grid?
 
-function largestGridProduct(arr) {
+function largestGridProduct(arr: number[][]) {
   let product = 0;
 
   for (let i = 0; i < arr.length; ++i) {
     for (let j = 0; j < arr[i].length; ++j) {
-      const right = [];
-      const left = [];
-      const down = [];
-      const up = [];
+      const right: number[] = [];
+      const left: number[] = [];
+      const down: number[] = [];
+      const up: number[] = [];
 
-      const diagonalUpRight = [];
-      const diagonalUpLeft = [];
-      const diagonalDownRight = [];
-      const diagonalDownLeft = [];
+      const diagonalUpRight: number[] = [];
+      const diagonalUpLeft: number[] = [];
+      const diagonalDownRight: number[] = [];
+      const diagonalDownLeft: number[] = [];
 
       // check right direction
       for (let k = j, m = i; k < j + 4 && m > i - 4; ++k, --m) {
@@ -197,7 +197,7 @@ function largestGridProduct(arr) {
   return product;
 }
 
-function getProduct(arr) {
+function getProduct(arr: number[]) {
   return arr.reduce((acc, number) => acc * number);
 }
 
