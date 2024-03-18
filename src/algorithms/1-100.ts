@@ -123,49 +123,81 @@ function sieve(n: number) {
 // What is the greatest product of four adjacent numbers in the same direction (up, down, left, right, or diagonally) in a given arr grid?
 
 function largestGridProduct(arr) {
-  rightProduct(arr);
-  leftProduct(arr);
-  return true;
-}
-
-function rightProduct(arr) {
   let product = 0;
 
   for (let i = 0; i < arr.length; ++i) {
     for (let j = 0; j < arr[i].length; ++j) {
-      const temp = [];
+      const right = [];
+      const left = [];
+      const down = [];
+      const up = [];
 
-      for (let k = j; k < j + 4; ++k) {
+      const diagonalUpRight = [];
+      const diagonalUpLeft = [];
+      const diagonalDownRight = [];
+      const diagonalDownLeft = [];
+
+      // check right direction
+      for (let k = j, m = i; k < j + 4 && m > i - 4; ++k, --m) {
         if (arr[i][k] !== undefined) {
-          temp.push(arr[i][k]);
+          right.push(arr[i][k]);
+        }
+
+        if (arr[m] !== undefined && arr[m][k] !== undefined) {
+          diagonalUpRight.push(arr[m][k]);
         }
       }
-      const currentProduct = temp.reduce((acc, number) => acc * number);
-      console.log(temp);
-      product = Math.max(product, currentProduct);
+
+      // check left direction
+      for (let k = j, m = i; k > j - 4 && m < i + 4; --k, ++m) {
+        if (arr[i][k] !== undefined) {
+          left.push(arr[i][k]);
+        }
+
+        if (arr[m] !== undefined && arr[m][k] !== undefined) {
+          diagonalDownLeft.push(arr[m][k]);
+        }
+      }
+
+      // check down direction
+      for (let k = i, m = j; k < i + 4 && m < j + 4; ++k, ++m) {
+        if (arr[k] !== undefined) {
+          down.push(arr[k][j]);
+        }
+
+        if (arr[k] !== undefined && arr[k][m] !== undefined) {
+          diagonalDownRight.push(arr[k][m]);
+        }
+      }
+
+      // check up direction
+      for (let k = i, m = j; k > i - 4 && m > j - 4; --k, --m) {
+        if (arr[k] !== undefined) {
+          up.push(arr[k][j]);
+        }
+
+        if (arr[k] !== undefined && arr[k][m] !== undefined) {
+          diagonalUpLeft.push(arr[k][m]);
+        }
+      }
+
+      product = Math.max(
+        product,
+        getProduct(right),
+        getProduct(left),
+        getProduct(down),
+        getProduct(diagonalUpRight),
+        getProduct(diagonalUpLeft),
+        getProduct(diagonalDownRight),
+        getProduct(diagonalDownLeft)
+      );
     }
   }
-  console.log(product);
+
   return product;
 }
 
-function leftProduct(arr) {
-  let product = 0;
-
-  for (let i = 0; i < arr.length; ++i) {
-    for (let j = 0; j < arr[i].length; ++j) {
-      const temp = [];
-
-      for (let k = j + 4; k > j - 4; --k) {
-        if (arr[i][k] !== undefined) {
-          temp.push(arr[i][k]);
-        }
-      }
-      const currentProduct = temp.reduce((acc, number) => acc * number);
-
-      product = Math.max(product, currentProduct);
-    }
-  }
-  console.log(product);
-  return product;
+function getProduct(arr) {
+  return arr.reduce((acc, number) => acc * number);
 }
+
