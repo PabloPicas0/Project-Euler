@@ -225,18 +225,23 @@ function divisibleTriangleNumber(n) {
   while (devisors < n) {
     triangularNumber += k;
 
-    for (let i = 1; i <= triangularNumber; ++i) {
+    for (let i = 1; i <= Math.sqrt(triangularNumber); ++i) {
       if (triangularNumber % i === 0) {
         ++devisors;
+
+        if (i !== triangularNumber / i) {
+          if (i * i != triangularNumber) {
+            ++devisors;
+          }
+        }
       }
     }
-    console.log(triangularNumber, devisors);
 
     if (devisors > n) break;
 
     devisors = 0;
     ++k;
   }
-  // console.log(triangularNumber, devisors)
+
   return triangularNumber;
 }
