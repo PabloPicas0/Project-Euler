@@ -548,15 +548,31 @@ function numberLetterCounts(limit: number) {
 // 04 62 98 27 23 09 70 98 73 93 38 53 60 04 23
 
 // NOTE: As there are only 16384 routes, it is possible to solve this problem by trying every route. However, Problem 67, is the same challenge with a triangle containing one-hundred rows; it cannot be solved by brute force, and requires a clever method! ;o)
-function maximumPathSumI(triangle: number[][]) {
-  const highestNumbers = [];
+function maximumPathSumI(triangle) {
+  while (triangle.length > 1) {
+    const lastLine = triangle.pop();
+    const aboveLine = triangle.pop();
 
-  for (let i = 0; i < triangle.length; ++i) {
-    highestNumbers.push(Math.max(...triangle[i]));
+    for (let i = 0; i < aboveLine.length; ++i) {
+      aboveLine[i] = Math.max(aboveLine[i] + lastLine[i], aboveLine[i] + lastLine[i + 1]);
+    }
+
+    triangle.push(aboveLine);
   }
-  console.log(highestNumbers.reduce((acc, number) => acc + number));
-  return true;
+
+  console.log(triangle);
+  return triangle[0][0];
 }
+
+
+
+
+
+
+
+
+
+
 
 // Problem 20: Factorial digit sum
 // n! means n × (n − 1) × ... × 3 × 2 × 1
