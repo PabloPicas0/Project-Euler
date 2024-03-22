@@ -217,7 +217,7 @@ function getProduct(arr: number[]) {
 // We can see that 28 is the first triangle number to have over five divisors.
 
 // What is the value of the first triangle number to have over n divisors?
-function divisibleTriangleNumber(n) {
+function divisibleTriangleNumber(n: number) {
   let triangularNumber = 1;
   let devisors = 0;
   let k = 2;
@@ -349,8 +349,8 @@ function divisibleTriangleNumber(n) {
 // 72107838435069186155435662884062257473692284509516
 // 20849603980134001723930671666823555245252804609722
 // 53503534226472524250874054075591789781264330331690
-function largeSum(arr) {
-  const sumOfDigits = arr.reduce((acc, number) => BigInt(acc) + BigInt(number));
+function largeSum(arr: string[]) {
+  const sumOfDigits = arr.reduce((acc, number) => BigInt(acc) + BigInt(number), 0n);
   const firstTen = String(sumOfDigits).slice(0, 10);
   const digits = Number(firstTen);
 
@@ -370,7 +370,7 @@ function largeSum(arr) {
 // Which starting number, under the given limit, produces the longest chain?
 
 // Note: Once the chain starts the terms are allowed to go above limit.
-function longestCollatzSequence(limit) {
+function longestCollatzSequence(limit: number) {
   let longestChain = 0;
   let longestSequence = 0;
 
@@ -386,7 +386,7 @@ function longestCollatzSequence(limit) {
   return longestChain;
 }
 
-function collatzSequence(number) {
+function collatzSequence(number: number) {
   let currentNumber = number;
   let collatzChain = 1;
 
@@ -408,7 +408,7 @@ function collatzSequence(number) {
 
 // a diagram of 6 2 by 2 grids showing all the routes to the bottom right corner
 // How many such routes are there through a given gridSize?
-function latticePaths(gridSize) {
+function latticePaths(gridSize: number) {
   return fact(gridSize * 2) / fact(gridSize) ** fact(4 - 2);
 }
 
@@ -416,7 +416,7 @@ function latticePaths(gridSize) {
 // 2^15 = 32768 and the sum of its digits is 3 + 2 + 7 + 6 + 8 = 26.
 
 // What is the sum of the digits of the number 2exponent?
-function powerDigitSum(exponent) {
+function powerDigitSum(exponent: number) {
   const pow = BigInt(2 ** exponent);
   const digits = String(pow).split("");
   const sumOfExponentDigits = digits.reduce((acc, digit) => acc + Number(digit), 0);
@@ -460,8 +460,8 @@ const numbersToWords = {
   90: "ninety",
 };
 
-function numberLetterCounts(limit) {
-  const numbersAsWords = [];
+function numberLetterCounts(limit: number) {
+  const numbersAsWords: string[] = [];
 
   for (let i = 1; i <= limit; ++i) {
     if (i < 20) {
@@ -538,6 +538,12 @@ function numberLetterCounts(limit) {
 // 04 62 98 27 23 09 70 98 73 93 38 53 60 04 23
 
 // NOTE: As there are only 16384 routes, it is possible to solve this problem by trying every route. However, Problem 67, is the same challenge with a triangle containing one-hundred rows; it cannot be solved by brute force, and requires a clever method! ;o)
-function maximumPathSumI(triangle) {
+function maximumPathSumI(triangle: number[][]) {
+  const highestNumbers = [];
+
+  for (let i = 0; i < triangle.length; ++i) {
+    highestNumbers.push(Math.max(...triangle[i]));
+  }
+  console.log(highestNumbers.reduce((acc, number) => acc + number));
   return true;
 }
