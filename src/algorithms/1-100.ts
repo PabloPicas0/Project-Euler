@@ -12,6 +12,16 @@ export function fact(num: number): number {
   }
 }
 
+function BigFact(num: number) {
+  let rval = 1n;
+
+  for (let i = 2n; i <= num; i++) {
+    rval = BigInt(rval * i);
+  }
+
+  return rval;
+}
+
 export function nthPrmie(n: number) {
   let pn = 0;
   let sum = 0;
