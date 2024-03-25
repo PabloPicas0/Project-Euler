@@ -548,7 +548,7 @@ function numberLetterCounts(limit: number) {
 // 04 62 98 27 23 09 70 98 73 93 38 53 60 04 23
 
 // NOTE: As there are only 16384 routes, it is possible to solve this problem by trying every route. However, Problem 67, is the same challenge with a triangle containing one-hundred rows; it cannot be solved by brute force, and requires a clever method! ;o)
-function maximumPathSumI(triangle) {
+function maximumPathSumI(triangle: number[][]) {
   while (triangle.length > 1) {
     const lastLine = triangle.pop();
     const aboveLine = triangle.pop();
@@ -575,7 +575,7 @@ function maximumPathSumI(triangle) {
 // And on leap years, twenty-nine.
 // A leap year occurs on any year evenly divisible by 4, but not on a century unless it is divisible by 400.
 // How many Sundays fell on the first of the month during the twentieth century (1 Jan 1901 to 31 Dec 2000)?
-function countingSundays(firstYear, lastYear) {
+function countingSundays(firstYear: number, lastYear: number) {
   let sundaysCount = 0;
 
   for (let i = firstYear; i <= lastYear; ++i) {
@@ -613,8 +613,8 @@ function sumFactorialDigits(n: number) {
 // For example, the proper divisors of 220 are 1, 2, 4, 5, 10, 11, 20, 22, 44, 55 and 110; therefore d(220) = 284. The proper divisors of 284 are 1, 2, 4, 71 and 142; so d(284) = 220.
 
 // Evaluate the sum of all the amicable numbers under n.
-function sumAmicableNum(n) {
-  let numbers = [];
+function sumAmicableNum(n: number) {
+  let numbers: number[][] = [];
 
   for (let i = 1; i < n; ++i) {
     const b = d(i);
@@ -640,7 +640,7 @@ function sumAmicableNum(n) {
   return sum;
 }
 
-function d(n) {
+function d(n: number) {
   let sumOfProperDivisors = 0;
 
   for (let i = 1; i < n; ++i) {
@@ -658,7 +658,7 @@ function d(n) {
 // For example, when the list is sorted into alphabetical order, COLIN, which is worth 3 + 15 + 12 + 9 + 14 = 53, is the 938th name in the list. So, COLIN would obtain a score of 938 × 53 = 49714.
 
 // What is the total of all the name scores in the array?
-const letterAsValue = {};
+const letterAsValue: {[key: string]: number} = {};
 const letters = [
   "a",
   "b",
@@ -694,7 +694,7 @@ for (let i = 0; i < letters.length; ++i) {
   letterAsValue[letter] = i + 1;
 }
 
-function namesScores(arr) {
+function namesScores(arr: string[]) {
   arr.sort();
 
   const scores = arr
@@ -724,9 +724,9 @@ function namesScores(arr) {
 // Find the sum of all positive integers <= n which cannot be written as the sum of two abundant numbers.
 const LIMIT = 28123;
 
-function sumOfNonAbundantNumbers(n) {
+function sumOfNonAbundantNumbers(n: number) {
   let int = 0;
-  const abundantNumbers = [];
+  const abundantNumbers: number[] = [];
   const sumsOfTwoAbundantNumbers = new Set();
 
   for (let i = 12; i <= LIMIT; ++i) {
@@ -754,7 +754,7 @@ function sumOfNonAbundantNumbers(n) {
   return int;
 }
 
-function isAbundant(n) {
+function isAbundant(n: number) {
   let sumOfDivisors = 1;
 
   for (let i = 2; i <= n / 2; ++i) {
@@ -763,3 +763,73 @@ function isAbundant(n) {
 
   return sumOfDivisors > n;
 }
+// Problem 24: Lexicographic permutations
+// A permutation is an ordered arrangement of objects. For example, 3124 is one possible permutation of the digits 1, 2, 3 and 4. If all of the permutations are listed numerically or alphabetically, we call it lexicographic order. The lexicographic permutations of 0, 1 and 2 are:
+
+// 012   021   102   120   201   210
+// What is the nth lexicographic permutation of the digits 0, 1, 2, 3, 4, 5, 6, 7, 8 and 9?
+function lexicographicPermutations(n) {
+  const digits = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  const permutations = new Set(heap(digits.length, digits));
+
+  console.log(permutations);
+  return n;
+}
+
+function heap(k, arr) {
+  if (k === 1) {
+    return arr;
+  } else {
+    heap(k - 1, arr);
+
+    for (let i = 0; i < k - 1; ++i) {
+      if (k % 2 === 0) {
+        const temp = arr[i];
+        arr[i] = arr[k - 1];
+        arr[k - 1] = temp;
+      } else {
+        const temp = arr[0];
+        arr[0] = arr[k - 1];
+        arr[k - 1] = temp;
+      }
+
+      heap(k - 1, arr);
+    }
+  }
+}
+
+function heap(k, arr) {
+  const set = new Set([...arr]);
+  const c = [];
+
+  for (let i = 0; i < k; ++i) {
+    c[i] = 0;
+  }
+
+  let i = 1;
+
+  while (i < k) {
+    if (c[i] < i) {
+      if (i % 2 === 0) {
+        const temp = arr[0];
+        arr[0] = arr[i];
+        arr[i] = temp;
+      } else {
+        const temp = arr[c[i]];
+        arr[c[i]] = arr[i];
+        arr[i] = temp;
+      }
+
+      set.add([...arr]);
+
+      c[i] += 1;
+      i = 1;
+    } else {
+      c[i] = 0;
+      ++i;
+    }
+  }
+
+  return set;
+}
+new Int8Array().
