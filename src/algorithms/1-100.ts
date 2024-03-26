@@ -658,7 +658,7 @@ function d(n: number) {
 // For example, when the list is sorted into alphabetical order, COLIN, which is worth 3 + 15 + 12 + 9 + 14 = 53, is the 938th name in the list. So, COLIN would obtain a score of 938 × 53 = 49714.
 
 // What is the total of all the name scores in the array?
-const letterAsValue: {[key: string]: number} = {};
+const letterAsValue: { [key: string]: number } = {};
 const letters = [
   "a",
   "b",
@@ -769,67 +769,69 @@ function isAbundant(n: number) {
 // 012   021   102   120   201   210
 // What is the nth lexicographic permutation of the digits 0, 1, 2, 3, 4, 5, 6, 7, 8 and 9?
 function lexicographicPermutations(n) {
-  const digits = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-  const permutations = new Set(heap(digits.length, digits));
+  const digits = [];
+  const fact = factoriadic(n);
+  const perm = [];
 
-  console.log(permutations);
-  return n;
+  for (let i = 0; i <= 9; ++i) {
+    digits.push(i);
+  }
+
+  for (let i = 0; i < fact.length; ++i) {
+    const digit = digits[fact[i]];
+    digits.splice(fact[i], 1);
+    perm.push(digit);
+  }
+
+  return Number(perm.join(""));
 }
 
-function heap(k, arr) {
-  if (k === 1) {
-    return arr;
-  } else {
-    heap(k - 1, arr);
-
-    for (let i = 0; i < k - 1; ++i) {
-      if (k % 2 === 0) {
-        const temp = arr[i];
-        arr[i] = arr[k - 1];
-        arr[k - 1] = temp;
-      } else {
-        const temp = arr[0];
-        arr[0] = arr[k - 1];
-        arr[k - 1] = temp;
-      }
-
-      heap(k - 1, arr);
-    }
-  }
-}
-
-function heap(k, arr) {
-  const set = new Set([...arr]);
-  const c = [];
-
-  for (let i = 0; i < k; ++i) {
-    c[i] = 0;
-  }
+function factoriadic(n) {
+  const factoradics = [];
 
   let i = 1;
-
-  while (i < k) {
-    if (c[i] < i) {
-      if (i % 2 === 0) {
-        const temp = arr[0];
-        arr[0] = arr[i];
-        arr[i] = temp;
-      } else {
-        const temp = arr[c[i]];
-        arr[c[i]] = arr[i];
-        arr[i] = temp;
-      }
-
-      set.add([...arr]);
-
-      c[i] += 1;
-      i = 1;
-    } else {
-      c[i] = 0;
-      ++i;
-    }
+  while (n > 0) {
+    factoradics.push(n % i);
+    n = Math.floor(n / i);
+    ++i;
   }
 
-  return set;
+  return factoradics.reverse();
 }
-new Int8Array().
+
+// Problem 25: 1000-digit Fibonacci number
+// The Fibonacci sequence is defined by the recurrence relation:
+
+// Fn = Fn−1 + Fn−2, where F1 = 1 and F2 = 1.
+// Hence the first 12 terms will be:
+
+// F1 = 1
+// F2 = 1
+// F3 = 2
+// F4 = 3
+// F5 = 5
+// F6 = 8
+// F7 = 13
+// F8 = 21
+// F9 = 34
+// F10 = 55
+// F11 = 89
+// F12 = 144
+// The 12th term, F12, is the first term to contain three digits.
+
+// What is the index of the first term in the Fibonacci sequence to contain n digits?
+function digitFibonacci(n) {
+  const fib = [1, 1];
+  let i = 2;
+
+  while (true) {
+    const nextInSequence = fib[i - 1] + fib[i - 2];
+    fib.push(nextInSequence);
+
+    if (String(fib[i - 1] + fib[i - 2]).split("").length === n) break;
+
+    ++i;
+  }
+
+  return fib.length;
+}
