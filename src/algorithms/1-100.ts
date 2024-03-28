@@ -852,56 +852,40 @@ function digitFibonacci(n: number) {
 
 // Find the value of d < n for which 1/d contains the longest recurring cycle in its decimal fraction part.
 function reciprocalCycles(n) {
-  let longestCycle = "";
-  let nextStep = 1;
-  let reminder = 0;
-  const cycle = new Map();
-
-  for (let i = 7; i < 8; ++i) {
-    while (nextStep <= 12) {
-      const currentNumber = (1 / i) * 10 ** nextStep;
-      reminder = (1 * 10 ** nextStep) % i;
-      if (cycle.has(reminder)) break;
-
-      cycle.set(reminder, currentNumber);
-
-      ++nextStep;
-    }
-    console.log(cycle);
-  }
-  return longestCycle;
-}
-
-function reciprocalCycles(n) {
-  let longestCycle = "";
-  let nextStep = 1;
-  let reminder = 0;
   let d = 0;
-  const cycle = new Map();
+  let longestDecimal = 0;
 
-  for (let i = 29; i < n; ++i) {
-    while (true) {
-      const currentNumber = (1 / i) * 10 ** nextStep;
-      reminder = (1 * 10 ** nextStep) % i;
-      if (cycle.has(reminder)) break;
+  for (let i = 2; i < n; ++i) {
+    const currentDecimal = fractionToDecimal(1, i).replace("0.", "").length;
 
-      cycle.set(reminder, currentNumber);
-
-      console.log(currentNumber, reminder, i);
-      console.log(cycle);
-      ++nextStep;
-    }
-    const currentCycle = String(Math.floor(Array.from(cycle).pop()[1]));
-
-    if (longestCycle.length < currentCycle.length) {
-      longestCycle = currentCycle;
+    if (longestDecimal < currentDecimal) {
+      longestDecimal = currentDecimal;
       d = i;
     }
-
-    cycle.clear();
-    nextStep = 1;
   }
-  return longestCycle;
+
+  return d;
+}
+
+function fractionToDecimal(a, b) {
+  let dec = "0.";
+  const map = new Map();
+
+  let reminder = a % b;
+
+  while (reminder !== 0 && !map.has(reminder)) {
+    map.set(reminder, dec.length);
+
+    reminder *= 10;
+
+    dec += Math.floor(reminder / b);
+
+    reminder = reminder % b;
+  }
+
+  if (map.has(reminder)) return dec;
+
+  return dec;
 }
 
 // Problem 29: Distinct powers
