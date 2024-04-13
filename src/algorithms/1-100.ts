@@ -1144,9 +1144,103 @@ function digitnPowers(n) {
 // 1×£1 + 1×50p + 2×20p + 1×5p + 1×2p + 3×1p
 // How many different ways can n pence be made using any number of coins?
 function coinSums(n) {
-  let ways = 0;
+  const ways = new Array(n + 1).fill(0);
+
+  ways[0] = 1;
 
   const coins = [1, 2, 5, 10, 20, 50, 100, 200];
 
-  return ways;
+  for (let i = 0; i < coins.length; ++i) {
+    const coin = coins[i];
+
+    for (let j = 0; j < ways.length; ++j) {
+      if (coin <= j) {
+        ways[j] = ways[j - coin] + ways[j];
+      }
+    }
+  }
+
+  return ways[n];
+}
+
+// Problem 32: Pandigital products
+// We shall say that an n-digit number is pandigital if it makes use of all the digits 1 to n exactly once; for example, the 5-digit number, 15234, is 1 through 5 pandigital.
+
+// The product 7254 is unusual, as the identity, 39 × 186 = 7254, containing multiplicand, multiplier, and product is 1 through 9 pandigital.
+
+// Find the sum of all products whose multiplicand/multiplier/product identity can be written as a 1 through n pandigital.
+
+// Hint: Some products can be obtained in more than one way so be sure to only include it once in your sum.
+function pandigitalProducts(n) {
+  const products = [];
+
+  for (let i = 1; i <= n; ++i) {
+    for (let j = 1; j <= n; ++j) {
+      const product = i * j;
+
+      const s = String(product).split("");
+
+      const isBiggerThanN = s.some((number) => Number(number) > n);
+
+      s.unshift(`${i}`, `${j}`);
+
+      if (isBiggerThanN || s.length < n) continue;
+
+      products.push(product);
+
+      console.log(s, products);
+    }
+  }
+
+  for (let i = 0; i < products.length; ++i) {
+    const currentProduct = products[i];
+
+    for (let j = i + 1; j < products.length; ++j) {
+      const nextProduct = products[j];
+
+      if (currentProduct === nextProduct) {
+        products.splice(j, 1, "repeat");
+      }
+    }
+  }
+
+  console.log(products.filter((product) => product !== "repeat"));
+
+  return products.filter((product) => product !== "repeat").reduce((acc, product) => acc + product, 0);
+}
+
+function pandigitalProducts(n) {
+  const products = [];
+
+  for (let i = 1; i <= Math.floor(n ** n / 2); ++i) {
+    let found = false;
+
+    for (let j = 1; j <= n ** n; ++j) {
+      let isPandigital = true;
+      const product = i * j;
+
+      const s = String([i, j, product]).split(",").join("").split("");
+
+      if (s.length !== n || s.includes("0")) continue;
+
+      for (let k = 1; k <= n; ++k) {
+        if (!s.includes(`${k}`)) {
+          isPandigital = false;
+          break;
+        }
+      }
+
+      // console.log(isPandigital,i,j ,s)
+
+      if (isPandigital) {
+        products.push(product);
+        found = true;
+        break;
+      }
+    }
+
+    if (found) break;
+  }
+
+  return products.reduce((acc, number) => acc + number, 0);
 }
