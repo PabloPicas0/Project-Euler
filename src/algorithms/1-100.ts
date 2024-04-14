@@ -1174,48 +1174,8 @@ function coinSums(n) {
 function pandigitalProducts(n) {
   const products = [];
 
-  for (let i = 1; i <= n; ++i) {
-    for (let j = 1; j <= n; ++j) {
-      const product = i * j;
-
-      const s = String(product).split("");
-
-      const isBiggerThanN = s.some((number) => Number(number) > n);
-
-      s.unshift(`${i}`, `${j}`);
-
-      if (isBiggerThanN || s.length < n) continue;
-
-      products.push(product);
-
-      console.log(s, products);
-    }
-  }
-
-  for (let i = 0; i < products.length; ++i) {
-    const currentProduct = products[i];
-
-    for (let j = i + 1; j < products.length; ++j) {
-      const nextProduct = products[j];
-
-      if (currentProduct === nextProduct) {
-        products.splice(j, 1, "repeat");
-      }
-    }
-  }
-
-  console.log(products.filter((product) => product !== "repeat"));
-
-  return products.filter((product) => product !== "repeat").reduce((acc, product) => acc + product, 0);
-}
-
-function pandigitalProducts(n) {
-  const products = [];
-
-  for (let i = 1; i <= Math.floor(n ** n / 2); ++i) {
-    let found = false;
-
-    for (let j = 1; j <= n ** n; ++j) {
+  for (let i = 1; i <= Math.ceil(9999 / 2); ++i) {
+    for (let j = 1; j <= Math.floor(9999 / i); ++j) {
       let isPandigital = true;
       const product = i * j;
 
@@ -1230,17 +1190,22 @@ function pandigitalProducts(n) {
         }
       }
 
-      // console.log(isPandigital,i,j ,s)
-
       if (isPandigital) {
         products.push(product);
-        found = true;
         break;
       }
     }
-
-    if (found) break;
   }
 
-  return products.reduce((acc, number) => acc + number, 0);
+  for (let i = 0; i < products.length; ++i) {
+    const currentNumber = products[i];
+
+    for (let j = i + 1; j < products.length; ++j) {
+      const nextNumber = products[j];
+
+      if (currentNumber === nextNumber) products.splice(j, 1, "repeat");
+    }
+  }
+
+  return products.filter((product) => product !== "repeat").reduce((acc, number) => acc + number, 0);
 }
