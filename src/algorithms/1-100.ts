@@ -1290,18 +1290,29 @@ function circularPrimes(n) {
 
   for (let i = 100; i < n; ++i) {
     const s = String(i);
+    let isCircular = true;
 
+    // This part can be done better especially when the numbers have more than 3 digits
     if (s[1] === "0" || s[2] === "0") continue;
 
-    const rotations = [];
+    const rotations = [s];
 
-    rotations.push(s, [s[1], s[2], s[0]].join(""), [s[2], s[0], s[1]].join(""));
+    for (let j = 1; j < s.length; ++j) {
+      const prevRotation = [...rotations[j - 1]];
+      const firstDigit = prevRotation.splice(0, 1);
 
-    const [a, b, c] = rotations;
+      rotations.push([...prevRotation, firstDigit].join(""));
+    }
 
-    if (isPrime(a) && isPrime(b) && isPrime(c)) {
+    for (let j = 0; j < rotations.length; ++j) {
+      if (!isPrime(rotations[j])) {
+        isCircular = false;
+        break;
+      }
+    }
+
+    if (isCircular) {
       primes.push(i);
-      console.log(rotations);
     }
   }
 
