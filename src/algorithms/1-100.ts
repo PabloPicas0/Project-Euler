@@ -1251,8 +1251,8 @@ function digitCancellingFractions() {
 
 // Note: as 1! = 1 and 2! = 2 are not sums they are not included.
 function digitFactorial() {
-  var sum = 0;
-  var numbers = [];
+  let sum = 0;
+  let numbers = [];
 
   for (let i = 100; i <= 450585; ++i) {
     const s = String(i)
@@ -1271,4 +1271,39 @@ function digitFactorial() {
   }
 
   return { sum, numbers };
+}
+
+// Problem 35: Circular primes
+// The number, 197, is called a circular prime because all rotations of the digits: 197, 971, and 719, are themselves prime.
+
+// There are thirteen such primes below 100: 2, 3, 5, 7, 11, 13, 17, 31, 37, 71, 73, 79, and 97.
+
+// How many circular primes are there below n, whereas 100 ≤ n ≤ 1000000?
+
+// Note:
+
+// Circular primes individual rotation can exceed n.
+function circularPrimes(n) {
+  const primes = [2, 3, 5, 7, 11, 13, 17, 31, 37, 71, 73, 79, 97];
+
+  if (n === 100) return primes.length;
+
+  for (let i = 100; i < n; ++i) {
+    const s = String(i);
+
+    if (s[1] === "0" || s[2] === "0") continue;
+
+    const rotations = [];
+
+    rotations.push(s, [s[1], s[2], s[0]].join(""), [s[2], s[0], s[1]].join(""));
+
+    const [a, b, c] = rotations;
+
+    if (isPrime(a) && isPrime(b) && isPrime(c)) {
+      primes.push(i);
+      console.log(rotations);
+    }
+  }
+
+  return primes.length;
 }
