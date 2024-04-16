@@ -1326,5 +1326,17 @@ function circularPrimes(n) {
 
 // (Please note that the palindromic number, in either base, may not include leading zeros.)
 function doubleBasePalindromes(n) {
-  return n;
-}
+  let sum = 0;
+
+  for (let i = 1; i < n; ++i) {
+    const reverseI = String(i).split("").reverse().join("");
+    const binary = Number(i).toString(2);
+    const reverseBinary = Number(i).toString(2).split("").reverse().join("");
+
+    if (i == reverseI && binary === reverseBinary) {
+      sum += i;
+    }
+  }
+
+  return sum;
+} 
