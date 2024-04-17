@@ -1348,5 +1348,42 @@ function doubleBasePalindromes(n) {
 
 // NOTE: 2, 3, 5, and 7 are not considered to be truncatable primes.
 function truncatablePrimes(n) {
-  return n;
+  let sum = 0;
+  let primesFound = 0;
+  let number = 23;
+
+  while (primesFound < n) {
+    if (!isPrime(number)) {
+      ++number;
+      continue;
+    }
+
+    const s = String(number);
+    const truncToRight = s.split("");
+    const truncToLeft = s.split("");
+
+    let isTruncatablePrime = true;
+
+    for (let i = 1; i < s.length; ++i) {
+      truncToRight.shift();
+      truncToLeft.pop();
+
+      if (!isPrime(Number(truncToRight.join(""))) || !isPrime(Number(truncToLeft.join("")))) {
+        isTruncatablePrime = false;
+        break;
+      }
+    }
+
+    if (!isTruncatablePrime) {
+      ++number;
+      continue;
+    }
+
+    sum += number;
+
+    ++primesFound;
+    ++number;
+  }
+
+  return sum;
 }
