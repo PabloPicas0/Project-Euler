@@ -1399,5 +1399,37 @@ function truncatablePrimes(n) {
 
 // What is the largest 1 to k pandigital k-digit number that can be formed as the concatenated product of an integer with (1, 2, ..., n) where n > 1?
 function pandigitalMultiples(k) {
-  return true;
+  let current = "";
+
+  for (let i = 1; i < 9328; ++i) {
+    let n = 1;
+    let concatenatedProduct = "";
+    let isPandigital = true;
+
+    while (concatenatedProduct.length < k) {
+      const product = i * n;
+      const nextConcatenation = concatenatedProduct + product;
+
+      if (nextConcatenation.length > k) break;
+
+      concatenatedProduct = nextConcatenation;
+
+      ++n;
+    }
+
+    if (concatenatedProduct.includes("0")) continue;
+
+    for (let j = 1; j <= k; ++j) {
+      if (!concatenatedProduct.includes(`${j}`)) {
+        isPandigital = false;
+        break;
+      }
+    }
+
+    if (isPandigital && Number(current) < Number(concatenatedProduct)) {
+      current = concatenatedProduct;
+    }
+  }
+
+  return Number(current);
 }
