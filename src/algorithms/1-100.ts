@@ -1401,6 +1401,7 @@ function truncatablePrimes(n) {
 function pandigitalMultiples(k) {
   let current = "";
 
+  // Magic number 9328 could be done better but this passes test cases up to 1 to 9 pandigital
   for (let i = 1; i < 9328; ++i) {
     let n = 1;
     let concatenatedProduct = "";
@@ -1432,4 +1433,25 @@ function pandigitalMultiples(k) {
   }
 
   return Number(current);
+}
+
+// Problem 39: Integer right triangles
+// If p is the perimeter of a right angle triangle with integral length sides, {a,b,c}, there are exactly three solutions for p = 120.
+
+// {20,48,52}, {24,45,51}, {30,40,50}
+
+// For which value of p ≤ n, is the number of solutions maximized?
+function intRightTriangles(n) {
+  const maxSolutions = [];
+  let p = 3;
+
+  while (p <= n) {
+    for (let i = 1; ; ++i) {
+      for (let i = 1; ; ++i) {
+        for (let i = 1; ; ++i) {}
+      }
+    }
+  }
+
+  return n;
 }
