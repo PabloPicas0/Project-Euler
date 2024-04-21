@@ -1442,16 +1442,36 @@ function pandigitalMultiples(k) {
 
 // For which value of p ≤ n, is the number of solutions maximized?
 function intRightTriangles(n) {
-  const maxSolutions = [];
-  let p = 3;
+  let lastMaxSolutions = 0;
+  let highestValue = 0;
+  let p = 12;
+  let knownCombinations = [];
 
   while (p <= n) {
-    for (let i = 1; ; ++i) {
-      for (let i = 1; ; ++i) {
-        for (let i = 1; ; ++i) {}
+    let solutions = 0;
+
+    for (let i = 1; i <= Math.floor(p / 2); ++i) {
+      for (let j = 1; j <= Math.floor(p / 2); ++j) {
+        const k = Math.sqrt(i ** 2 + j ** 2);
+        const possibleSolution = i + j + k;
+
+        if (possibleSolution > p) break;
+
+        if (possibleSolution === p && !knownCombinations.includes(k)) {
+          knownCombinations.push(k);
+          ++solutions;
+        }
       }
     }
-  }
 
-  return n;
+    if (solutions > lastMaxSolutions) {
+      lastMaxSolutions = solutions;
+      highestValue = p;
+    }
+
+    knownCombinations = [];
+    ++p;
+  }
+  return highestValue;
 }
+
