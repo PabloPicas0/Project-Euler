@@ -1494,7 +1494,6 @@ function champernownesConstant(n) {
   }
 
   for (let i = 10; i <= n; i *= 10) {
-    console.log(fraction[i], i);
     product *= Number(fraction[i]);
   }
 
