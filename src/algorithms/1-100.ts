@@ -1710,6 +1710,31 @@ function isPentagonal(n) {
 
 // Find the next triangle number that is also pentagonal and hexagonal.
 function triPentaHexa(n) {
+  const pentagonalMap = new Map();
+  const hexagonalMap = new Map();
 
-  return true;
+  let tn = 286;
+  let pn = 166;
+  let hn = 144;
+
+  while (pn <= 50000 && hn <= 50000) {
+    const pent = (pn * (3 * pn - 1)) / 2;
+    const hex = hn * (2 * hn - 1);
+
+    pentagonalMap.set(pent, pent);
+    hexagonalMap.set(hex, hex);
+
+    ++pn;
+    ++hn;
+  }
+
+  while (true) {
+    const tri = (tn * (tn + 1)) / 2;
+
+    if (pentagonalMap.has(tri) && hexagonalMap.has(tri)) {
+      return tri;
+    }
+
+    ++tn;
+  }
 }
