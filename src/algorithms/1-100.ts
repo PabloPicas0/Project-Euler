@@ -1781,8 +1781,8 @@ function goldbachsOtherConjecture() {
     const primeTable = sieve(compositeNumber);
     let isComposite = false;
 
-    for (let j = 0; j < primeTable.size; ++j) {
-      const prime = primeTable.get(j);
+    for (let j = 0; j < primeTable.length; ++j) {
+      const prime = primeTable[j];
       let k = 1;
 
       while (true) {
@@ -1811,13 +1811,13 @@ function goldbachsOtherConjecture() {
   return false;
 }
 
-function getCompositeNumbers(n) {
-  const oddComposite = new Map();
+function getCompositeNumbers(n: number) {
+  const oddComposite = new Map<number, number>();
   const primes = sieve(n);
   let x = 0;
 
-  for (let i = 1; i < primes.size; ++i) {
-    const nthPrime = primes.get(i);
+  for (let i = 1; i < primes.length; ++i) {
+    const nthPrime = primes[i];
 
     for (let j = 0; j < 29; ++j) {
       const n = nthPrime ** 2 + 2 * nthPrime * j;
