@@ -62,7 +62,6 @@ function multiplesOf3Or5(number) {
   return sum;
 }
 
-
 // Problem 9: Special Pythagorean triplet
 // A Pythagorean triplet is a set of three natural numbers, a < b < c, for which,
 
@@ -1731,9 +1730,9 @@ function isPentagonal(n) {
 // It can be verified that T285 = P165 = H143 = 40755.
 
 // Find the next triangle number that is also pentagonal and hexagonal.
-function triPentaHexa(n) {
-  const pentagonalMap = new Map();
-  const hexagonalMap = new Map();
+function triPentaHexa(n: number) {
+  const pentagonalMap = new Map<number, number>();
+  const hexagonalMap = new Map<number, number>();
 
   let tn = 286;
   let pn = 166;
@@ -1841,6 +1840,55 @@ function getCompositeNumbers(n: number) {
 // 646 = 2 × 17 × 19
 // Find the first four consecutive integers to have four distinct prime factors each. What is the first of these numbers?
 function distinctPrimeFactors(targetNumPrimes, targetConsecutive) {
+  const primes = sieve(648);
+  let n = 12;
+  let lastDistinct = 0;
+
+  while (n < 30) {
+    if (primes.has(n)) {
+      ++n;
+      continue;
+    }
+
+    const divisors = trialDevision(n);
+    console.log(
+      divisors,
+      n,
+      divisors.reduce(
+        (acc, number, idx, arr) => {
+          const length = arr.length - 1;
+
+          if (acc.current === number) {
+            acc.sum *= number;
+            return acc;
+          } else {
+            acc.shortDivisors.push(acc.sum);
+            acc.current = number;
+            return acc;
+          }
+        },
+        { current: 2, sum: 1, shortDivisors: [] }
+      )
+    );
+
+    ++n;
+  }
+
   return true;
 }
 
+function trialDevision(n) {
+  const devisors = [];
+  let f = 2;
+
+  while (n > 1) {
+    if (n % f === 0) {
+      devisors.push(f);
+      n /= f;
+    } else {
+      ++f;
+    }
+  }
+
+  return devisors;
+}
