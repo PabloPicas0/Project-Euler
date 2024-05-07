@@ -1840,41 +1840,58 @@ function getCompositeNumbers(n: number) {
 // 646 = 2 × 17 × 19
 // Find the first four consecutive integers to have four distinct prime factors each. What is the first of these numbers?
 function distinctPrimeFactors(targetNumPrimes, targetConsecutive) {
-  const primes = sieve(648);
+  const primes = sieve(134048);
+  let consecutive = [];
   let n = 12;
-  let lastDistinct = 0;
 
-  while (n < 30) {
+  while (true) {
     if (primes.has(n)) {
       ++n;
       continue;
     }
 
     const divisors = trialDevision(n);
-    console.log(
-      divisors,
-      n,
-      divisors.reduce(
-        (acc, number, idx, arr) => {
-          const length = arr.length - 1;
+    const shortDivisors = [];
 
-          if (acc.current === number) {
-            acc.sum *= number;
-            return acc;
-          } else {
-            acc.shortDivisors.push(acc.sum);
-            acc.current = number;
-            return acc;
-          }
-        },
-        { current: 2, sum: 1, shortDivisors: [] }
-      )
-    );
+    for (let i = 0; i < divisors.length; ) {
+      const currentNumber = divisors[i];
+      let sum = 1;
+
+      for (let j = i; j < divisors.length; ) {
+        const nextNumber = divisors[j];
+
+        if (nextNumber === currentNumber) {
+          sum *= nextNumber;
+          divisors.shift();
+        } else {
+          break;
+        }
+      }
+
+      shortDivisors.push(sum);
+      if (!divisors.length) break;
+    }
+
+    const isSameNumOfPrimes = shortDivisors.length === targetNumPrimes;
+
+    if (isSameNumOfPrimes) {
+      consecutive.push(n);
+
+      const isConsecutive = consecutive.every((value, i) => i === 0 || +value === +consecutive[i - 1] + 1);
+
+      if (!isConsecutive) {
+        consecutive.shift();
+      }
+
+      if (consecutive.length === targetConsecutive) {
+        break;
+      }
+    }
 
     ++n;
   }
 
-  return true;
+  return consecutive[0];
 }
 
 function trialDevision(n) {
