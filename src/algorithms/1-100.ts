@@ -1853,6 +1853,7 @@ function distinctPrimeFactors(targetNumPrimes, targetConsecutive) {
     const divisors = trialDevision(n);
     const shortDivisors = [];
 
+    // Short some repetetive devisors like [2,2,3]
     for (let i = 0; i < divisors.length; ) {
       const currentNumber = divisors[i];
       let sum = 1;
@@ -1908,4 +1909,13 @@ function trialDevision(n) {
   }
 
   return devisors;
+}
+
+// Problem 48: Self powers
+// The series, 11 + 22 + 33 + ... + 1010 = 10405071317.
+
+// Find the last ten digits of the series, 11 + 22 + 33 + ... + 10001000.
+function selfPowers(power, lastDigits) {
+
+  return true;
 }
