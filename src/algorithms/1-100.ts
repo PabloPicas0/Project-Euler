@@ -126,6 +126,27 @@ function sieve(n: number) {
   return primes;
 }
 
+function sieveMap(n: number) {
+  const numbers: boolean[] = new Array(n).fill(true);
+  const primes = new Map<number, number>();
+
+  for (let i = 2; i < Math.sqrt(n); ++i) {
+    if (numbers[i]) {
+      for (let j = i * i; j < n; j += i) {
+        numbers[j] = false;
+      }
+    }
+  }
+
+  for (let i = 2; i < n; ++i) {
+    if (numbers[i]) {
+      primes.set(i, i);
+    }
+  }
+
+  return primes;
+}
+
 // Problem 11: Largest product in a grid
 // In the 20×20 grid below, four numbers along a diagonal line have been marked in red.
 
@@ -1840,7 +1861,7 @@ function getCompositeNumbers(n: number) {
 // 646 = 2 × 17 × 19
 // Find the first four consecutive integers to have four distinct prime factors each. What is the first of these numbers?
 function distinctPrimeFactors(targetNumPrimes, targetConsecutive) {
-  const primes = sieve(134048);
+  const primes = sieveMap(134048);
   let consecutive = [];
   let n = 12;
 
@@ -1912,10 +1933,44 @@ function trialDevision(n) {
 }
 
 // Problem 48: Self powers
-// The series, 11 + 22 + 33 + ... + 1010 = 10405071317.
+// The series, 1^1 + 2^2 + 3^3 + ... + 10^10 = 10405071317.
 
-// Find the last ten digits of the series, 11 + 22 + 33 + ... + 10001000.
+// Find the last ten digits of the series, 1^1 + 2^2 + 3^3 + ... + 1000^1000.
 function selfPowers(power, lastDigits) {
-
   return true;
+}
+
+function totient(n) {
+  const coprimes = coPrime(n).map((coprime) => 1 - 1 / coprime);
+
+  return Math.floor(coprimes.reduce((acc, coprime) => acc * coprime, n));
+}
+
+function coPrime(n) {
+  const primes = sieve(100);
+  const factors = [];
+  let i = 0;
+
+  while (n > 1) {
+    if (Number.isInteger(n / primes[i])) {
+      factors.push(primes[i]);
+      n /= primes[i];
+    } else {
+      ++i;
+    }
+  }
+
+  for (let j = 0; j < factors.length; ++j) {
+    const currentFactor = factors[j];
+
+    for (let k = j + 1; k < factors.length; ++k) {
+      const nextPossibleSameFactor = factors[k];
+
+      if (nextPossibleSameFactor === currentFactor) {
+        factors.splice(k, 1, "repeat");
+      }
+    }
+  }
+
+  return factors.filter((factor) => typeof factor !== "string");
 }
