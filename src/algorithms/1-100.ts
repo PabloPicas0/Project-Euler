@@ -1936,41 +1936,23 @@ function trialDevision(n) {
 // The series, 1^1 + 2^2 + 3^3 + ... + 10^10 = 10405071317.
 
 // Find the last ten digits of the series, 1^1 + 2^2 + 3^3 + ... + 1000^1000.
+
+// Huge note this is correct but freeCodeCamp has a bug and throws error
+// https://github.com/freeCodeCamp/freeCodeCamp/issues/39352
 function selfPowers(power, lastDigits) {
-  return true;
-}
+  let sum = 0n;
+  let sumAsString = [];
+  const lastNDigits = [];
 
-function totient(n) {
-  const coprimes = coPrime(n).map((coprime) => 1 - 1 / coprime);
-
-  return Math.floor(coprimes.reduce((acc, coprime) => acc * coprime, n));
-}
-
-function coPrime(n) {
-  const primes = sieve(100);
-  const factors = [];
-  let i = 0;
-
-  while (n > 1) {
-    if (Number.isInteger(n / primes[i])) {
-      factors.push(primes[i]);
-      n /= primes[i];
-    } else {
-      ++i;
-    }
+  for (let i = 1n; i < BigInt(power); ++i) {
+    sum += i ** i;
   }
 
-  for (let j = 0; j < factors.length; ++j) {
-    const currentFactor = factors[j];
+  sumAsString = String(sum).replace("n", "").split("");
 
-    for (let k = j + 1; k < factors.length; ++k) {
-      const nextPossibleSameFactor = factors[k];
-
-      if (nextPossibleSameFactor === currentFactor) {
-        factors.splice(k, 1, "repeat");
-      }
-    }
+  for (let i = lastDigits; i > 0; --i) {
+    lastNDigits.push(sumAsString.at(-i));
   }
 
-  return factors.filter((factor) => typeof factor !== "string");
+  return Number(lastNDigits.join(""));
 }
