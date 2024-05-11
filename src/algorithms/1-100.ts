@@ -1956,3 +1956,73 @@ function selfPowers(power, lastDigits) {
 
   return Number(lastNDigits.join(""));
 }
+
+// Problem 49: Prime permutations
+// The arithmetic sequence, 1487, 4817, 8147, in which each of the terms increases by 3330, is unusual in two ways: (i) each of the three terms are prime, and, (ii) each of the 4-digit numbers are permutations of one another.
+
+// There are no arithmetic sequences made up of three 1-, 2-, or 3-digit primes, exhibiting this property, but there is one other 4-digit increasing sequence.
+
+// What 12-digit number do you form by concatenating the three terms in this sequence?
+function primePermutations() {
+  let sequence = "";
+  let numbers = [];
+  const primes = sieveMap(9999);
+  // console.log(primes)
+
+  function permute(str, y = str.length, strArr = str.split("")) {
+    if (y === 1) {
+      const s = Number(strArr.join(""));
+      console.log(s);
+      if (primes.has(s)) numbers.push(s);
+    } else {
+      for (let i = 0; i < y; i++) {
+        permute(str, y - 1, strArr);
+        if (y % 2 === 0) {
+          swap(strArr, i, y - 1);
+        } else {
+          swap(strArr, 0, y - 1);
+        }
+      }
+    }
+  }
+
+  // Index 168 have first 4 digit prime
+  for (let i = 168; i < primes.size; ++i) {
+    const prime = String(primes.get(i));
+    numbers.push(prime);
+    permute(prime);
+
+    if (numbers.length < 3) numbers = [];
+  }
+
+  return sequence;
+}
+
+function swap(strArr, i, j) {
+  const temp = strArr[i];
+  strArr[i] = strArr[j];
+  strArr[j] = temp;
+}
+
+function sieveMap(n) {
+  const numbers = new Array(n).fill(true);
+  const primes = new Map();
+  let k = 0;
+
+  for (let i = 2; i < Math.sqrt(n); ++i) {
+    if (numbers[i]) {
+      for (let j = i * i; j < n; j += i) {
+        numbers[j] = false;
+      }
+    }
+  }
+
+  for (let i = 2; i < n; ++i) {
+    if (numbers[i]) {
+      primes.set(k, i);
+      ++k;
+    }
+  }
+
+  return primes;
+}
