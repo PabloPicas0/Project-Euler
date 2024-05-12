@@ -1964,65 +1964,47 @@ function selfPowers(power, lastDigits) {
 
 // What 12-digit number do you form by concatenating the three terms in this sequence?
 function primePermutations() {
-  let sequence = "";
   let numbers = [];
   const primes = sieveMap(9999);
-  // console.log(primes)
+  const nextPrime = 236; // Next prime after sequence given in the problem
 
-  function permute(str, y = str.length, strArr = str.split("")) {
-    if (y === 1) {
-      const s = Number(strArr.join(""));
-      console.log(s);
-      if (primes.has(s)) numbers.push(s);
-    } else {
-      for (let i = 0; i < y; i++) {
-        permute(str, y - 1, strArr);
-        if (y % 2 === 0) {
-          swap(strArr, i, y - 1);
-        } else {
-          swap(strArr, 0, y - 1);
+  for (let i = nextPrime; i < primes.size; ++i) {
+    const prime = primes.get(i);
+    const digits = String(prime).split("");
+    let nextPossiblePrime = prime;
+    let isPermutation = true;
+
+    numbers.push(prime);
+
+    while (true) {
+      nextPossiblePrime += 3330;
+
+      if (nextPossiblePrime > 9999 || !isPrime(nextPossiblePrime)) {
+        numbers = [];
+        break;
+      }
+
+      const nextPossiblePrimeDigits = String(nextPossiblePrime).split("");
+
+      for (let j = 0; j < nextPossiblePrimeDigits.length; ++j) {
+        const digit = nextPossiblePrimeDigits[j];
+
+        if (!digits.includes(digit)) {
+          isPermutation = false;
+          break;
         }
       }
-    }
-  }
 
-  // Index 168 have first 4 digit prime
-  for (let i = 168; i < primes.size; ++i) {
-    const prime = String(primes.get(i));
-    numbers.push(prime);
-    permute(prime);
+      if (!isPermutation) {
+        numbers = [];
+        break;
+      }
 
-    if (numbers.length < 3) numbers = [];
-  }
+      numbers.push(nextPossiblePrime);
 
-  return sequence;
-}
-
-function swap(strArr, i, j) {
-  const temp = strArr[i];
-  strArr[i] = strArr[j];
-  strArr[j] = temp;
-}
-
-function sieveMap(n) {
-  const numbers = new Array(n).fill(true);
-  const primes = new Map();
-  let k = 0;
-
-  for (let i = 2; i < Math.sqrt(n); ++i) {
-    if (numbers[i]) {
-      for (let j = i * i; j < n; j += i) {
-        numbers[j] = false;
+      if (numbers.length === 3) {
+        return Number(numbers.reduce((acc, number) => acc + number, ""));
       }
     }
   }
-
-  for (let i = 2; i < n; ++i) {
-    if (numbers[i]) {
-      primes.set(k, i);
-      ++k;
-    }
-  }
-
-  return primes;
 }
