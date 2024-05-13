@@ -1979,11 +1979,13 @@ function primePermutations() {
     while (true) {
       nextPossiblePrime += 3330;
 
+      // Check if its still 4 digits and is prime
       if (nextPossiblePrime > 9999 || !isPrime(nextPossiblePrime)) {
         numbers = [];
         break;
       }
 
+      // check if its permutation of base prime
       const nextPossiblePrimeDigits = String(nextPossiblePrime).split("");
 
       for (let j = 0; j < nextPossiblePrimeDigits.length; ++j) {
@@ -2007,4 +2009,22 @@ function primePermutations() {
       }
     }
   }
+}
+
+// Problem 50: Consecutive prime sum
+// The prime 41, can be written as the sum of six consecutive primes:
+
+// 41 = 2 + 3 + 5 + 7 + 11 + 13
+// This is the longest sum of consecutive primes that adds to a prime below one-hundred.
+
+// The longest sum of consecutive primes below one-thousand that adds to a prime, contains 21 terms, and is equal to 953.
+
+// Which prime, below one-million, can be written as the sum of the most consecutive primes?
+function consecutivePrimeSum(limit) {
+  const currentBiggestConsecutivePrime = { prime: 0, subPrimes: [] };
+  const primes = sieveMap(limit);
+
+  for (let i = 2; i < limit; ++i) {}
+
+  return true;
 }
