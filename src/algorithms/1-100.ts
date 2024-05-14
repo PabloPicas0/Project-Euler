@@ -1964,7 +1964,7 @@ function selfPowers(power, lastDigits) {
 
 // What 12-digit number do you form by concatenating the three terms in this sequence?
 function primePermutations() {
-  let numbers = [];
+  let numbers: number[] = [];
   const primes = sieveMap(9999);
   const nextPrime = 236; // Next prime after sequence given in the problem
 
