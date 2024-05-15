@@ -1939,10 +1939,10 @@ function trialDevision(n) {
 
 // Huge note this is correct but freeCodeCamp has a bug and throws error
 // https://github.com/freeCodeCamp/freeCodeCamp/issues/39352
-function selfPowers(power, lastDigits) {
+function selfPowers(power: number, lastDigits: number) {
   let sum = 0n;
-  let sumAsString = [];
-  const lastNDigits = [];
+  let sumAsString: string[] = [];
+  const lastNDigits: string[] = [];
 
   for (let i = 1n; i < BigInt(power); ++i) {
     sum += i ** i;
