@@ -1860,9 +1860,9 @@ function getCompositeNumbers(n: number) {
 // 645 = 3 × 5 × 43
 // 646 = 2 × 17 × 19
 // Find the first four consecutive integers to have four distinct prime factors each. What is the first of these numbers?
-function distinctPrimeFactors(targetNumPrimes, targetConsecutive) {
+function distinctPrimeFactors(targetNumPrimes: number, targetConsecutive: number) {
   const primes = sieveMap(134048);
-  let consecutive = [];
+  let consecutive: number[] = [];
   let n = 12;
 
   while (true) {
@@ -1872,7 +1872,7 @@ function distinctPrimeFactors(targetNumPrimes, targetConsecutive) {
     }
 
     const divisors = trialDevision(n);
-    const shortDivisors = [];
+    const shortDivisors: number[] = [];
 
     // Short some repetetive devisors like [2,2,3]
     for (let i = 0; i < divisors.length; ) {
@@ -1916,8 +1916,8 @@ function distinctPrimeFactors(targetNumPrimes, targetConsecutive) {
   return consecutive[0];
 }
 
-function trialDevision(n) {
-  const devisors = [];
+function trialDevision(n: number) {
+  const devisors: number[] = [];
   let f = 2;
 
   while (n > 1) {
