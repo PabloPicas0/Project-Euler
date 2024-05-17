@@ -1726,7 +1726,7 @@ function pentagonNumbers() {
   return d;
 }
 
-function isPentagonal(n) {
+function isPentagonal(n: number) {
   for (let i = 1; (i * (3 * i - 1)) / 2 <= n; ++i) {
     if ((i * (3 * i - 1)) / 2 === n) return true;
   }
