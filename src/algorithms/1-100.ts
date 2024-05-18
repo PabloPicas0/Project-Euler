@@ -2021,10 +2021,34 @@ function primePermutations() {
 
 // Which prime, below one-million, can be written as the sum of the most consecutive primes?
 function consecutivePrimeSum(limit) {
-  const currentBiggestConsecutivePrime = { prime: 0, subPrimes: [] };
-  const primes = sieveMap(limit);
+  const primesMap = sieveMap(limit);
+  const primes = Array.from(primesMap);
+  let currentBiggestConsecutivePrime = { prime: 0, length: 0 };
 
-  for (let i = 2; i < limit; ++i) {}
+  for (let i = 0; i < primesMap.size; ++i) {
+    let consecutivePrimes = [];
 
-  return true;
+    for (let j = i; j < primes.length; ++j) {
+      const prime = primes[j][0];
+      const sum = consecutivePrimes.reduce((acc, n) => acc + n, 0) + prime;
+
+      if (sum > limit) break;
+
+      consecutivePrimes.push(prime);
+
+      const currentConsecutiveLength = consecutivePrimes.length;
+      const biggestConsecutiveLength = currentBiggestConsecutivePrime.length;
+
+      if (
+        primesMap.has(sum) &&
+        currentConsecutiveLength > biggestConsecutiveLength &&
+        sum > currentBiggestConsecutivePrime.prime
+      ) {
+        currentBiggestConsecutivePrime.prime = sum;
+        currentBiggestConsecutivePrime.length = consecutivePrimes.length;
+      }
+    }
+  }
+
+  return currentBiggestConsecutivePrime.prime;
 }
