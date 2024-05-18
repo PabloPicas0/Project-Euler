@@ -1702,7 +1702,7 @@ function swap(strArr, i, j) {
 
 // Find the pair of pentagonal numbers, Pj and Pk, for which their sum and difference are pentagonal and D = |Pk − Pj| is minimized; what is the value of D?
 function pentagonNumbers() {
-  const map = new Map();
+  const map = new Map<number, number>();
   let d = 0;
   // This is a little bit cheating
   // but I obtained right max values for i,j by knowing what value sholud return test case
