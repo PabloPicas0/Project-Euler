@@ -2020,13 +2020,13 @@ function primePermutations() {
 // The longest sum of consecutive primes below one-thousand that adds to a prime, contains 21 terms, and is equal to 953.
 
 // Which prime, below one-million, can be written as the sum of the most consecutive primes?
-function consecutivePrimeSum(limit) {
+function consecutivePrimeSum(limit:number) {
   const primesMap = sieveMap(limit);
   const primes = Array.from(primesMap);
   let currentBiggestConsecutivePrime = { prime: 0, length: 0 };
 
   for (let i = 0; i < primesMap.size; ++i) {
-    let consecutivePrimes = [];
+    let consecutivePrimes: number[] = [];
 
     for (let j = i; j < primes.length; ++j) {
       const prime = primes[j][0];
@@ -2060,15 +2060,31 @@ function consecutivePrimeSum(limit) {
 
 // Find the smallest prime which, by replacing part of the number (not necessarily adjacent digits) with the same digit, is part of an n prime value family.
 function primeDigitReplacements(n) {
-  const primes = sieveMap(); // TODO
-  const pFamily = [];
+  const primes = sieveMap(100); // TODO
+  let pFamily = [13];
   let p = "13";
   console.log(p);
 
   while (true) {
     const digits = p.split("");
 
+    for (let i = 0; i <= 9; ++i) {
+      digits.shift();
+      digits.unshift(i);
+
+      if (primes.has(Number(digits.join("")))) {
+        pFamily.push(Number(digits.join("")));
+        console.log(digits);
+      }
+    }
+
+    // TODO: this should be === not >=
+    if (pFamily.length >= n) {
+      break;
+    }
+
     p += "0";
+    pFamily = [];
   }
 
   return pFamily[0];
