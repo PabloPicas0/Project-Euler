@@ -2020,7 +2020,7 @@ function primePermutations() {
 // The longest sum of consecutive primes below one-thousand that adds to a prime, contains 21 terms, and is equal to 953.
 
 // Which prime, below one-million, can be written as the sum of the most consecutive primes?
-function consecutivePrimeSum(limit:number) {
+function consecutivePrimeSum(limit: number) {
   const primesMap = sieveMap(limit);
   const primes = Array.from(primesMap);
   let currentBiggestConsecutivePrime = { prime: 0, length: 0 };
@@ -2059,6 +2059,12 @@ function consecutivePrimeSum(limit:number) {
 // By replacing the 3rd and 4th digits of 56**3 with the same digit, this 5-digit number is the first example having seven primes among the ten generated numbers, yielding the family: 56003, 56113, 56333, 56443, 56663, 56773, and 56993. Consequently 56003, being the first member of this family, is the smallest prime with this property.
 
 // Find the smallest prime which, by replacing part of the number (not necessarily adjacent digits) with the same digit, is part of an n prime value family.
+
+// Combinations for 2-digit vals [10]
+// Combinations for 3-digit vals [10, 100, 110]
+// Combinations for 4-digit vals [10, 100, 110, 1000, 1010, 1100, 1110]
+// Combinations for 5-digit vals [10, 100, 110, 1000, 1010, 1100, 1110, 100000, 100010, 100100, 101000, 110000, 110010, 110100, 111000, 111010, 111100, 111110]
+// Combinations for 6-digit vals [10, 100, 110, 1000, 1010, 1100, 1110, 100000, 100010, 100100, 101000, 110000, 110010, 110100, 111000, 111010, 111100, 111110, 1000000, 1000010, 1000100, 1001000, 1010000, 1100000, 1100010, 1100100, 1101000, 1110000, 1110010, 1110100, 1111000, 1111010, 1111100, 1111110]
 function primeDigitReplacements(n) {
   const primes = sieveMap(100); // TODO
   let pFamily = [13];
