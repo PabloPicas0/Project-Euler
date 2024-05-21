@@ -2063,8 +2063,8 @@ function consecutivePrimeSum(limit: number) {
 // Combinations for 2-digit vals [10]
 // Combinations for 3-digit vals [10, 100, 110]
 // Combinations for 4-digit vals [10, 100, 110, 1000, 1010, 1100, 1110]
-// Combinations for 5-digit vals [10, 100, 110, 1000, 1010, 1100, 1110, 10000, 10010, 10100, 11000, 11010, 11100, 11110]
-// Combinations for 6-digit vals [10, 100, 110, 1000, 1010, 1100, 1110, 10000, 10010, 10100, 11000, 11010, 11100, 11110 ,100000, 100010, 100100, 101000, 110000, 110010, 110100, 111000, 111010, 111100, 111110]
+// Combinations for 5-digit vals [10, 100, 110, 1000, 1010, 1100, 1110, 10000, 10010, 10100, 11000, 10110 ,11010, 11100, 11110]
+// Combinations for 6-digit vals [10, 100, 110, 1000, 1010, 1100, 1110, 10000, 10010, 10100, 11000, 10110, 11010, 11100, 11110 ,100000, 100010, 100100, 101000, 110000, 100110, 101010, 110010, 110100, 111000, 101110, 110110, 111010, 111100, 111110]
 function primeDigitReplacements(n) {
   const primes = sieveMap(100); // TODO
   let pFamily = [13];
