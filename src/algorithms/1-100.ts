@@ -2066,32 +2066,70 @@ function consecutivePrimeSum(limit: number) {
 // Combinations for 5-digit vals [10, 100, 110, 1000, 1010, 1100, 1110, 10000, 10010, 10100, 11000, 10110 ,11010, 11100, 11110]
 // Combinations for 6-digit vals [10, 100, 110, 1000, 1010, 1100, 1110, 10000, 10010, 10100, 11000, 10110, 11010, 11100, 11110 ,100000, 100010, 100100, 101000, 110000, 100110, 101010, 110010, 110100, 111000, 101110, 110110, 111010, 111100, 111110]
 function primeDigitReplacements(n) {
-  const primes = sieveMap(100); // TODO
-  let pFamily = [13];
-  let p = "13";
-  console.log(p);
+  const primes = sieveMap(929394);
+  let p = n >= 7 ? 56003 : 13;
 
   while (true) {
-    const digits = p.split("");
+    if (!primes.has(p)) {
+      p += 10;
+      continue;
+    }
 
-    for (let i = 0; i <= 9; ++i) {
-      digits.shift();
-      digits.unshift(i);
+    let m = p;
 
-      if (primes.has(Number(digits.join("")))) {
-        pFamily.push(Number(digits.join("")));
-        console.log(digits);
+    const { replacement, isZero } = getReplacement(p);
+
+    if (replacement === -1) {
+      p += 10;
+      continue;
+    }
+
+    const r = Number(replacement);
+    const i = isZero ? 9 : 8;
+
+    const pFamily = [p];
+
+    for (let j = 0; j < i; ++j) {
+      m += r;
+
+      if (primes.has(m)) {
+        pFamily.push(m);
       }
     }
 
-    // TODO: this should be === not >=
-    if (pFamily.length >= n) {
-      break;
+    if (pFamily.length === n) {
+      return pFamily[0];
     }
 
-    p += "0";
-    pFamily = [];
+    p += 10;
+  }
+}
+
+function getReplacement(p) {
+  let replacement = "";
+  const m = p.toString();
+
+  for (let i = 0; i < m.length; ++i) {
+    if (m[i] === "0") {
+      replacement += 1;
+    } else {
+      replacement += 0;
+    }
   }
 
-  return pFamily[0];
+  if (replacement.indexOf("1") === -1) {
+    replacement = "";
+  } else {
+    return { replacement, isZero: true };
+  }
+
+  for (let i = 0; i < m.length; ++i) {
+    if (m[i] === "1") {
+      replacement += 1;
+    } else {
+      replacement += 0;
+    }
+  }
+
+  return replacement.indexOf("1") === -1 ? -1 : { replacement, isZero: false };
 }
