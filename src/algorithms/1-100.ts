@@ -2133,3 +2133,12 @@ function getReplacement(p) {
 
   return replacement.indexOf("1") === -1 ? -1 : { replacement, isZero: false };
 }
+
+// Problem 52: Permuted multiples
+// It can be seen that the number, 125874, and its double, 251748, contain exactly the same digits, but in a different order.
+
+// Find the smallest positive integer, such that multiplied by integers  {2,3,…,n}
+//  , contain the same digits.
+function permutedMultiples(n) {
+  return true;
+}
