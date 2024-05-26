@@ -1635,7 +1635,7 @@ function codedTriangleNumbers(n, words) {
 // Find the sum of all 0 to n pandigital numbers with sub-strings fulfilling n - 2 of these divisibility properties.
 
 // Note: Pandigital numbers starting with 0 are to be considered in the result.
-function substringDivisibility(n) {
+function substringDivisibility(n: number) {
   let sum = 0;
   let nPandigital = "";
   const divisibles = [2, 3, 5, 7, 11, 13, 17];
@@ -1644,7 +1644,7 @@ function substringDivisibility(n) {
     nPandigital += i;
   }
 
-  function permute(str, y = str.length, strArr = str.split("")) {
+  function permute(str: string, y = str.length, strArr = str.split("")) {
     if (y === 1) {
       const s = strArr.join("");
       let isDivisible = true;
@@ -1687,7 +1687,7 @@ function substringDivisibility(n) {
   return sum;
 }
 
-function swap(strArr, i, j) {
+function swap(strArr: string[], i:number, j: number) {
   const temp = strArr[i];
   strArr[i] = strArr[j];
   strArr[j] = temp;
@@ -2142,5 +2142,41 @@ function getReplacement(p: number) {
 // Find the smallest positive integer, such that multiplied by integers  {2,3,…,n}
 //  , contain the same digits.
 function permutedMultiples(n) {
-  return true;
+  const digits = [];
+  let x = 125874;
+  let isPermutation = false;
+
+  for (let i = 2; i <= n; ++i) {
+    digits.push(i);
+  }
+
+  while (true) {
+    for (let i = 0; i < digits.length; ++i) {
+      let c = x * digits[i];
+      console.log(x, c, hasSameDigits(x, c));
+      if (!hasSameDigits(x, c)) {
+      }
+
+      ++x;
+    }
+  }
+}
+
+function hasSameDigits(x, y) {
+  const z = x.toString().split("");
+  const j = y.toString().split("");
+
+  if (z.length < j.length) return false;
+
+  for (let i = 0; j.length > 0; ) {
+    for (let k = 0; k < z.length; ++k) {
+      if (j[i] === z[k]) {
+        j.shift();
+        // console.log(j)
+        break;
+      }
+    }
+  }
+  console.log(x, y, j.length === 0);
+  return j.length === 0;
 }
