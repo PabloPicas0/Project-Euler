@@ -1584,7 +1584,7 @@ function pandigitalPrime(n) {
 // By converting each letter in a word to a number corresponding to its alphabetical position and adding these values we form a word value. For example, the word value for SKY is 19 + 11 + 25 = 55 = t10. If the word value is a triangle number then we shall call the word a triangle word.
 
 // Using words array of n-length, how many are triangle words?
-function codedTriangleNumbers(n, words) {
+function codedTriangleNumbers(n: number, words: string[]) {
   let triangleWords = 0;
   const alphabet = "abcdefghijklmnopqrstuvwxyz".toUpperCase().split("");
   const wordValue = words.map((word) => {
