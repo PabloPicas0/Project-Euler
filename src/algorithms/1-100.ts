@@ -2143,40 +2143,42 @@ function getReplacement(p: number) {
 //  , contain the same digits.
 function permutedMultiples(n) {
   const digits = [];
-  let x = 125874;
-  let isPermutation = false;
+  let x = 2;
 
   for (let i = 2; i <= n; ++i) {
     digits.push(i);
   }
 
   while (true) {
+    let bitMap = new Array(digits.length).fill(true);
+
     for (let i = 0; i < digits.length; ++i) {
       let c = x * digits[i];
-      console.log(x, c, hasSameDigits(x, c));
-      if (!hasSameDigits(x, c)) {
-      }
 
-      ++x;
+      if (!hasSameDigits(x, c)) {
+        bitMap[i] = false;
+        break;
+      }
     }
+
+    if (!bitMap.includes(false)) return x;
+    ++x;
   }
 }
 
 function hasSameDigits(x, y) {
-  const z = x.toString().split("");
-  const j = y.toString().split("");
+  const z = x
+    .toString()
+    .split("")
+    .sort((a, b) => a - b)
+    .join("");
+  const j = y
+    .toString()
+    .split("")
+    .sort((a, b) => a - b)
+    .join("");
 
   if (z.length < j.length) return false;
 
-  for (let i = 0; j.length > 0; ) {
-    for (let k = 0; k < z.length; ++k) {
-      if (j[i] === z[k]) {
-        j.shift();
-        // console.log(j)
-        break;
-      }
-    }
-  }
-  console.log(x, y, j.length === 0);
-  return j.length === 0;
+  return z == j;
 }
