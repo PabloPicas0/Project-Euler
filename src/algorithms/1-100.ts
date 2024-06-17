@@ -2141,8 +2141,8 @@ function getReplacement(p: number) {
 
 // Find the smallest positive integer, such that multiplied by integers  {2,3,…,n}
 //  , contain the same digits.
-function permutedMultiples(n) {
-  const digits = [];
+function permutedMultiples(n: number) {
+  const digits: number[] = [];
   let x = 2;
 
   for (let i = 2; i <= n; ++i) {
@@ -2150,7 +2150,7 @@ function permutedMultiples(n) {
   }
 
   while (true) {
-    let bitMap = new Array(digits.length).fill(true);
+    let bitMap: boolean[] = new Array(digits.length).fill(true);
 
     for (let i = 0; i < digits.length; ++i) {
       let c = x * digits[i];
@@ -2166,16 +2166,16 @@ function permutedMultiples(n) {
   }
 }
 
-function hasSameDigits(x, y) {
+function hasSameDigits(x: number, y: number) {
   const z = x
     .toString()
     .split("")
-    .sort((a, b) => a - b)
+    .sort((a: any, b: any) => a - b)
     .join("");
   const j = y
     .toString()
     .split("")
-    .sort((a, b) => a - b)
+    .sort((a: any, b: any) => a - b)
     .join("");
 
   if (z.length < j.length) return false;
