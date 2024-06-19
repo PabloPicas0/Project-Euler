@@ -2202,7 +2202,7 @@ function hasSameDigits(x: number, y: number) {
 // How many, not necessarily distinct, values of  (nr)
 //   for  1≤n≤100
 //  , are greater than one-million?
-function combinatoricSelections(limit) {
+function combinatoricSelections(limit: number) {
   let vals = 0;
 
   for (let n = 1; n <= 100; ++n) {
@@ -2265,14 +2265,72 @@ function combinatoricSelections(limit) {
 function pokerHands(arr) {
   const wins = 0;
   const mid = 5;
+  const cardValues = {
+    "2": 0,
+    "3": 0,
+    "4": 0,
+    "5": 0,
+    "6": 0,
+    "7": 0,
+    "8": 0,
+    "9": 0,
+    T: 0,
+    J: 0,
+    Q: 0,
+    K: 0,
+    A: 0,
+  };
+
+  const cardSuits = {
+    C: 0,
+    S: 0,
+    D: 0,
+    H: 0,
+  };
+
+  const cardsRank = {
+    highCard: 1,
+    onePair: 2,
+    twoPairs: 3,
+    threeOfaKind: 4,
+    straight: 5,
+    flush: 6,
+    fullHouse: 7,
+    fourOfaKind: 8,
+    straightFlush: 9,
+    royalFlush: 10,
+  };
 
   for (let i = 0; i < arr.length; ++i) {
     const hand = arr[i].split(" ");
+
     const player1 = hand.slice(0, mid);
+    const player1Stats = {
+      cardValues: { ...cardValues },
+      cardSuits: { ...cardSuits },
+      rank: 0,
+    };
+
     const player2 = hand.slice(mid);
-    console.log(hand);
+    const player2Stats = {
+      cardValues: { ...cardValues },
+      cardSuits: { ...cardSuits },
+      rank: 0,
+    };
+
+    for (let j = 0; j < player1.length; ++j) {
+      const [p1card, p1suit] = player1[j].split("");
+      const [p2card, p2suit] = player2[j].split("");
+
+      player1Stats.cardValues[p1card] += 1;
+      player1Stats.cardSuits[p1suit] += 1;
+      // console.log(p2card, p2suit)
+      player2Stats.cardValues[p2card] += 1;
+      player2Stats.cardSuits[p2suit] += 1;
+    }
+    console.log(player1Stats, player2Stats);
     console.log(player1, player2);
   }
 
-  return true;
+  return wins;
 }
