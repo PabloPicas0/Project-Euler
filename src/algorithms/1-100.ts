@@ -1483,11 +1483,11 @@ function pandigitalMultiples(k) {
 // {20,48,52}, {24,45,51}, {30,40,50}
 
 // For which value of p ≤ n, is the number of solutions maximized?
-function intRightTriangles(n) {
+function intRightTriangles(n: number) {
   let lastMaxSolutions = 0;
   let highestValue = 0;
   let p = 12;
-  let knownCombinations = [];
+  let knownCombinations: number[] = [];
 
   while (p <= n) {
     let solutions = 0;
