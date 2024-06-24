@@ -1440,7 +1440,7 @@ function truncatablePrimes(n) {
 // The same can be achieved by starting with 9 and multiplying by 1, 2, 3, 4, and 5, giving the pandigital, 918273645, which is the concatenated product of 9 and (1, 2, 3, 4, 5).
 
 // What is the largest 1 to k pandigital k-digit number that can be formed as the concatenated product of an integer with (1, 2, ..., n) where n > 1?
-function pandigitalMultiples(k) {
+function pandigitalMultiples(k: number) {
   let current = "";
 
   // Magic number 9328 could be done better but this passes test cases up to 1 to 9 pandigital
