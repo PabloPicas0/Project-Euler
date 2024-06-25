@@ -1389,7 +1389,7 @@ function doubleBasePalindromes(n) {
 // Find the sum of the only n (8 ≤ n ≤ 11) primes that are both truncatable from left to right and right to left.
 
 // NOTE: 2, 3, 5, and 7 are not considered to be truncatable primes.
-function truncatablePrimes(n) {
+function truncatablePrimes(n: number) {
   let sum = 0;
   let primesFound = 0;
   let number = 23;
@@ -2334,3 +2334,137 @@ function pokerHands(arr: string[]) {
 
   return wins;
 }
+
+function isFlush(stats) {
+  const { cardSuits } = stats;
+  return Object.values(cardSuits).find((suit) => suit === 5);
+}
+
+const testArr = [
+  "8C TS KC 9H 4S 7D 2S 5D 3S AC",
+  "5C AD 5D AC 9C 7C 5H 8D TD KS",
+  "3H 7H 6S KC JS QH TD JC 2D 8S",
+  "TH 8H 5C QS TC 9H 4D JC KS JS",
+  "7C 5H KC QH JD AS KH 4C AD 4S",
+];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function pokerHands(arr) {
+  const wins = 0;
+  const mid = 5;
+  const cardValues = {
+    "2": 0,
+    "3": 0,
+    "4": 0,
+    "5": 0,
+    "6": 0,
+    "7": 0,
+    "8": 0,
+    "9": 0,
+    T: 0,
+    J: 0,
+    Q: 0,
+    K: 0,
+    A: 0,
+  };
+
+  const cardSuits = {
+    C: 0,
+    S: 0,
+    D: 0,
+    H: 0,
+  };
+
+  const cardsRank = {
+    highCard: 1,
+    onePair: 2,
+    twoPairs: 3,
+    threeOfaKind: 4,
+    straight: 5,
+    flush: 6,
+    fullHouse: 7,
+    fourOfaKind: 8,
+    straightFlush: 9,
+    royalFlush: 10,
+  };
+
+  for (let i = 0; i < arr.length; ++i) {
+    const hand = arr[i].split(" ");
+
+    const player1 = hand.slice(0, mid);
+    const player1Stats = {
+      cardValues: {},
+      cardSuits: {},
+      rank: 0
+    };
+
+    const player2 = hand.slice(mid);
+    const player2Stats = {
+      cardValues: {},
+      cardSuits: {},
+      rank: 0
+    };
+
+    for (let j = 0; j < player1.length; ++j) {
+      const [p1card, p1suit] = player1[j].split("");
+      const [p2card, p2suit] = player2[j].split("");
+
+      setPlayerStats(player1Stats, p1card, p1suit)
+      setPlayerStats(player2Stats, p2card, p2suit)
+    }
+    console.log("p1",player1Stats, "\n" ,"p2" ,player2Stats);
+    // console.log(player1, player2);
+
+    // console.log(isFlush(player1Stats), isFlush(player2Stats))
+    // console.log(setPlayerRank(player1Stats))
+  }
+
+  return wins;
+}
+
+
+function setPlayerStats(playerStats, playerCard, playerSuit) {
+  if (playerStats.cardValues[playerCard]) {
+        playerStats.cardValues[playerCard] += 1;
+      } else {
+        playerStats.cardValues[playerCard] = 1;
+      }
+  
+  if (playerStats.cardSuits[playerSuit]) {
+         playerStats.cardSuits[playerSuit] += 1;
+      } else {
+         playerStats.cardSuits[playerSuit] = 1;
+      }
+}
+
+function isFlush(stats) {
+  const { cardSuits } = stats;
+  return Object.values(cardSuits)[0] === 5;
+}
+
+
+
+
+const testArr = [
+  '8C TC KC 9C 4C 7D 2S 5D 3S AC',
+  '5C AD 5D AC 9C 7C 5H 8D TD KS',
+  '3H 7H 6S KC JS QH TD JC 2D 8S',
+  'TH 8H 5C QS TC 9H 4D JC KS JS',
+  '7C 5H KC QH JD AS KH 4C AD 4S'
+];
