@@ -2262,82 +2262,114 @@ function combinatoricSelections(limit: number) {
 // The global array (handsArr) passed to the function, contains one-thousand random hands dealt to two players. Each line of the file contains ten cards (separated by a single space): the first five are Player 1's cards and the last five are Player 2's cards. You can assume that all hands are valid (no invalid characters or repeated cards), each player's hand is in no specific order, and in each hand there is a clear winner.
 
 // How many hands does Player 1 win?
-function pokerHands(arr: string[]) {
-  const wins = 0;
+function pokerHands(arr) {
+  let wins = 0;
   const mid = 5;
-  const cardValues = {
-    "2": 0,
-    "3": 0,
-    "4": 0,
-    "5": 0,
-    "6": 0,
-    "7": 0,
-    "8": 0,
-    "9": 0,
-    T: 0,
-    J: 0,
-    Q: 0,
-    K: 0,
-    A: 0,
-  };
-
-  const cardSuits = {
-    C: 0,
-    S: 0,
-    D: 0,
-    H: 0,
-  };
-
-  const cardsRank = {
-    highCard: 1,
-    onePair: 2,
-    twoPairs: 3,
-    threeOfaKind: 4,
-    straight: 5,
-    flush: 6,
-    fullHouse: 7,
-    fourOfaKind: 8,
-    straightFlush: 9,
-    royalFlush: 10,
-  };
 
   for (let i = 0; i < arr.length; ++i) {
     const hand = arr[i].split(" ");
 
-    const player1 = hand.slice(0, mid);
-    const player1Stats = {
-      cardValues: { ...cardValues },
-      cardSuits: { ...cardSuits },
-      rank: 0,
-    };
+    const player1Hand = hand.slice(0, mid);
+    const player2Hand = hand.slice(mid);
 
-    const player2 = hand.slice(mid);
-    const player2Stats = {
-      cardValues: { ...cardValues },
-      cardSuits: { ...cardSuits },
-      rank: 0,
-    };
+    const p1CardValues = player1Hand.map(getValues).sort((a, b) => a - b);
+    const p2CardValues = player2Hand.map(getValues).sort((a, b) => a - b);
 
-    for (let j = 0; j < player1.length; ++j) {
-      const [p1card, p1suit] = player1[j].split("");
-      const [p2card, p2suit] = player2[j].split("");
+    const p1CardSuits = player1Hand.reduce(getSuits, {});
+    const p2CardSuits = player2Hand.reduce(getSuits, {});
 
-      player1Stats.cardValues[p1card] += 1;
-      player1Stats.cardSuits[p1suit] += 1;
-      // console.log(p2card, p2suit)
-      player2Stats.cardValues[p2card] += 1;
-      player2Stats.cardSuits[p2suit] += 1;
+    const p1HandRank = handRank(p1CardValues, p1CardSuits);
+    const p2HandRank = handRank(p2CardValues, p2CardSuits);
+
+    if (p1HandRank > p2HandRank) {
+      ++wins;
+      continue;
     }
-    console.log(player1Stats, player2Stats);
-    console.log(player1, player2);
+
+    if (p1HandRank === p2HandRank) console.log(p1CardValues, handRank(p1CardValues, p1CardSuits));
+    console.log(p2CardValues, handRank(p2CardValues, p2CardSuits));
+    console.log("");
   }
 
   return wins;
 }
 
-function isFlush(stats) {
-  const { cardSuits } = stats;
-  return Object.values(cardSuits).find((suit) => suit === 5);
+function handRank(cardValues, suits) {
+  const duplicates = Object.values(
+    cardValues.reduce((acc, val) => {
+      acc[val] = (acc[val] || 0) + 1;
+      return acc;
+    }, {})
+  ).filter((val) => val !== 1);
+
+  const [x, y] = duplicates.sort((a, b) => a - b);
+
+  if (isConsecutive(cardValues) && !isFlush(suits) && !isRoyal(cardValues)) return 5;
+  if (isFlush(suits) && !isConsecutive(cardValues) && !isRoyal(cardValues)) return 6;
+  if (isFlush(suits) && isConsecutive(cardValues) && !isRoyal(cardValues)) return 9;
+  if (isFlush(suits) && isRoyal(cardValues)) return 10;
+
+  if (!duplicates.length) return 1;
+  if (x === 2 && !y) return 2;
+  if (x === 2 && y === 2) return 3;
+  if (x === 3 && !y) return 4;
+  if (x === 2 && y === 3) return 7;
+  if (x === 4 && !y) return 8;
+
+  return duplicates;
+}
+
+function isConsecutive(cardValues) {
+  return cardValues.every(isStraight);
+}
+
+function isStraight(element, idx, arr) {
+  if (idx === arr.length - 1) return true;
+
+  return arr[idx + 1] - element === 1;
+}
+
+function isRoyal(cardValues) {
+  const royalValues = [10, 11, 12, 13, 14];
+
+  for (let i = 0; i < royalValues.length; ++i) {
+    const royalValue = royalValues[i];
+
+    if (!cardValues.includes(royalValue)) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+function isFlush(suits) {
+  return Object.values(suits).length === 1;
+}
+
+function getValues(card) {
+  const val = card.split("")[0];
+
+  switch (val) {
+    case "T":
+      return 10;
+    case "J":
+      return 11;
+    case "Q":
+      return 12;
+    case "K":
+      return 13;
+    case "A":
+      return 14;
+    default:
+      return Number(val);
+  }
+}
+
+function getSuits(acc, val) {
+  const suit = val.split("")[1];
+  acc[suit] = (acc[suit] || 0) + 1;
+  return acc;
 }
 
 const testArr = [
@@ -2346,125 +2378,4 @@ const testArr = [
   "3H 7H 6S KC JS QH TD JC 2D 8S",
   "TH 8H 5C QS TC 9H 4D JC KS JS",
   "7C 5H KC QH JD AS KH 4C AD 4S",
-];
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function pokerHands(arr) {
-  const wins = 0;
-  const mid = 5;
-  const cardValues = {
-    "2": 0,
-    "3": 0,
-    "4": 0,
-    "5": 0,
-    "6": 0,
-    "7": 0,
-    "8": 0,
-    "9": 0,
-    T: 0,
-    J: 0,
-    Q: 0,
-    K: 0,
-    A: 0,
-  };
-
-  const cardSuits = {
-    C: 0,
-    S: 0,
-    D: 0,
-    H: 0,
-  };
-
-  const cardsRank = {
-    highCard: 1,
-    onePair: 2,
-    twoPairs: 3,
-    threeOfaKind: 4,
-    straight: 5,
-    flush: 6,
-    fullHouse: 7,
-    fourOfaKind: 8,
-    straightFlush: 9,
-    royalFlush: 10,
-  };
-
-  for (let i = 0; i < arr.length; ++i) {
-    const hand = arr[i].split(" ");
-
-    const player1 = hand.slice(0, mid);
-    const player1Stats = {
-      cardValues: {},
-      cardSuits: {},
-      rank: 0
-    };
-
-    const player2 = hand.slice(mid);
-    const player2Stats = {
-      cardValues: {},
-      cardSuits: {},
-      rank: 0
-    };
-
-    for (let j = 0; j < player1.length; ++j) {
-      const [p1card, p1suit] = player1[j].split("");
-      const [p2card, p2suit] = player2[j].split("");
-
-      setPlayerStats(player1Stats, p1card, p1suit)
-      setPlayerStats(player2Stats, p2card, p2suit)
-    }
-    console.log("p1",player1Stats, "\n" ,"p2" ,player2Stats);
-    // console.log(player1, player2);
-
-    // console.log(isFlush(player1Stats), isFlush(player2Stats))
-    // console.log(setPlayerRank(player1Stats))
-  }
-
-  return wins;
-}
-
-
-function setPlayerStats(playerStats, playerCard, playerSuit) {
-  if (playerStats.cardValues[playerCard]) {
-        playerStats.cardValues[playerCard] += 1;
-      } else {
-        playerStats.cardValues[playerCard] = 1;
-      }
-  
-  if (playerStats.cardSuits[playerSuit]) {
-         playerStats.cardSuits[playerSuit] += 1;
-      } else {
-         playerStats.cardSuits[playerSuit] = 1;
-      }
-}
-
-function isFlush(stats) {
-  const { cardSuits } = stats;
-  return Object.values(cardSuits)[0] === 5;
-}
-
-
-
-
-const testArr = [
-  '8C TC KC 9C 4C 7D 2S 5D 3S AC',
-  '5C AD 5D AC 9C 7C 5H 8D TD KS',
-  '3H 7H 6S KC JS QH TD JC 2D 8S',
-  'TH 8H 5C QS TC 9H 4D JC KS JS',
-  '7C 5H KC QH JD AS KH 4C AD 4S'
 ];
