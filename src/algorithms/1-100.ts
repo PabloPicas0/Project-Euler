@@ -2278,45 +2278,98 @@ function pokerHands(arr) {
     const p1CardSuits = player1Hand.reduce(getSuits, {});
     const p2CardSuits = player2Hand.reduce(getSuits, {});
 
-    const p1HandRank = handRank(p1CardValues, p1CardSuits);
-    const p2HandRank = handRank(p2CardValues, p2CardSuits);
+    const p1HandRankData = handRank(p1CardValues, p1CardSuits);
+    const p2HandRankData = handRank(p2CardValues, p2CardSuits);
 
-    if (p1HandRank > p2HandRank) {
+    if (p1HandRankData.rank === 10 && p2HandRankData.rank === 10) continue;
+    if (p1HandRankData.rank > p2HandRankData.rank) {
       ++wins;
       continue;
     }
 
-    if (p1HandRank === p2HandRank) console.log(p1CardValues, handRank(p1CardValues, p1CardSuits));
-    console.log(p2CardValues, handRank(p2CardValues, p2CardSuits));
-    console.log("");
+    if (p1HandRankData.rank === p2HandRankData.rank && !p1HandRankData.rankVals.length) {
+      for (let j = p1HandRankData.rest.length - 1; j >= 0; --j) {
+        const p1Val = p1HandRankData.rest[j];
+        const p2Val = p2HandRankData.rest[j];
+
+        if (p1Val > p2Val) {
+          ++wins;
+          break;
+        }
+        if (p1Val === p2Val) continue;
+
+        break;
+      }
+    }
+
+    if (p1HandRankData.rank === p2HandRankData.rank && p1HandRankData.rankVals.length) {
+      let isWinner = false;
+      for (let j = p1HandRankData.rankVals.length - 1; j >= 0; --j) {
+        const p1Val = p1HandRankData.rankVals[j];
+        const p2Val = p2HandRankData.rankVals[j];
+
+        if (p1Val > p2Val) {
+          ++wins;
+          isWinner = true;
+          break;
+        }
+        if (p1Val === p2Val) continue;
+
+        isWinner = true;
+        break;
+      }
+
+      if (!isWinner) {
+        for (let j = p1HandRankData.rest.length - 1; j >= 0; --j) {
+          const p1Val = p1HandRankData.rest[j];
+          const p2Val = p2HandRankData.rest[j];
+
+          if (p1Val > p2Val) {
+            ++wins;
+            break;
+          }
+          if (p1Val === p2Val) continue;
+
+          break;
+        }
+      }
+    }
   }
 
   return wins;
 }
 
 function handRank(cardValues, suits) {
-  const duplicates = Object.values(
-    cardValues.reduce((acc, val) => {
-      acc[val] = (acc[val] || 0) + 1;
+  const cards = cardValues.reduce((acc, val) => {
+    acc[val] = (acc[val] || 0) + 1;
+    return acc;
+  }, {});
+  const duplicates = Object.values(cards).filter((val) => val !== 1);
+  const handInfo = Object.entries(cards).reduce(
+    (acc, card) => {
+      if (card[1] === 1) {
+        acc.rest.push(Number(card[0]));
+      } else {
+        acc.rankVals.push(Number(card[0]));
+      }
       return acc;
-    }, {})
-  ).filter((val) => val !== 1);
+    },
+    { rest: [], rankVals: [] }
+  );
 
   const [x, y] = duplicates.sort((a, b) => a - b);
 
-  if (isConsecutive(cardValues) && !isFlush(suits) && !isRoyal(cardValues)) return 5;
-  if (isFlush(suits) && !isConsecutive(cardValues) && !isRoyal(cardValues)) return 6;
-  if (isFlush(suits) && isConsecutive(cardValues) && !isRoyal(cardValues)) return 9;
-  if (isFlush(suits) && isRoyal(cardValues)) return 10;
+  if (isConsecutive(cardValues) && !isFlush(suits) && !isRoyal(cardValues)) return { rank: 5, ...handInfo };
+  if (isFlush(suits) && !isConsecutive(cardValues) && !isRoyal(cardValues)) return { rank: 6, ...handInfo };
+  if (isFlush(suits) && isConsecutive(cardValues) && !isRoyal(cardValues)) return { rank: 9, ...handInfo };
+  if (isFlush(suits) && isRoyal(cardValues)) return { rank: 10, ...handInfo };
 
-  if (!duplicates.length) return 1;
-  if (x === 2 && !y) return 2;
-  if (x === 2 && y === 2) return 3;
-  if (x === 3 && !y) return 4;
-  if (x === 2 && y === 3) return 7;
-  if (x === 4 && !y) return 8;
-
-  return duplicates;
+  if (!duplicates.length) return { rank: 1, ...handInfo };
+  if (x === 2 && !y) return { rank: 2, ...handInfo };
+  if (x === 2 && y === 2) return { rank: 3, ...handInfo };
+  if (x === 3 && !y) return { rank: 4, ...handInfo };
+  if (x === 2 && y === 3) return { rank: 7, ...handInfo };
+  if (x === 4 && !y) return { rank: 8, ...handInfo };
 }
 
 function isConsecutive(cardValues) {
