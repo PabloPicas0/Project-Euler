@@ -2452,5 +2452,53 @@ const testArr = [
 // Note: Wording was modified slightly on 24 April 2007 to emphasize the theoretical nature of Lychrel numbers.
 
 function countLychrelNumbers(num) {
-  return true;
+  let numbers = 0;
+  let start = 11;
+
+  while (start < num) {
+    let isNotLychrel = false;
+
+    const reverseStart = reverseNumber(start);
+    let sum = start + reverseStart;
+
+    if (isPalindrome(String(sum))) {
+      ++start;
+      continue;
+    }
+
+    for (let i = 1; i < 50; ++i) {
+      const reverseSum = reverseNumber(sum);
+      const newSum = sum + reverseSum;
+
+      if (isPalindrome(String(newSum))) {
+        isNotLychrel = true;
+        break;
+      }
+
+      sum = newSum;
+    }
+
+    if (isNotLychrel) {
+      ++start;
+      continue;
+    }
+
+    ++numbers;
+    ++start;
+  }
+
+  return numbers;
+}
+
+function isPalindrome(str) {
+  return str === str.split("").reverse().join("");
+}
+
+function reverseNumber(number) {
+  let revNumber = 0;
+  while (number > 0) {
+    revNumber = revNumber * 10 + (number % 10);
+    number = Math.floor(number / 10);
+  }
+  return revNumber;
 }
