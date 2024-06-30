@@ -41,6 +41,18 @@ export function nthPrmie(n: number) {
   return pn;
 }
 
+// FCC doesn't support power of BigInts
+// Here is workaround
+
+function bigIntPower(base, exponent) {
+  base = BigInt(base);
+  let result = 1n;
+  for (let count = 0; count < exponent; count++) {
+    result *= base;
+  }
+  return result;
+}
+
 // Problem 1: Multiples of 3 or 5
 // If we list all the natural numbers below 10 that are multiples of 3 or 5, we get 3, 5, 6 and 9. The sum of these multiples is 23.
 
@@ -2501,4 +2513,26 @@ function reverseNumber(number) {
     number = Math.floor(number / 10);
   }
   return revNumber;
+}
+
+// Problem 56: Powerful digit sum
+// A googol (10^100) is a massive number: one followed by one-hundred zeros;
+// 100^100 is almost unimaginably large: one followed by two-hundred zeros. Despite their size, the sum of the digits in each number is only 1.
+
+// Considering natural numbers of the form,  a^b, where a, b < n, what is the maximum digital sum?
+
+// NOTE: This passes the problem but fcc don't like it
+function powerfulDigitSum(n) {
+  let maxSum = 0;
+
+  for (let a = 1; a < n; ++a) {
+    for (let b = 1; b < n; ++b) {
+      const pow = bigIntPower(a, b).toString();
+      const sum = pow.split("").reduce((acc, num) => acc + Number(num), 0);
+
+      maxSum = Math.max(maxSum, sum);
+    }
+  }
+  console.log(maxSum);
+  return maxSum;
 }
