@@ -2522,7 +2522,7 @@ function reverseNumber(number) {
 // Considering natural numbers of the form,  a^b, where a, b < n, what is the maximum digital sum?
 
 // NOTE: This passes the problem but fcc don't like it
-function powerfulDigitSum(n) {
+function powerfulDigitSum(n: number) {
   let maxSum = 0;
 
   for (let a = 1; a < n; ++a) {
@@ -2533,7 +2533,7 @@ function powerfulDigitSum(n) {
       maxSum = Math.max(maxSum, sum);
     }
   }
-  console.log(maxSum);
+
   return maxSum;
 }
 
@@ -2545,18 +2545,65 @@ function powerfulDigitSum(n) {
  
 // By expanding this for the first four iterations, we get:
 
-// 1+12=32=1.5
+// 1+12=3/2=1.5
  
-// 1+12+12=75=1.4
+// 1+12+12=7/5=1.4
  
-// 1+12+12+12=1712=1.41666…
+// 1+12+12+12=17/12=1.41666…
  
-// 1+12+12+12+12=4129=1.41379…
+// 1+12+12+12+12=41/29=1.41379…
  
 // The next three expansions are  99/70,  239/169, and  577/408, 
 // but the eighth expansion,  1393/985, is the first example where the number of digits in the numerator exceeds the number of digits in the denominator.
 
 // In the first n expansions, how many fractions contain a numerator with more digits than denominator?
 function squareRootConvergents(n) {
-  return true;
+  const series = getSeries(n, 1 / 2, 0);
+  console.log(series);
+  return series;
+}
+
+function getlowestfraction(x0) {
+  let eps = 1.0e-15;
+  let h, h1, h2, k, k1, k2, a, x;
+
+  x = x0;
+  a = Math.floor(x);
+  h1 = 1;
+  k1 = 0;
+  h = a;
+  k = 1;
+
+  while (x - a > eps * k * k) {
+    x = 1 / (x - a);
+    a = Math.floor(x);
+    h2 = h1;
+    h1 = h;
+    k2 = k1;
+    k1 = k;
+    h = h2 + a * h1;
+    k = k2 + a * k1;
+  }
+
+  return h + "/" + k;
+}
+
+function getSeries(n, f, m) {
+  if (n === 0) {
+    console.log(m);
+    return m;
+  }
+
+  const series = 1 + f;
+  const [k, y] = getlowestfraction(series).split("/");
+  if (k.length > y.length) {
+    m += 1;
+  }
+
+  // console.log(k, "/", y, k.length, y.length, m);
+  // console.log(n,x)
+
+  const x = 1 / (2 + f);
+
+  return getSeries(n - 1, x, m);
 }
