@@ -2537,51 +2537,70 @@ function powerfulDigitSum(n: number) {
   return maxSum;
 }
 
-
 // Problem 57: Square root convergents
 // It is possible to show that the square root of two can be expressed as an infinite continued fraction.
 
 // 2–√=1+12+12+12+…
- 
+
 // By expanding this for the first four iterations, we get:
 
 // 1+12=3/2=1.5
- 
+
 // 1+12+12=7/5=1.4
- 
+
 // 1+12+12+12=17/12=1.41666…
- 
+
 // 1+12+12+12+12=41/29=1.41379…
- 
-// The next three expansions are  99/70,  239/169, and  577/408, 
+
+// The next three expansions are  99/70,  239/169, and  577/408,
 // but the eighth expansion,  1393/985, is the first example where the number of digits in the numerator exceeds the number of digits in the denominator.
 
 // In the first n expansions, how many fractions contain a numerator with more digits than denominator?
 
 // Formula to get next numerator and denominator is: ni * 2 + ni-1(previous n)
 // Where n is either numerator value or denominator value
-// Formula to get only next denominator in sequence is: numerator + denominator 
+// Formula to get only next denominator in sequence is: numerator + denominator
 function squareRootConvergents(n) {
-    const series = [[3n,2n],[7n,5n]]
-    let times = 0
-    let i = 1
-  
-    while (n - 1 > 0) {
-      const [num, den] = series[i]
-      const [prevNum, prevDen] = series[i - 1]
+  const series = [
+    [3n, 2n],
+    [7n, 5n],
+  ];
+  let times = 0;
+  let i = 1;
 
-      const nextNumerator = (num * 2n) + prevNum
-      const nextDenominator = (den * 2n) + prevDen
+  while (n - 1 > 0) {
+    const [num, den] = series[i];
+    const [prevNum, prevDen] = series[i - 1];
 
-      if (nextNumerator.toString().length > nextDenominator.toString().length) {
-        times += 1
-      }
+    const nextNumerator = num * 2n + prevNum;
+    const nextDenominator = den * 2n + prevDen;
 
-      series.push([nextNumerator, nextDenominator])
-      
-      ++i
-      --n
+    if (nextNumerator.toString().length > nextDenominator.toString().length) {
+      times += 1;
     }
 
-    return times
+    series.push([nextNumerator, nextDenominator]);
+
+    ++i;
+    --n;
+  }
+
+  return times;
+}
+
+// Problem 58: Spiral primes
+// Starting with 1 and spiralling anticlockwise in the following way, a square spiral with side length 7 is formed.
+
+// 37 36 35 34 33 32 31
+// 38 17 16 15 14 13 30
+// 39 18  5  4  3 12 29
+// 40 19  6  1  2 11 28
+// 41 20  7  8  9 10 27
+// 42 21 22 23 24 25 26
+// 43 44 45 46 47 48 49
+// It is interesting to note that the odd squares lie along the bottom right diagonal, but what is more interesting is that 8 out of the 13 numbers lying along both diagonals are prime; that is, a ratio of 8/13 ≈ 62%.
+
+// If one complete new layer is wrapped around the spiral above, a square spiral with side length 9 will be formed. If this process is continued, what is the side length of the square spiral for which the percent of primes along both diagonals first falls below percent?
+function spiralPrimes(percent) {
+  return true;
 }
