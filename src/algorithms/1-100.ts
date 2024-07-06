@@ -2557,53 +2557,31 @@ function powerfulDigitSum(n: number) {
 // but the eighth expansion,  1393/985, is the first example where the number of digits in the numerator exceeds the number of digits in the denominator.
 
 // In the first n expansions, how many fractions contain a numerator with more digits than denominator?
+
+// Formula to get next numerator and denominator is: ni * 2 + ni-1(previous n)
+// Where n is either numerator value or denominator value
+// Formula to get only next denominator in sequence is: numerator + denominator 
 function squareRootConvergents(n) {
-  const series = getSeries(n, 1 / 2, 0);
-  console.log(series);
-  return series;
-}
+    const series = [[3n,2n],[7n,5n]]
+    let times = 0
+    let i = 1
+  
+    while (n - 1 > 0) {
+      const [num, den] = series[i]
+      const [prevNum, prevDen] = series[i - 1]
 
-function getlowestfraction(x0) {
-  let eps = 1.0e-15;
-  let h, h1, h2, k, k1, k2, a, x;
+      const nextNumerator = (num * 2n) + prevNum
+      const nextDenominator = (den * 2n) + prevDen
 
-  x = x0;
-  a = Math.floor(x);
-  h1 = 1;
-  k1 = 0;
-  h = a;
-  k = 1;
+      if (nextNumerator.toString().length > nextDenominator.toString().length) {
+        times += 1
+      }
 
-  while (x - a > eps * k * k) {
-    x = 1 / (x - a);
-    a = Math.floor(x);
-    h2 = h1;
-    h1 = h;
-    k2 = k1;
-    k1 = k;
-    h = h2 + a * h1;
-    k = k2 + a * k1;
-  }
+      series.push([nextNumerator, nextDenominator])
+      
+      ++i
+      --n
+    }
 
-  return h + "/" + k;
-}
-
-function getSeries(n, f, m) {
-  if (n === 0) {
-    console.log(m);
-    return m;
-  }
-
-  const series = 1 + f;
-  const [k, y] = getlowestfraction(series).split("/");
-  if (k.length > y.length) {
-    m += 1;
-  }
-
-  // console.log(k, "/", y, k.length, y.length, m);
-  // console.log(n,x)
-
-  const x = 1 / (2 + f);
-
-  return getSeries(n - 1, x, m);
+    return times
 }
