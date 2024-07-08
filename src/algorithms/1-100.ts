@@ -2601,7 +2601,7 @@ function squareRootConvergents(n) {
 
 // It is interesting to note that the odd squares lie along the bottom right diagonal, but what is more interesting is that 8 out of the 13 numbers lying along both diagonals are prime; that is, a ratio of 8/13 ≈ 62%.
 // If one complete new layer is wrapped around the spiral above, a square spiral with side length 9 will be formed. If this process is continued, what is the side length of the square spiral for which the percent of primes along both diagonals first falls below percent?
-function spiralPrimes(percent) {
+function spiralPrimes(percent: number) {
   let idx = 0;
   let counter = 1;
   let diagonal = 2;
@@ -2646,7 +2646,95 @@ function spiralPrimes(percent) {
 
 // Your task has been made easy, as the encryption key consists of three lower case characters. Using cipher, an array containing the encrypted ASCII codes, and the knowledge that the plain text must contain common English words, decrypt the message and find the sum of the ASCII values in the original text.
 function XORDecryption(arr) {
+  const key = "cat";
+  const text = "key";
+  let enc = [];
+  let decText = "";
+
+  for (let i = 0; i < text.length; ++i) {
+    const keyVal = key[i].charCodeAt(0);
+    const textVal = text[i].charCodeAt(0);
+
+    enc.push(textVal ^ keyVal);
+  }
+
+  console.log(enc);
+
+  for (let i = 0; i < enc.length; ++i) {
+    const val = enc[i];
+    const keyVal = key[i].charCodeAt(0);
+
+    decText += String.fromCodePoint(keyVal ^ val);
+  }
+  console.log(decText);
   return true;
+}
+
+function decrypt(enc, key) {
+  let decText = "";
+
+  const [v1, v2, v3] = key;
+
+  for (let i = 0; i < enc.length; i += 3) {
+    const val1 = enc[i];
+    const val2 = enc[i + 1];
+    const val3 = enc[i + 2];
+
+    decText += String.fromCodePoint(val1 ^ v1);
+    decText += String.fromCodePoint(val2 ^ v2);
+    decText += String.fromCodePoint(val3 ^ v3);
+  }
+
+  return decText;
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------
+
+function XORDecryption(arr) {
+  const asciiChars = [];
+
+  for (let i = 97; i < 123; ++i) {
+    asciiChars.push(i);
+  }
+
+  const ammount = 1;
+  const sample = 3 * ammount;
+  const sampleChars = arr.slice(0, sample);
+
+  for (let i = 0; i < asciiChars.length; ++i) {
+    for (let j = 0; j < asciiChars.length; ++j) {
+      for (let n = 0; n < asciiChars.length; ++n) {
+        const key = [asciiChars[i], asciiChars[j], asciiChars[n]];
+        let decryptedText = decrypt(sampleChars, key);
+
+        // if (!decryptedText) continue
+
+        // console.log(decryptedText)
+      }
+    }
+  }
+
+  return true;
+}
+
+
+function decrypt(enc, key) {
+  let decText = "";
+
+  for (let i = 0; i < enc.length; i += 3) {
+    const encAsciiVals = [enc[i], enc[i + 1], enc[i + 2]];
+
+    for (let j = 0; j < encAsciiVals.length; ++j) {
+      const decAsciiVal = encAsciiVals[j] ^ key[j];
+
+      if ((decAsciiVal >= 65 && decAsciiVal <= 90) || (decAsciiVal >= 97 && decAsciiVal <= 122)) {
+        const char = String.fromCharCode(decAsciiVal);
+        decText += char;
+      }
+    }
+  }
+  console.log(decText);
+  return decText;
 }
 
 // Only change code above this line
