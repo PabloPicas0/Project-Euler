@@ -2560,7 +2560,7 @@ function powerfulDigitSum(n: number) {
 // Formula to get next numerator and denominator is: ni * 2 + ni-1(previous n)
 // Where n is either numerator value or denominator value
 // Formula to get only next denominator in sequence is: numerator + denominator
-function squareRootConvergents(n) {
+function squareRootConvergents(n: number) {
   const series = [
     [3n, 2n],
     [7n, 5n],
@@ -2645,78 +2645,38 @@ function spiralPrimes(percent: number) {
 // Unfortunately, this method is impractical for most users, so the modified method is to use a password as a key. If the password is shorter than the message, which is likely, the key is repeated cyclically throughout the message. The balance for this method is using a sufficiently long password key for security, but short enough to be memorable.
 
 // Your task has been made easy, as the encryption key consists of three lower case characters. Using cipher, an array containing the encrypted ASCII codes, and the knowledge that the plain text must contain common English words, decrypt the message and find the sum of the ASCII values in the original text.
+
+// key =  [ 101, 120, 112 ]
 function XORDecryption(arr) {
-  const key = "cat";
-  const text = "key";
-  let enc = [];
-  let decText = "";
-
-  for (let i = 0; i < text.length; ++i) {
-    const keyVal = key[i].charCodeAt(0);
-    const textVal = text[i].charCodeAt(0);
-
-    enc.push(textVal ^ keyVal);
-  }
-
-  console.log(enc);
-
-  for (let i = 0; i < enc.length; ++i) {
-    const val = enc[i];
-    const keyVal = key[i].charCodeAt(0);
-
-    decText += String.fromCodePoint(keyVal ^ val);
-  }
-  console.log(decText);
-  return true;
-}
-
-function decrypt(enc, key) {
-  let decText = "";
-
-  const [v1, v2, v3] = key;
-
-  for (let i = 0; i < enc.length; i += 3) {
-    const val1 = enc[i];
-    const val2 = enc[i + 1];
-    const val3 = enc[i + 2];
-
-    decText += String.fromCodePoint(val1 ^ v1);
-    decText += String.fromCodePoint(val2 ^ v2);
-    decText += String.fromCodePoint(val3 ^ v3);
-  }
-
-  return decText;
-}
-
-// ----------------------------------------------------------------------------------------------------------------------------
-
-function XORDecryption(arr) {
-  const asciiChars = [];
+  const asciiChars = []
 
   for (let i = 97; i < 123; ++i) {
-    asciiChars.push(i);
+    asciiChars.push(i)
   }
 
-  const ammount = 1;
-  const sample = 3 * ammount;
-  const sampleChars = arr.slice(0, sample);
+  const ammount = 9
+  const sample = 3 * ammount
+  const sampleChars = arr.slice(0, sample)
+  
 
   for (let i = 0; i < asciiChars.length; ++i) {
     for (let j = 0; j < asciiChars.length; ++j) {
-      for (let n = 0; n < asciiChars.length; ++n) {
-        const key = [asciiChars[i], asciiChars[j], asciiChars[n]];
-        let decryptedText = decrypt(sampleChars, key);
+        const key = [asciiChars[i], asciiChars[j], 112]
+        const decryptedText = decrypt(arr, key)
+        // For some reason when i put this at top scope of function it doesn't word
+        // I was to tired to check out why cuz i got my Masters today 09.07.2024
+        const regex = /[$}|#&^<>=!?*\-%~]/g
+        const isProhibited = regex.test(decryptedText)
 
-        // if (!decryptedText) continue
+        if (isProhibited) continue
 
-        // console.log(decryptedText)
+        console.log(decryptedText, key)
+
       }
     }
-  }
 
-  return true;
+  return true
 }
-
 
 function decrypt(enc, key) {
   let decText = "";
@@ -2725,15 +2685,13 @@ function decrypt(enc, key) {
     const encAsciiVals = [enc[i], enc[i + 1], enc[i + 2]];
 
     for (let j = 0; j < encAsciiVals.length; ++j) {
-      const decAsciiVal = encAsciiVals[j] ^ key[j];
-
-      if ((decAsciiVal >= 65 && decAsciiVal <= 90) || (decAsciiVal >= 97 && decAsciiVal <= 122)) {
+        const decAsciiVal = encAsciiVals[j] ^ key[j];
         const char = String.fromCharCode(decAsciiVal);
+        
         decText += char;
-      }
     }
   }
-  console.log(decText);
+  // console.log(decText, "\n", key);
   return decText;
 }
 
