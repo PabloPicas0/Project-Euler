@@ -2654,28 +2654,32 @@ function XORDecryption(arr) {
     asciiChars.push(i)
   }
 
-  const ammount = 9
-  const sample = 3 * ammount
-  const sampleChars = arr.slice(0, sample)
-  
+  //Take sample for faster decryption time 
+
+  // const ammount = 9
+  // const sample = 3 * ammount
+  // const sampleChars = arr.slice(0, sample)
+
+  let sum = 0
 
   for (let i = 0; i < asciiChars.length; ++i) {
     for (let j = 0; j < asciiChars.length; ++j) {
         const key = [asciiChars[i], asciiChars[j], 112]
         const decryptedText = decrypt(arr, key)
-        // For some reason when i put this at top scope of function it doesn't word
+        // For some reason when i put this at top scope of function it doesn't work
         // I was to tired to check out why cuz i got my Masters today 09.07.2024
         const regex = /[$}|#&^<>=!?*\-%~]/g
         const isProhibited = regex.test(decryptedText)
 
         if (isProhibited) continue
 
-        console.log(decryptedText, key)
+        for (let n = 0; n < decryptedText.length; ++n) {
+          sum += decryptedText.charCodeAt(n)
+        }
 
+        return sum
       }
     }
-
-  return true
 }
 
 function decrypt(enc, key) {
@@ -2687,11 +2691,11 @@ function decrypt(enc, key) {
     for (let j = 0; j < encAsciiVals.length; ++j) {
         const decAsciiVal = encAsciiVals[j] ^ key[j];
         const char = String.fromCharCode(decAsciiVal);
-        
+
         decText += char;
     }
   }
-  // console.log(decText, "\n", key);
+
   return decText;
 }
 
