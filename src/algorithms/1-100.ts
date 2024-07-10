@@ -2648,38 +2648,38 @@ function spiralPrimes(percent: number) {
 
 // key =  [ 101, 120, 112 ]
 function XORDecryption(arr) {
-  const asciiChars = []
+  const asciiChars = [];
 
   for (let i = 97; i < 123; ++i) {
-    asciiChars.push(i)
+    asciiChars.push(i);
   }
 
-  //Take sample for faster decryption time 
+  //Take sample for faster decryption time
 
   // const ammount = 9
   // const sample = 3 * ammount
   // const sampleChars = arr.slice(0, sample)
 
-  let sum = 0
+  let sum = 0;
 
   for (let i = 0; i < asciiChars.length; ++i) {
     for (let j = 0; j < asciiChars.length; ++j) {
-        const key = [asciiChars[i], asciiChars[j], 112]
-        const decryptedText = decrypt(arr, key)
-        // For some reason when i put this at top scope of function it doesn't work
-        // I was to tired to check out why cuz i got my Masters today 09.07.2024
-        const regex = /[$}|#&^<>=!?*\-%~]/g
-        const isProhibited = regex.test(decryptedText)
+      const key = [asciiChars[i], asciiChars[j], 112];
+      const decryptedText = decrypt(arr, key);
+      // For some reason when i put this at top scope of function it doesn't work
+      // I was to tired to check out why cuz i got my Masters today 09.07.2024
+      const regex = /[$}|#&^<>=!?*\-%~]/g;
+      const isProhibited = regex.test(decryptedText);
 
-        if (isProhibited) continue
+      if (isProhibited) continue;
 
-        for (let n = 0; n < decryptedText.length; ++n) {
-          sum += decryptedText.charCodeAt(n)
-        }
-
-        return sum
+      for (let n = 0; n < decryptedText.length; ++n) {
+        sum += decryptedText.charCodeAt(n);
       }
+
+      return sum;
     }
+  }
 }
 
 function decrypt(enc, key) {
@@ -2689,10 +2689,10 @@ function decrypt(enc, key) {
     const encAsciiVals = [enc[i], enc[i + 1], enc[i + 2]];
 
     for (let j = 0; j < encAsciiVals.length; ++j) {
-        const decAsciiVal = encAsciiVals[j] ^ key[j];
-        const char = String.fromCharCode(decAsciiVal);
+      const decAsciiVal = encAsciiVals[j] ^ key[j];
+      const char = String.fromCharCode(decAsciiVal);
 
-        decText += char;
+      decText += char;
     }
   }
 
@@ -2755,3 +2755,43 @@ const cipher = [
   88, 7, 13, 17, 19, 13, 88, 4, 13, 29, 80, 0, 0, 0, 10, 22, 21, 11, 12, 3, 69, 25, 2, 0, 88, 21, 19, 29, 30,
   69, 22, 5, 8, 26, 21, 23, 11, 94,
 ];
+
+  // Problem 60: Prime pair sets
+  // The primes 3, 7, 109, and 673, are quite remarkable. By taking any two primes and concatenating them in any order the result will always be prime. For example, taking 7 and 109, both 7109 and 1097 are prime. The sum of these four primes, 792, represents the lowest sum for a set of four primes with this property.
+
+  // Find the lowest sum for a set of five primes for which any two primes concatenate to produce another prime.
+
+function primePairSets() {
+  const primes = sieve(10000);
+  let primesSet = [];
+  let n = 1;
+
+  while (n < primes.length) {
+    primesSet.push(primes[n]);
+
+    for (let i = 0; i < primes.length; ++i) {
+      let producePrime = true;
+
+      for (let j = 0; j < primesSet.length; ++j) {
+        const order1 = parseInt(primes[i] + "" + primesSet[j]);
+        const order2 = parseInt(primesSet[j] + "" + primes[i]);
+
+        if (!isPrime(order1) || !isPrime(order2)) {
+          producePrime = false;
+          break;
+        }
+      }
+
+      if (!producePrime) continue;
+
+      primesSet.push(primes[i]);
+    }
+
+    if (primesSet.length === 5) {
+      return primesSet.reduce((acc, num) => acc + num);
+    }
+
+    primesSet = [];
+    ++n;
+  }
+}
