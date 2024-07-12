@@ -2763,7 +2763,7 @@ const cipher = [
 
 function primePairSets() {
   const primes = sieve(10000);
-  let primesSet = [];
+  let primesSet: number[] = [];
   let n = 1;
 
   while (n < primes.length) {
@@ -2818,6 +2818,80 @@ function primePairSets() {
 // Each polygonal type: triangle ( P3(127)=8128), square ( P4(91)=8281), and pentagonal ( P5(44)=2882 ), is represented by a different number in the set.
 // This is the only set of 4-digit numbers with this property.
 // Find the sum of all numbers in ordered sets of n cyclic 4-digit numbers for which each of the  P3 to  Pn+2 polygonal types, is represented by a different number in the set.
+
+// fn  min-arg  return   max-arg   return
+// p8  19       1045     58        9976
+// p7  21       1071     63        9828
+// p6  23       1035     70        9730
+// p5  26       1001     81        9801
+// p4  32       1024     99        9801
+// p3  45       1035     140       9870
 function cyclicalFigurateNums(n) {
+  for (let i = 45; i < 141; ++i) {
+    for (let j = 32; j < 100; ++j) {
+      for (let m = 26; m < 82; ++m) {
+        const set = [P3(i), P4(j), P5(m)];
+        const orderedSet = [set[0]];
+
+        for (let k = 1; k < set.length; ++k) {
+          const p1 = set[k - 1].toString();
+          const p2 = set[k].toString();
+        }
+        if (set[0] === 8128 && set[1] === 8281 && set[2] === 2882) {
+          console.log(i, j, m);
+        }
+      }
+    }
+  }
   return true;
+}
+
+function createOrderedSet(n, o) {
+  if (n === o + 2) {
+  }
+
+  const { polygonal, min, max } = pickPolygonal(n);
+
+  for (let i = min; i <= max; ++i) {}
+}
+
+function pickPolygonal(n) {
+  switch (n) {
+    case 3:
+      return { polygonal: P3, min: 45, max: 140 };
+    case 4:
+      return { polygonal: P4, min: 32, max: 99 };
+    case 5:
+      return { polygonal: P5, min: 26, max: 81 };
+    case 6:
+      return { polygonal: P6, min: 23, max: 70 };
+    case 7:
+      return { polygonal: P7, min: 21, max: 63 };
+    case 8:
+      return { polygonal: P8, min: 19, max: 58 };
+  }
+}
+
+function P3(n) {
+  return (n * (n + 1)) / 2;
+}
+
+function P4(n) {
+  return n * n;
+}
+
+function P5(n) {
+  return (n * (3 * n - 1)) / 2;
+}
+
+function P6(n) {
+  return n * (2 * n - 1);
+}
+
+function P7(n) {
+  return (n * (5 * n - 3)) / 2;
+}
+
+function P8(n) {
+  return n * (3 * n - 2);
 }
