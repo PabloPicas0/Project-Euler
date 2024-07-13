@@ -2820,39 +2820,83 @@ function primePairSets() {
 // Find the sum of all numbers in ordered sets of n cyclic 4-digit numbers for which each of the  P3 to  Pn+2 polygonal types, is represented by a different number in the set.
 
 // fn  min-arg  return   max-arg   return
-// p8  19       1045     58        9976
-// p7  21       1071     63        9828
-// p6  23       1035     70        9730
-// p5  26       1001     81        9801
-// p4  32       1024     99        9801
-// p3  45       1035     140       9870
+// P8  19       1045     58        9976
+// P7  21       1071     63        9828
+// P6  23       1035     70        9730
+// P5  26       1001     81        9801
+// P4  32       1024     99        9801
+// P3  45       1035     140       9870
 function cyclicalFigurateNums(n) {
-  for (let i = 45; i < 141; ++i) {
-    for (let j = 32; j < 100; ++j) {
-      for (let m = 26; m < 82; ++m) {
-        const set = [P3(i), P4(j), P5(m)];
-        const orderedSet = [set[0]];
-
-        for (let k = 1; k < set.length; ++k) {
-          const p1 = set[k - 1].toString();
-          const p2 = set[k].toString();
-        }
-        if (set[0] === 8128 && set[1] === 8281 && set[2] === 2882) {
-          console.log(i, j, m);
-        }
-      }
-    }
-  }
-  return true;
+  const set = createSet(3, n, []);
+  console.log(
+    set,
+    set.reduce((acc, num) => acc + num)
+  );
+  return set.reduce((acc, num) => acc + num);
 }
 
-function createOrderedSet(n, o) {
-  if (n === o + 2) {
+function createSet(n, o, sets) {
+  const { polygonal, min, max } = pickPolygonal(n);
+  const nthSet = [];
+
+  for (let i = min; i <= max; ++i) {
+    const p = polygonal(i);
+    nthSet.push(p);
   }
 
-  const { polygonal, min, max } = pickPolygonal(n);
+  sets.push(nthSet);
 
-  for (let i = min; i <= max; ++i) {}
+  if (n === o + 2) {
+    let s = [];
+
+    for (let i = 0; i < sets[0].length; ++i) {
+      const orderedSet = [sets[0][i]];
+      const queue = [];
+      let repeats = 0;
+
+      for (let j = 1; j < n - 2; ++j) {
+        queue.push(j);
+      }
+
+      queue.reverse();
+
+      while (queue.length) {
+        const current = queue.shift();
+        const last = orderedSet.length - 1;
+        const m = orderedSet[last].toString().slice(2);
+        let lengthHasChanged = false;
+
+        for (let j = 0; j < sets[current].length; ++j) {
+          const k = sets[current][j].toString().slice(0, 2);
+
+          if (k === m) {
+            orderedSet.push(sets[current][j]);
+            lengthHasChanged = true;
+          }
+        }
+
+        if (lengthHasChanged === false) {
+          queue.push(current);
+          repeats += 1;
+        }
+
+        if (repeats === n - 2) break;
+      }
+
+      const last = orderedSet.length - 1;
+      const firstAndLastAreSame =
+        orderedSet[last].toString().slice(2) === orderedSet[0].toString().slice(0, 2);
+
+      if (orderedSet.length === n - 2 && firstAndLastAreSame) {
+        console.log(orderedSet, queue);
+        s = orderedSet;
+      }
+    }
+
+    return s;
+  }
+
+  return createSet(n + 1, o, sets);
 }
 
 function pickPolygonal(n) {
@@ -2895,3 +2939,5 @@ function P7(n) {
 function P8(n) {
   return n * (3 * n - 2);
 }
+
+
