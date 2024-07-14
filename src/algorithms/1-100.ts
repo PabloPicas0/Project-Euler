@@ -2647,8 +2647,8 @@ function spiralPrimes(percent: number) {
 // Your task has been made easy, as the encryption key consists of three lower case characters. Using cipher, an array containing the encrypted ASCII codes, and the knowledge that the plain text must contain common English words, decrypt the message and find the sum of the ASCII values in the original text.
 
 // key =  [ 101, 120, 112 ]
-function XORDecryption(arr) {
-  const asciiChars = [];
+function XORDecryption(arr: number[]) {
+  const asciiChars: number[] = [];
 
   for (let i = 97; i < 123; ++i) {
     asciiChars.push(i);
@@ -2682,7 +2682,7 @@ function XORDecryption(arr) {
   }
 }
 
-function decrypt(enc, key) {
+function decrypt(enc: number[], key: number[]) {
   let decText = "";
 
   for (let i = 0; i < enc.length; i += 3) {
@@ -2941,3 +2941,65 @@ function P8(n) {
 }
 
 
+function cyclicalFigurateNums(n) {
+  const set = new Map();
+
+  for (let i = 3; i <= n + 2; ++i) {
+    const { polygonal, min, max } = pickPolygonal(i);
+    const polygonalNums = new Map();
+
+    for (let j = min; j <= max; ++j) {
+      const p = polygonal(j);
+      polygonalNums.set(p, p);
+    }
+
+    set.set(i, polygonalNums);
+  }
+
+  // console.log(set)
+  return true;
+}
+
+
+function createSet(n, arr, set) {
+  if (arr.length === n) {
+    let isPolygonal = [...new Array(n + 2).fill(false)];
+
+    for (let i = arr.length - 1; i >= 0; --i) {
+      for (let j = 3; j <= n + 2; ++j) {
+        const isInSet = set.get(j).get(arr[i]);
+
+        if (isInSet && !isPolygonal[j - 3]) {
+          isPolygonal[j - 1] = true;
+        }
+      }
+    }
+
+    if (!isPolygonal.includes(false, 2)) {
+      console.log(arr);
+      return;
+    }
+
+    return;
+  }
+
+  for (let i = 1010; i <= 9999; ++i) {
+    arr.push(i);
+    createSet(n, arr, set);
+    arr.pop();
+  }
+}
+
+
+
+function isPolygonal(num, n, pols) {
+  let isPolygonal = false;
+
+  for (let i = 3; i <= n + 2; ++i) {
+    const isKpolygonal = pols.get(i).get(num);
+
+    if (isKpolygonal) isPolygonal = true;
+  }
+
+  return isPolygonal;
+}
