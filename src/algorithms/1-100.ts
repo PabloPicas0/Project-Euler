@@ -2463,7 +2463,7 @@ const testArr = [
 
 // Note: Wording was modified slightly on 24 April 2007 to emphasize the theoretical nature of Lychrel numbers.
 
-function countLychrelNumbers(num) {
+function countLychrelNumbers(num: number) {
   let numbers = 0;
   let start = 11;
 
@@ -2502,11 +2502,11 @@ function countLychrelNumbers(num) {
   return numbers;
 }
 
-function isPalindrome(str) {
+function isPalindrome(str: string) {
   return str === str.split("").reverse().join("");
 }
 
-function reverseNumber(number) {
+function reverseNumber(number: number) {
   let revNumber = 0;
   while (number > 0) {
     revNumber = revNumber * 10 + (number % 10);
@@ -2827,76 +2827,102 @@ function primePairSets() {
 // P4  32       1024     99        9801
 // P3  45       1035     140       9870
 function cyclicalFigurateNums(n) {
-  const set = createSet(3, n, []);
-  console.log(
-    set,
-    set.reduce((acc, num) => acc + num)
-  );
-  return set.reduce((acc, num) => acc + num);
-}
+  const polygonals = new Map();
 
-function createSet(n, o, sets) {
-  const { polygonal, min, max } = pickPolygonal(n);
-  const nthSet = [];
+  for (let i = 3; i <= n + 2; ++i) {
+    const { polygonal, min, max } = pickPolygonal(i);
+    const polygonalNums = new Map();
 
-  for (let i = min; i <= max; ++i) {
-    const p = polygonal(i);
-    nthSet.push(p);
+    for (let j = min; j <= max; ++j) {
+      const p = polygonal(j);
+      polygonalNums.set(p, p);
+    }
+
+    polygonals.set(i, polygonalNums);
   }
 
-  sets.push(nthSet);
+  console.log(createSet(1010, 9999, n, [], polygonals));
+  return true;
+}
 
-  if (n === o + 2) {
-    let s = [];
+function createSet(start, end, n, arr, polygonals) {
+  if (n - arr.length === 1) {
+    // Last number in set is last two digits of previous number
+    // And first two digits of first number in set
+    const last = parseInt(arr[arr.length - 1].toString().slice(2));
+    const first = parseInt(arr[0].toString().slice(0, 2));
+    const lastNumberInSet = parseInt(last + "" + first);
 
-    for (let i = 0; i < sets[0].length; ++i) {
-      const orderedSet = [sets[0][i]];
-      const queue = [];
-      let repeats = 0;
+    arr.push(lastNumberInSet);
 
-      for (let j = 1; j < n - 2; ++j) {
-        queue.push(j);
-      }
+    const types = getPolygonalTypes(arr, polygonals, n);
 
-      queue.reverse();
+    if (!types) {
+      arr.pop();
+      return;
+    }
 
-      while (queue.length) {
-        const current = queue.shift();
-        const last = orderedSet.length - 1;
-        const m = orderedSet[last].toString().slice(2);
-        let lengthHasChanged = false;
+    const uniqueTypes = isUnique(types);
 
-        for (let j = 0; j < sets[current].length; ++j) {
-          const k = sets[current][j].toString().slice(0, 2);
+    if (uniqueTypes) {
+      console.log(arr, "\n", types);
+      return arr;
+    }
 
-          if (k === m) {
-            orderedSet.push(sets[current][j]);
-            lengthHasChanged = true;
-          }
-        }
+    arr.pop();
+    return;
+  }
 
-        if (lengthHasChanged === false) {
-          queue.push(current);
-          repeats += 1;
-        }
+  for (let i = start; i <= end; ++i) {
+    arr.push(i);
 
-        if (repeats === n - 2) break;
-      }
+    const nextStart = parseInt(i.toString().slice(2)) * 100;
+    const nextEnd = nextStart + 99;
+    const startsWithZero = nextStart.toString().length < 4;
 
-      const last = orderedSet.length - 1;
-      const firstAndLastAreSame =
-        orderedSet[last].toString().slice(2) === orderedSet[0].toString().slice(0, 2);
+    if (startsWithZero) {
+      arr.pop();
+      continue;
+    }
 
-      if (orderedSet.length === n - 2 && firstAndLastAreSame) {
-        console.log(orderedSet, queue);
-        s = orderedSet;
+    createSet(nextStart, nextEnd, n, arr, polygonals);
+    arr.pop();
+  }
+}
+
+function isUnique(types) {
+  for (let i = 0; i < types.length; ++i) {
+    for (let j = i + 1; j < types.length; ++j) {
+      const [num1, type1] = types[i];
+      const [num2, type2] = types[j];
+
+      if (num1 === num2 || type1 === type2) return false;
+    }
+  }
+
+  return true;
+}
+
+function getPolygonalTypes(arr, polygonals, n) {
+  const types = [];
+
+  for (let i = arr.length - 1; i >= 0; --i) {
+    let found = false;
+
+    for (let j = 3; j <= n + 2; ++j) {
+      const isInSet = polygonals.get(j).get(arr[i]);
+
+      if (isInSet) {
+        // console.log(type)
+        found = true;
+        types.push([isInSet, j]);
       }
     }
 
-    return s;
+    if (!found) return null;
   }
 
-  return createSet(n + 1, o, sets);
+  return types;
 }
 
 function pickPolygonal(n) {
@@ -2938,68 +2964,4 @@ function P7(n) {
 
 function P8(n) {
   return n * (3 * n - 2);
-}
-
-
-function cyclicalFigurateNums(n) {
-  const set = new Map();
-
-  for (let i = 3; i <= n + 2; ++i) {
-    const { polygonal, min, max } = pickPolygonal(i);
-    const polygonalNums = new Map();
-
-    for (let j = min; j <= max; ++j) {
-      const p = polygonal(j);
-      polygonalNums.set(p, p);
-    }
-
-    set.set(i, polygonalNums);
-  }
-
-  // console.log(set)
-  return true;
-}
-
-
-function createSet(n, arr, set) {
-  if (arr.length === n) {
-    let isPolygonal = [...new Array(n + 2).fill(false)];
-
-    for (let i = arr.length - 1; i >= 0; --i) {
-      for (let j = 3; j <= n + 2; ++j) {
-        const isInSet = set.get(j).get(arr[i]);
-
-        if (isInSet && !isPolygonal[j - 3]) {
-          isPolygonal[j - 1] = true;
-        }
-      }
-    }
-
-    if (!isPolygonal.includes(false, 2)) {
-      console.log(arr);
-      return;
-    }
-
-    return;
-  }
-
-  for (let i = 1010; i <= 9999; ++i) {
-    arr.push(i);
-    createSet(n, arr, set);
-    arr.pop();
-  }
-}
-
-
-
-function isPolygonal(num, n, pols) {
-  let isPolygonal = false;
-
-  for (let i = 3; i <= n + 2; ++i) {
-    const isKpolygonal = pols.get(i).get(num);
-
-    if (isKpolygonal) isPolygonal = true;
-  }
-
-  return isPolygonal;
 }
