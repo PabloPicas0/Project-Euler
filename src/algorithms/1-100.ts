@@ -2274,7 +2274,7 @@ function combinatoricSelections(limit: number) {
 // The global array (handsArr) passed to the function, contains one-thousand random hands dealt to two players. Each line of the file contains ten cards (separated by a single space): the first five are Player 1's cards and the last five are Player 2's cards. You can assume that all hands are valid (no invalid characters or repeated cards), each player's hand is in no specific order, and in each hand there is a clear winner.
 
 // How many hands does Player 1 win?
-function pokerHands(arr) {
+function pokerHands(arr: string[]) {
   let wins = 0;
   const mid = 5;
 
@@ -2316,6 +2316,7 @@ function pokerHands(arr) {
 
     if (p1HandRankData.rank === p2HandRankData.rank && p1HandRankData.rankVals.length) {
       let isWinner = false;
+
       for (let j = p1HandRankData.rankVals.length - 1; j >= 0; --j) {
         const p1Val = p1HandRankData.rankVals[j];
         const p2Val = p2HandRankData.rankVals[j];
@@ -2325,6 +2326,7 @@ function pokerHands(arr) {
           isWinner = true;
           break;
         }
+
         if (p1Val === p2Val) continue;
 
         isWinner = true;
@@ -2351,14 +2353,14 @@ function pokerHands(arr) {
   return wins;
 }
 
-function handRank(cardValues, suits) {
-  const cards = cardValues.reduce((acc, val) => {
+function handRank(cardValues: number[], suits: { [key: string]: number }) {
+  const cards = cardValues.reduce((acc: { [key: number]: number }, val) => {
     acc[val] = (acc[val] || 0) + 1;
     return acc;
   }, {});
   const duplicates = Object.values(cards).filter((val) => val !== 1);
   const handInfo = Object.entries(cards).reduce(
-    (acc, card) => {
+    (acc: { rest: number[]; rankVals: number[] }, card) => {
       if (card[1] === 1) {
         acc.rest.push(Number(card[0]));
       } else {
@@ -2384,17 +2386,17 @@ function handRank(cardValues, suits) {
   if (x === 4 && !y) return { rank: 8, ...handInfo };
 }
 
-function isConsecutive(cardValues) {
+function isConsecutive(cardValues: number[]) {
   return cardValues.every(isStraight);
 }
 
-function isStraight(element, idx, arr) {
+function isStraight(element: number, idx: number, arr: number[]) {
   if (idx === arr.length - 1) return true;
 
   return arr[idx + 1] - element === 1;
 }
 
-function isRoyal(cardValues) {
+function isRoyal(cardValues: number[]) {
   const royalValues = [10, 11, 12, 13, 14];
 
   for (let i = 0; i < royalValues.length; ++i) {
@@ -2408,11 +2410,11 @@ function isRoyal(cardValues) {
   return true;
 }
 
-function isFlush(suits) {
+function isFlush(suits: { [key: string]: number }) {
   return Object.values(suits).length === 1;
 }
 
-function getValues(card) {
+function getValues(card: string) {
   const val = card.split("")[0];
 
   switch (val) {
@@ -2431,7 +2433,7 @@ function getValues(card) {
   }
 }
 
-function getSuits(acc, val) {
+function getSuits(acc: { [key: string]: number }, val: string) {
   const suit = val.split("")[1];
   acc[suit] = (acc[suit] || 0) + 1;
   return acc;
