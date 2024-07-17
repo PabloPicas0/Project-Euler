@@ -1379,11 +1379,11 @@ function circularPrimes(n) {
 // Find the sum of all numbers, less than n, whereas 1000 ≤ n ≤ 1000000, which are palindromic in base 10 and base 2.
 
 // (Please note that the palindromic number, in either base, may not include leading zeros.)
-function doubleBasePalindromes(n) {
+function doubleBasePalindromes(n: number) {
   let sum = 0;
 
   for (let i = 1; i < n; ++i) {
-    const reverseI = String(i).split("").reverse().join("");
+    const reverseI = parseFloat(String(i).split("").reverse().join(""));
     const binary = Number(i).toString(2);
     const reverseBinary = Number(i).toString(2).split("").reverse().join("");
 
@@ -2925,6 +2925,104 @@ function getPolygonalTypes(arr, polygonals, n) {
   }
 
   return types;
+}
+
+function cyclicalFigurateNums(n) {
+  const polygonals = {};
+  const relation = {};
+
+  for (let i = 3; i <= n + 2; ++i) {
+    const { polygonal, min, max } = pickPolygonal(i);
+    const polygonalNums = [];
+
+    for (let j = min; j <= max; ++j) {
+      const p = polygonal(j);
+      polygonalNums.push(p);
+    }
+
+    polygonals[i] = polygonalNums;
+  }
+
+  for (let i = 3; i <= n + 2; ++i) {
+    for (let j = 0; j < polygonals[i].length; ++j) {
+      const lastTwoDigits = polygonals[i][j] % 100;
+      const key = i + " " + polygonals[i][j];
+
+      relation[key] = [];
+
+      for (let k = 3; k <= n + 2; ++k) {
+        if (k === i) continue;
+
+        for (let l = 0; l < polygonals[k].length; ++l) {
+          const firstTwoDigits = parseInt(polygonals[k][l] / 100);
+
+          if (lastTwoDigits === firstTwoDigits) {
+            relation[key].push([k, polygonals[k][l]]);
+          }
+        }
+      }
+    }
+  }
+
+  const set = createSet(n, [], relation, Object.keys(relation)).reduce((acc, val) => {
+    const poly = parseInt(val.slice(2));
+
+    return acc + poly;
+  }, 0);
+
+  console.log(createSet(n, [], relation, Object.keys(relation)), set);
+  return set;
+}
+
+function createSet(n, arr, relation, keys) {
+  if (arr.length === n) {
+    for (let i = 0; i < arr.length; ++i) {
+      if (i === arr.length - 1) {
+        const x = arr.at(-1).slice(2);
+        const y = arr.at(0).slice(2);
+
+        const lastDigits = parseInt(Number(x)) % 100;
+        const firstDigits = parseInt(y / 100);
+
+        if (lastDigits === firstDigits) {
+          console.log(arr);
+          return arr;
+        }
+
+        arr.pop();
+        return;
+      }
+
+      const [type1, polygonal1] = arr[i].split(" ");
+      const [type2, polygonal2] = arr[i + 1].split(" ");
+
+      if (type1 == type2) break;
+
+      const lastNum = parseInt(polygonal1) % 100;
+      const firstNum = parseInt(polygonal2 / 100);
+
+      if (lastNum !== firstNum) break;
+    }
+
+    arr.pop();
+    return;
+  }
+
+  for (let i = 0; i < keys.length; ++i) {
+    const key = keys[i];
+
+    arr.push(key);
+
+    for (let j = 0; j < relation[key].length; ++j) {
+      if (relation[key].length < n - 1) break;
+
+      const r = createSet(n, arr, relation, [relation[key][j].join(" ")]);
+
+      if (r) return r;
+    }
+
+    arr.pop();
+  }
 }
 
 function pickPolygonal(n) {
