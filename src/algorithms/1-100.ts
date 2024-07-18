@@ -2828,240 +2828,243 @@ function primePairSets() {
 // P5  26       1001     81        9801
 // P4  32       1024     99        9801
 // P3  45       1035     140       9870
-function cyclicalFigurateNums(n) {
-  const polygonals = new Map();
 
-  for (let i = 3; i <= n + 2; ++i) {
-    const { polygonal, min, max } = pickPolygonal(i);
-    const polygonalNums = new Map();
 
-    for (let j = min; j <= max; ++j) {
-      const p = polygonal(j);
-      polygonalNums.set(p, p);
-    }
+// PROBLEM UNSOLVED
+// function cyclicalFigurateNums(n) {
+//   const polygonals = new Map();
 
-    polygonals.set(i, polygonalNums);
-  }
+//   for (let i = 3; i <= n + 2; ++i) {
+//     const { polygonal, min, max } = pickPolygonal(i);
+//     const polygonalNums = new Map();
 
-  console.log(createSet(1010, 9999, n, [], polygonals));
-  return true;
-}
+//     for (let j = min; j <= max; ++j) {
+//       const p = polygonal(j);
+//       polygonalNums.set(p, p);
+//     }
 
-function createSet(start, end, n, arr, polygonals) {
-  if (n - arr.length === 1) {
-    // Last number in set is last two digits of previous number
-    // And first two digits of first number in set
-    const last = parseInt(arr[arr.length - 1].toString().slice(2));
-    const first = parseInt(arr[0].toString().slice(0, 2));
-    const lastNumberInSet = parseInt(last + "" + first);
+//     polygonals.set(i, polygonalNums);
+//   }
 
-    arr.push(lastNumberInSet);
+//   console.log(createSet(1010, 9999, n, [], polygonals));
+//   return true;
+// }
 
-    const types = getPolygonalTypes(arr, polygonals, n);
+// function createSet(start, end, n, arr, polygonals) {
+//   if (n - arr.length === 1) {
+//     // Last number in set is last two digits of previous number
+//     // And first two digits of first number in set
+//     const last = parseInt(arr[arr.length - 1].toString().slice(2));
+//     const first = parseInt(arr[0].toString().slice(0, 2));
+//     const lastNumberInSet = parseInt(last + "" + first);
 
-    if (!types) {
-      arr.pop();
-      return;
-    }
+//     arr.push(lastNumberInSet);
 
-    const uniqueTypes = isUnique(types);
+//     const types = getPolygonalTypes(arr, polygonals, n);
 
-    if (uniqueTypes) {
-      console.log(arr, "\n", types);
-      return arr;
-    }
+//     if (!types) {
+//       arr.pop();
+//       return;
+//     }
 
-    arr.pop();
-    return;
-  }
+//     const uniqueTypes = isUnique(types);
 
-  for (let i = start; i <= end; ++i) {
-    arr.push(i);
+//     if (uniqueTypes) {
+//       console.log(arr, "\n", types);
+//       return arr;
+//     }
 
-    const nextStart = parseInt(i.toString().slice(2)) * 100;
-    const nextEnd = nextStart + 99;
-    const startsWithZero = nextStart.toString().length < 4;
+//     arr.pop();
+//     return;
+//   }
 
-    if (startsWithZero) {
-      arr.pop();
-      continue;
-    }
+//   for (let i = start; i <= end; ++i) {
+//     arr.push(i);
 
-    createSet(nextStart, nextEnd, n, arr, polygonals);
-    arr.pop();
-  }
-}
+//     const nextStart = parseInt(i.toString().slice(2)) * 100;
+//     const nextEnd = nextStart + 99;
+//     const startsWithZero = nextStart.toString().length < 4;
 
-function isUnique(types) {
-  for (let i = 0; i < types.length; ++i) {
-    for (let j = i + 1; j < types.length; ++j) {
-      const [num1, type1] = types[i];
-      const [num2, type2] = types[j];
+//     if (startsWithZero) {
+//       arr.pop();
+//       continue;
+//     }
 
-      if (num1 === num2 || type1 === type2) return false;
-    }
-  }
+//     createSet(nextStart, nextEnd, n, arr, polygonals);
+//     arr.pop();
+//   }
+// }
 
-  return true;
-}
+// function isUnique(types) {
+//   for (let i = 0; i < types.length; ++i) {
+//     for (let j = i + 1; j < types.length; ++j) {
+//       const [num1, type1] = types[i];
+//       const [num2, type2] = types[j];
 
-function getPolygonalTypes(arr, polygonals, n) {
-  const types = [];
+//       if (num1 === num2 || type1 === type2) return false;
+//     }
+//   }
 
-  for (let i = arr.length - 1; i >= 0; --i) {
-    let found = false;
+//   return true;
+// }
 
-    for (let j = 3; j <= n + 2; ++j) {
-      const isInSet = polygonals.get(j).get(arr[i]);
+// function getPolygonalTypes(arr, polygonals, n) {
+//   const types = [];
 
-      if (isInSet) {
-        // console.log(type)
-        found = true;
-        types.push([isInSet, j]);
-      }
-    }
+//   for (let i = arr.length - 1; i >= 0; --i) {
+//     let found = false;
 
-    if (!found) return null;
-  }
+//     for (let j = 3; j <= n + 2; ++j) {
+//       const isInSet = polygonals.get(j).get(arr[i]);
 
-  return types;
-}
+//       if (isInSet) {
+//         // console.log(type)
+//         found = true;
+//         types.push([isInSet, j]);
+//       }
+//     }
 
-function cyclicalFigurateNums(n) {
-  const polygonals = {};
-  const relation = {};
+//     if (!found) return null;
+//   }
 
-  for (let i = 3; i <= n + 2; ++i) {
-    const { polygonal, min, max } = pickPolygonal(i);
-    const polygonalNums = [];
+//   return types;
+// }
 
-    for (let j = min; j <= max; ++j) {
-      const p = polygonal(j);
-      polygonalNums.push(p);
-    }
+// function cyclicalFigurateNums(n) {
+//   const polygonals = {};
+//   const relation = {};
 
-    polygonals[i] = polygonalNums;
-  }
+//   for (let i = 3; i <= n + 2; ++i) {
+//     const { polygonal, min, max } = pickPolygonal(i);
+//     const polygonalNums = [];
 
-  for (let i = 3; i <= n + 2; ++i) {
-    for (let j = 0; j < polygonals[i].length; ++j) {
-      const lastTwoDigits = polygonals[i][j] % 100;
-      const key = i + " " + polygonals[i][j];
+//     for (let j = min; j <= max; ++j) {
+//       const p = polygonal(j);
+//       polygonalNums.push(p);
+//     }
 
-      relation[key] = [];
+//     polygonals[i] = polygonalNums;
+//   }
 
-      for (let k = 3; k <= n + 2; ++k) {
-        if (k === i) continue;
+//   for (let i = 3; i <= n + 2; ++i) {
+//     for (let j = 0; j < polygonals[i].length; ++j) {
+//       const lastTwoDigits = polygonals[i][j] % 100;
+//       const key = i + " " + polygonals[i][j];
 
-        for (let l = 0; l < polygonals[k].length; ++l) {
-          const firstTwoDigits = parseInt(polygonals[k][l] / 100);
+//       relation[key] = [];
 
-          if (lastTwoDigits === firstTwoDigits) {
-            relation[key].push([k, polygonals[k][l]]);
-          }
-        }
-      }
-    }
-  }
+//       for (let k = 3; k <= n + 2; ++k) {
+//         if (k === i) continue;
 
-  const set = createSet(n, [], relation, Object.keys(relation)).reduce((acc, val) => {
-    const poly = parseInt(val.slice(2));
+//         for (let l = 0; l < polygonals[k].length; ++l) {
+//           const firstTwoDigits = parseInt(polygonals[k][l] / 100);
 
-    return acc + poly;
-  }, 0);
+//           if (lastTwoDigits === firstTwoDigits) {
+//             relation[key].push([k, polygonals[k][l]]);
+//           }
+//         }
+//       }
+//     }
+//   }
 
-  console.log(createSet(n, [], relation, Object.keys(relation)), set);
-  return set;
-}
+//   const set = createSet(n, [], relation, Object.keys(relation)).reduce((acc, val) => {
+//     const poly = parseInt(val.slice(2));
 
-function createSet(n, arr, relation, keys) {
-  if (arr.length === n) {
-    for (let i = 0; i < arr.length; ++i) {
-      if (i === arr.length - 1) {
-        const x = arr.at(-1).slice(2);
-        const y = arr.at(0).slice(2);
+//     return acc + poly;
+//   }, 0);
 
-        const lastDigits = parseInt(Number(x)) % 100;
-        const firstDigits = parseInt(y / 100);
+//   console.log(createSet(n, [], relation, Object.keys(relation)), set);
+//   return set;
+// }
 
-        if (lastDigits === firstDigits) {
-          console.log(arr);
-          return arr;
-        }
+// function createSet(n, arr, relation, keys) {
+//   if (arr.length === n) {
+//     for (let i = 0; i < arr.length; ++i) {
+//       if (i === arr.length - 1) {
+//         const x = arr.at(-1).slice(2);
+//         const y = arr.at(0).slice(2);
 
-        arr.pop();
-        return;
-      }
+//         const lastDigits = parseInt(Number(x)) % 100;
+//         const firstDigits = parseInt(y / 100);
 
-      const [type1, polygonal1] = arr[i].split(" ");
-      const [type2, polygonal2] = arr[i + 1].split(" ");
+//         if (lastDigits === firstDigits) {
+//           console.log(arr);
+//           return arr;
+//         }
 
-      if (type1 == type2) break;
+//         arr.pop();
+//         return;
+//       }
 
-      const lastNum = parseInt(polygonal1) % 100;
-      const firstNum = parseInt(polygonal2 / 100);
+//       const [type1, polygonal1] = arr[i].split(" ");
+//       const [type2, polygonal2] = arr[i + 1].split(" ");
 
-      if (lastNum !== firstNum) break;
-    }
+//       if (type1 == type2) break;
 
-    arr.pop();
-    return;
-  }
+//       const lastNum = parseInt(polygonal1) % 100;
+//       const firstNum = parseInt(polygonal2 / 100);
 
-  for (let i = 0; i < keys.length; ++i) {
-    const key = keys[i];
+//       if (lastNum !== firstNum) break;
+//     }
 
-    arr.push(key);
+//     arr.pop();
+//     return;
+//   }
 
-    for (let j = 0; j < relation[key].length; ++j) {
-      if (relation[key].length < n - 1) break;
+//   for (let i = 0; i < keys.length; ++i) {
+//     const key = keys[i];
 
-      const r = createSet(n, arr, relation, [relation[key][j].join(" ")]);
+//     arr.push(key);
 
-      if (r) return r;
-    }
+//     for (let j = 0; j < relation[key].length; ++j) {
+//       if (relation[key].length < n - 1) break;
 
-    arr.pop();
-  }
-}
+//       const r = createSet(n, arr, relation, [relation[key][j].join(" ")]);
 
-function pickPolygonal(n) {
-  switch (n) {
-    case 3:
-      return { polygonal: P3, min: 45, max: 140 };
-    case 4:
-      return { polygonal: P4, min: 32, max: 99 };
-    case 5:
-      return { polygonal: P5, min: 26, max: 81 };
-    case 6:
-      return { polygonal: P6, min: 23, max: 70 };
-    case 7:
-      return { polygonal: P7, min: 21, max: 63 };
-    case 8:
-      return { polygonal: P8, min: 19, max: 58 };
-  }
-}
+//       if (r) return r;
+//     }
 
-function P3(n) {
-  return (n * (n + 1)) / 2;
-}
+//     arr.pop();
+//   }
+// }
 
-function P4(n) {
-  return n * n;
-}
+// function pickPolygonal(n) {
+//   switch (n) {
+//     case 3:
+//       return { polygonal: P3, min: 45, max: 140 };
+//     case 4:
+//       return { polygonal: P4, min: 32, max: 99 };
+//     case 5:
+//       return { polygonal: P5, min: 26, max: 81 };
+//     case 6:
+//       return { polygonal: P6, min: 23, max: 70 };
+//     case 7:
+//       return { polygonal: P7, min: 21, max: 63 };
+//     case 8:
+//       return { polygonal: P8, min: 19, max: 58 };
+//   }
+// }
 
-function P5(n) {
-  return (n * (3 * n - 1)) / 2;
-}
+// function P3(n) {
+//   return (n * (n + 1)) / 2;
+// }
 
-function P6(n) {
-  return n * (2 * n - 1);
-}
+// function P4(n) {
+//   return n * n;
+// }
 
-function P7(n) {
-  return (n * (5 * n - 3)) / 2;
-}
+// function P5(n) {
+//   return (n * (3 * n - 1)) / 2;
+// }
 
-function P8(n) {
-  return n * (3 * n - 2);
-}
+// function P6(n) {
+//   return n * (2 * n - 1);
+// }
+
+// function P7(n) {
+//   return (n * (5 * n - 3)) / 2;
+// }
+
+// function P8(n) {
+//   return n * (3 * n - 2);
+// }
