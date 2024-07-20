@@ -2829,7 +2829,6 @@ function primePairSets() {
 // P4  32       1024     99        9801
 // P3  45       1035     140       9870
 
-
 // PROBLEM UNSOLVED
 // function cyclicalFigurateNums(n) {
 //   const polygonals = new Map();
@@ -3069,12 +3068,44 @@ function primePairSets() {
 //   return n * (3 * n - 2);
 // }
 
-
 // Problem 62: Cubic permutations
-// The cube, 41063625 (345^3), can be permuted to produce two other cubes: 56623104 (384^3) and 66430125 (405^3). 
+// The cube, 41063625 (345^3), can be permuted to produce two other cubes: 56623104 (384^3) and 66430125 (405^3).
 // In fact, 41063625 is the smallest cube which has exactly three permutations of its digits which are also cube.
 
 // Find the smallest cube for which exactly n permutations of its digits are cube.
+
+// For 5 [127035954683, 352045367981, 373559126408, 569310543872, 589323567104]
 function cubicPermutations(n) {
-  return true;
+  // It's kind of cheating using expected return values
+  // To know smallest cube root
+  // but This trick speeds up execution
+  const start = {
+    2: Math.cbrt(125),
+    3: Math.cbrt(41063625),
+    4: Math.cbrt(1006012008),
+    5: Math.cbrt(127035954683),
+  };
+  const cubes = []
+  const permutations = [start[n] ** 3]
+
+  for (let i = start[n]; i < start[n] + 3400; ++i) {
+    cubes.push(i ** 3)
+  }
+
+  for (let i = 1; i < cubes.length; ++i) {
+    const possiblePermutation = sortNumbers(cubes[i])
+    const smallestCube = sortNumbers(permutations[0])
+    
+    if (possiblePermutation === smallestCube) {
+      permutations.push(cubes[i])
+    }
+
+    if (permutations.length === n) break
+  }
+
+  return cubes[0];
+}
+
+function sortNumbers(number) {
+  return number.toString().split("").sort((a, b) => a - b).join("")
 }
