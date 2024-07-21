@@ -3075,7 +3075,7 @@ function primePairSets() {
 // Find the smallest cube for which exactly n permutations of its digits are cube.
 
 // For 5 [127035954683, 352045367981, 373559126408, 569310543872, 589323567104]
-function cubicPermutations(n) {
+function cubicPermutations(n: number) {
   // It's kind of cheating using expected return values
   // To know smallest cube root
   // but This trick speeds up execution
@@ -3085,7 +3085,7 @@ function cubicPermutations(n) {
     4: Math.cbrt(1006012008),
     5: Math.cbrt(127035954683),
   };
-  const cubes = []
+  const cubes: number[] = []
   const permutations = [start[n] ** 3]
 
   for (let i = start[n]; i < start[n] + 3400; ++i) {
@@ -3106,6 +3106,6 @@ function cubicPermutations(n) {
   return cubes[0];
 }
 
-function sortNumbers(number) {
-  return number.toString().split("").sort((a, b) => a - b).join("")
+function sortNumbers(number: number) {
+  return number.toString().split("").sort((a, b) => Number(a) - Number(b)).join("")
 }
