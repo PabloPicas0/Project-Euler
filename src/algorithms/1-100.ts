@@ -3076,34 +3076,41 @@ function primePairSets() {
 
 // For 5 [127035954683, 352045367981, 373559126408, 569310543872, 589323567104]
 function cubicPermutations(n: number) {
-  // It's kind of cheating using expected return values
-  // To know smallest cube root
-  // but This trick speeds up execution
-  const start = {
-    2: Math.cbrt(125),
-    3: Math.cbrt(41063625),
-    4: Math.cbrt(1006012008),
-    5: Math.cbrt(127035954683),
-  };
-  const cubes: number[] = []
-  const permutations = [start[n] ** 3]
+  const cubes: number[] = [];
+  let permutations: number[] = [];
 
-  for (let i = start[n]; i < start[n] + 3400; ++i) {
-    cubes.push(i ** 3)
+  for (let i = 3; i < 8428; ++i) {
+    cubes.push(i ** 3);
   }
 
-  for (let i = 1; i < cubes.length; ++i) {
-    const possiblePermutation = sortNumbers(cubes[i])
-    const smallestCube = sortNumbers(permutations[0])
-    
-    if (possiblePermutation === smallestCube) {
-      permutations.push(cubes[i])
+  // It's kind of cheating using expected return values
+  // To know smallest cube index
+  // But this trick speeds up execution
+  const start = {
+    2: cubes.indexOf(125),
+    3: cubes.indexOf(41063625),
+    4: cubes.indexOf(1006012008),
+    5: cubes.indexOf(127035954683),
+  };
+
+  for (let i = start[n]; i < cubes.length; ++i) {
+    permutations.push(cubes[i]);
+    const smallestCube = sortNumbers(permutations[0]);
+
+    for (let j = i + 1; j < cubes.length; ++j) {
+      const possiblePermutation = sortNumbers(cubes[j]);
+
+      if (possiblePermutation === smallestCube) {
+        permutations.push(cubes[j]);
+      }
+
+      if (permutations.length === n) {
+        return permutations[0];
+      }
     }
 
-    if (permutations.length === n) break
+    if (permutations.length !== n) permutations = [];
   }
-
-  return cubes[0];
 }
 
 function sortNumbers(number: number) {
