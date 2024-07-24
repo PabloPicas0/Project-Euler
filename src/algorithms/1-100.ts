@@ -1337,7 +1337,7 @@ function digitFactorial() {
 // Note:
 
 // Circular primes individual rotation can exceed n.
-function circularPrimes(n) {
+function circularPrimes(n: number) {
   const primes = [2, 3, 5, 7, 11, 13, 17, 31, 37, 71, 73, 79, 97];
 
   if (n === 100) return primes.length;
