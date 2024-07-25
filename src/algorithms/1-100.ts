@@ -3126,5 +3126,21 @@ function sortNumbers(number: number) {
 
 // Complete the function so that it returns how many positive integers are of length n and an nth power.
 function powerfulDigitCounts(n) {
-  return true;
+  let count = 0;
+  let x = 1;
+
+  while (true) {
+    const number = BigInt(x ** n);
+    const length = number.toString().length;
+
+    if (length === n) {
+      count += 1;
+    }
+
+    if (length > n) break;
+
+    ++x;
+  }
+
+  return count;
 }
