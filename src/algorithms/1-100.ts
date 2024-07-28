@@ -3205,64 +3205,45 @@ function powerfulDigitCounts(n: number) {
 
 // How many continued fractions for  N ≤ n have an odd period?
 
+// Good source to help with this problem
+// https://stackoverflow.com/questions/12182701/generating-continued-fractions-for-square-roots
 function oddPeriodSqrts(n) {
   // Periods of first ten continued fraction
   // Representations square roots
   const periods = [1, 2, 1, 2, 4, 2, 1, 2, 2, 5];
-  let N = 13;
+  let N = 14;
 
   while (N <= n) {
-    const start = Math.sqrt(N);
-    const sequence = getSequence(start, []);
-    const period = findPeriod(sequence);
-    console.log(sequence, period);
+    const sqrt = Math.sqrt(N);
+
+    if (Number.isInteger(sqrt)) {
+      ++N;
+      continue;
+    }
+
+    const sequence = getSequence(N);
+    const period = sequence.length - 1;
+
     periods.push(period);
 
     ++N;
   }
-  // console.log(periods.filter(isOdd), periods.filter(isOdd).length)
-  return periods.length;
+
+  return periods.filter(isOdd).length;
 }
 
-function getSequence(start, sequence) {
-  if (sequence.length === 9) return sequence;
+function getSequence(num, sqrt = Math.sqrt(num), sequence = [~~sqrt], a = ~~sqrt, b = 0, c = 1) {
+  const intPart = Math.trunc(sqrt);
 
-  const intPart = Math.floor(start);
-  const decimalPart = start % 1;
+  const B = a * c - b;
+  const C = Math.trunc((num - B * B) / c);
+  const A = Math.trunc((intPart + B) / C);
 
-  if (decimalPart === 0) {
-    sequence.push(intPart);
-    return sequence;
-  }
+  sequence.push(A);
 
-  const recipricial = 1 / decimalPart;
+  if (C === 1) return sequence;
 
-  sequence.push(intPart);
-
-  // console.log(start,intPart,decimalPart, recipricial)
-  // console.log(sequence)
-  return getSequence(recipricial, sequence);
-}
-
-function findPeriod(arr) {
-  let n = arr.length;
-
-  for (let period = 2; period <= n / 2; ++period) {
-    let isPattern = true;
-
-    for (let i = 1; i < n - period; i++) {
-      if (arr[i] !== arr[i + period]) {
-        isPattern = false;
-        break;
-      }
-    }
-
-    if (isPattern) {
-      return period;
-    }
-  }
-
-  return n; // If no period is found, the period is the length of the array
+  return getSequence(num, sqrt, sequence, A, B, C);
 }
 
 function isOdd(number) {
