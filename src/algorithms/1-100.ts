@@ -3324,3 +3324,112 @@ function convergentsOfE(n) {
     .split("")
     .reduce((acc, num) => acc + Number(num), 0);
 }
+
+// Problem 66: Diophantine equation
+// Consider quadratic Diophantine equations of the form:
+
+// x2 – Dy2 = 1
+// For example, when D=13, the minimal solution in x is 6492 – 13×1802 = 1.
+
+// It can be assumed that there are no solutions in positive integers when D is square.
+
+// By finding minimal solutions in x for D = {2, 3, 5, 6, 7}, we obtain the following:
+
+// 32 – 2×22 = 1
+// 22 – 3×12 = 1
+// 92 – 5×42 = 1
+// 52 – 6×22 = 1
+// 82 – 7×32 = 1
+// Hence, by considering minimal solutions in x for D ≤ 7, the largest x is obtained when D=5.
+
+// Find the value of D ≤ n in minimal solutions of x for which the largest value of x is obtained.
+function diophantineEquation(n) {
+  const D = [];
+  const solutions = [0, 0];
+
+  for (let i = 2; i <= n; ++i) {
+    const sqrt = Math.sqrt(i);
+    const isPerfectSqrt = Number.isInteger(sqrt);
+
+    if (isPerfectSqrt) continue;
+
+    D.push(i);
+  }
+
+  for (let i = 0; i < D.length; ++i) {
+    let x = 2;
+
+    while (true) {
+      let y = 1;
+      let diophantineFound = false;
+
+      while (y <= x) {
+        const isDiophantine = x ** 2 - D[i] * y ** 2 === 1;
+
+        if (isDiophantine) {
+          const [largestX, _] = solutions;
+          console.log("x:", x, "D:", D[i], "y:", y);
+
+          if (largestX < x) {
+            solutions[0] = x;
+            solutions[1] = D[i];
+          }
+
+          diophantineFound = true;
+          break;
+        }
+
+        ++y;
+      }
+
+      if (diophantineFound) break;
+
+      ++x;
+    }
+  }
+  console.log(solutions);
+  return solutions[1];
+}
+
+
+function diophantineEquation(n) {
+  const D = [];
+  const solutions = [0, 0];
+
+  for (let i = 2; i <= n; ++i) {
+    const sqrt = Math.sqrt(i);
+    const isPerfectSqrt = Number.isInteger(sqrt);
+
+    if (isPerfectSqrt) continue;
+
+    D.push(i);
+  }
+
+  for (let i = 0; i < D.length; ++i) {
+    const n = D[i];
+    let sequence = getSequence(n);
+    const p = sequence.length - 1;
+
+    if (isEven(p)) {
+      sequence.pop();
+    } else {
+      const seqCopy = sequence.slice(1, p + 1);
+      sequence = [...sequence, ...seqCopy];
+      sequence.pop();
+    }
+
+    console.log(sequence, D[i]);
+  }
+
+  return solutions[1];
+}
+
+function denoteSequence(sequence, i, acc) {
+  const current = sequence[i] + acc;
+
+  if (i === 0) return current;
+
+  const next = 1 / current;
+
+  return denoteSequence(sequence, i - 1, next);
+}
