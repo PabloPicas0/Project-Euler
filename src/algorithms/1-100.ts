@@ -3393,36 +3393,71 @@ function diophantineEquation(n) {
 
 
 function diophantineEquation(n) {
-  const D = [];
+  const D = getDValues(n);
   const solutions = [0, 0];
-
-  for (let i = 2; i <= n; ++i) {
-    const sqrt = Math.sqrt(i);
-    const isPerfectSqrt = Number.isInteger(sqrt);
-
-    if (isPerfectSqrt) continue;
-
-    D.push(i);
-  }
+  let d = 0;
 
   for (let i = 0; i < D.length; ++i) {
-    const n = D[i];
-    let sequence = getSequence(n);
-    const p = sequence.length - 1;
+    const k = 61; // Change to D[i]
+    let sequence = getSequence(k);
+    const slength = sequence.length - 1;
 
-    if (isEven(p)) {
+    if (isEven(slength)) {
       sequence.pop();
     } else {
-      const seqCopy = sequence.slice(1, p + 1);
-      sequence = [...sequence, ...seqCopy];
-      sequence.pop();
+      const seqCopy = sequence.slice(1, slength + 1);
+      sequence = [...sequence];
+      // sequence.pop()
     }
 
-    console.log(sequence, D[i]);
+    const p = sequence.length - 1;
+    const denoted = denoteSequence(sequence, p - 1, 1 / sequence[p]);
+    const fract = decimalToFraction(denoted, false)
+      .split("/")
+      .map((num) => Number(num));
+
+    if (fract.length === 1) fract.push(1);
+
+    const [currentX, currentY] = fract;
+    const [x, y] = solutions;
+    const pellsEquation = currentX ** 2 - 61 * currentY ** 2;
+    // const isPells = isPellsEquation(sequence)
+
+    if (x < currentX) {
+      solutions[0] = currentX;
+      solutions[1] = currentY;
+      d = D[i];
+    }
+    // console.log(x,y,currentX,currentY,d)
   }
 
-  return solutions[1];
+  return d;
 }
+
+function isPellsEquation(sequence, d) {
+  const newSequence = [...sequence];
+  const copy = newSequence.slice(1, newSequence.length);
+
+  newSequence.pop();
+
+  let pellsEquation = 0 ** 2 - 61 * 0 ** 2;
+
+  while (pellsEquation !== 1) {
+    const p = newSequence.length - 1;
+    const denoted = denoteSequence(newSequence, p - 1, 1 / newSequence[p]);
+    const [x, y] = decimalToFraction(denoted, false)
+      .split("/")
+      .map((num) => Number(num));
+
+    pellsEquation = x ** 2 - 61 * y ** 2;
+    newSequence.splice(1, 0, ...copy);
+  }
+
+  console.log(pellsEquation, sequence, newSequence);
+
+  return newSequence;
+}
+console.log(isPellsEquation(getSequence(2), 2));
 
 function denoteSequence(sequence, i, acc) {
   const current = sequence[i] + acc;
@@ -3433,3 +3468,89 @@ function denoteSequence(sequence, i, acc) {
 
   return denoteSequence(sequence, i - 1, next);
 }
+
+function getSequence(num, sqrt = Math.sqrt(num), sequence = [~~sqrt], a = ~~sqrt, b = 0, c = 1) {
+  const intPart = Math.trunc(sqrt);
+
+  const B = a * c - b;
+  const C = Math.trunc((num - B * B) / c);
+  const A = Math.trunc((intPart + B) / C);
+
+  sequence.push(A);
+
+  if (C === 1) return sequence;
+
+  return getSequence(num, sqrt, sequence, A, B, C);
+}
+
+function isEven(number) {
+  return number % 2 === 0;
+}
+
+function getDValues(n) {
+  const D = [];
+
+  for (let i = 2; i <= n; ++i) {
+    const sqrt = Math.sqrt(i);
+    const isPerfectSqrt = Number.isInteger(sqrt);
+
+    if (isPerfectSqrt) continue;
+
+    D.push(i);
+  }
+
+  return D;
+}
+
+/*
+Description: Convert a decimal number into a fraction
+Author: Michaël Niessen (© 2018)
+Website: http://AssemblySys.com
+
+If you find this script useful, you can show your
+appreciation by getting Michaël a cup of coffee ;)
+https://ko-fi.com/assemblysys
+
+As long as this notice (including author name and details) is included and
+UNALTERED, this code can be used and distributed freely.
+*/
+
+function decimalToFraction(value, donly = true) {
+  var tolerance = 1.0e-6; // from how many decimals the number is rounded
+  var h1 = 1;
+  var h2 = 0;
+  var k1 = 0;
+  var k2 = 1;
+  var negative = false;
+  var i;
+
+  if (parseInt(value) == value) {
+    // if value is an integer, stop the script
+    return value.toString();
+  } else if (value < 0) {
+    negative = true;
+    value = -value;
+  }
+
+  if (donly) {
+    i = parseInt(value);
+    value -= i;
+  }
+
+  var b = value;
+
+  do {
+    var a = Math.floor(b);
+    var aux = h1;
+    h1 = a * h1 + h2;
+    h2 = aux;
+    aux = k1;
+    k1 = a * k1 + k2;
+    k2 = aux;
+    b = 1 / (b - a);
+  } while (Math.abs(value - h1 / k1) > value * tolerance);
+
+  return (negative ? "-" : "") + (donly & (i != 0) ? i + " " : "") + (h1 == 0 ? "" : h1 + "/" + k1);
+}
+
+diophantineEquation(7);
