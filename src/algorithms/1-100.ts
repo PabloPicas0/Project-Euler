@@ -3344,143 +3344,66 @@ function convergentsOfE(n) {
 
 // Find the value of D ≤ n in minimal solutions of x for which the largest value of x is obtained.
 function diophantineEquation(n) {
-  const D = [];
-  const solutions = [0, 0];
-
-  for (let i = 2; i <= n; ++i) {
-    const sqrt = Math.sqrt(i);
-    const isPerfectSqrt = Number.isInteger(sqrt);
-
-    if (isPerfectSqrt) continue;
-
-    D.push(i);
-  }
-
-  for (let i = 0; i < D.length; ++i) {
-    let x = 2;
-
-    while (true) {
-      let y = 1;
-      let diophantineFound = false;
-
-      while (y <= x) {
-        const isDiophantine = x ** 2 - D[i] * y ** 2 === 1;
-
-        if (isDiophantine) {
-          const [largestX, _] = solutions;
-          console.log("x:", x, "D:", D[i], "y:", y);
-
-          if (largestX < x) {
-            solutions[0] = x;
-            solutions[1] = D[i];
-          }
-
-          diophantineFound = true;
-          break;
-        }
-
-        ++y;
-      }
-
-      if (diophantineFound) break;
-
-      ++x;
-    }
-  }
-  console.log(solutions);
-  return solutions[1];
-}
-
-
-function diophantineEquation(n) {
   const D = getDValues(n);
-  const solutions = [0, 0];
-  let d = 0;
+  const solutions = [0n, 0n];
+  let dValue = 0n;
 
   for (let i = 0; i < D.length; ++i) {
-    const k = 61; // Change to D[i]
+    const k = D[i];
     let sequence = getSequence(k);
-    const slength = sequence.length - 1;
+    const [x, y, d] = getMinimalSolutions(sequence, BigInt(k));
+    const [currentX, currentY] = solutions;
 
-    if (isEven(slength)) {
-      sequence.pop();
-    } else {
-      const seqCopy = sequence.slice(1, slength + 1);
-      sequence = [...sequence];
-      // sequence.pop()
+    if (x > currentX) {
+      solutions[0] = x;
+      solutions[1] = y;
+      dValue = d;
     }
-
-    const p = sequence.length - 1;
-    const denoted = denoteSequence(sequence, p - 1, 1 / sequence[p]);
-    const fract = decimalToFraction(denoted, false)
-      .split("/")
-      .map((num) => Number(num));
-
-    if (fract.length === 1) fract.push(1);
-
-    const [currentX, currentY] = fract;
-    const [x, y] = solutions;
-    const pellsEquation = currentX ** 2 - 61 * currentY ** 2;
-    // const isPells = isPellsEquation(sequence)
-
-    if (x < currentX) {
-      solutions[0] = currentX;
-      solutions[1] = currentY;
-      d = D[i];
-    }
-    // console.log(x,y,currentX,currentY,d)
   }
 
-  return d;
+  return Number(dValue.toString());
 }
 
-function isPellsEquation(sequence, d) {
+function getMinimalSolutions(sequence, d) {
   const newSequence = [...sequence];
   const copy = newSequence.slice(1, newSequence.length);
+  const slength = newSequence.length - 1;
 
-  newSequence.pop();
-
-  let pellsEquation = 0 ** 2 - 61 * 0 ** 2;
-
-  while (pellsEquation !== 1) {
-    const p = newSequence.length - 1;
-    const denoted = denoteSequence(newSequence, p - 1, 1 / newSequence[p]);
-    const [x, y] = decimalToFraction(denoted, false)
-      .split("/")
-      .map((num) => Number(num));
-
-    pellsEquation = x ** 2 - 61 * y ** 2;
+  if (isEven(slength)) {
+    newSequence.pop();
+  } else {
     newSequence.splice(1, 0, ...copy);
+    newSequence.pop();
   }
 
-  console.log(pellsEquation, sequence, newSequence);
+  let pellsEquation = bigIntPower(0, 2) - d * bigIntPower(0, 2);
 
-  return newSequence;
+  while (pellsEquation !== 1n) {
+    const p = newSequence.length - 1;
+    const start = decimalToFraction(1 / newSequence[p], false);
+    const [x, y] = denoteSequence(newSequence, p - 1, start)
+      .split("/")
+      .map((num) => BigInt(num));
+
+    pellsEquation = bigIntPower(x, 2) - d * bigIntPower(y, 2);
+
+    if (pellsEquation === 1n) return [x, y, d];
+
+    newSequence.splice(1, 0, ...copy);
+  }
 }
-console.log(isPellsEquation(getSequence(2), 2));
 
-function denoteSequence(sequence, i, acc) {
-  const current = sequence[i] + acc;
+function denoteSequence(sequence, i, start) {
+  const s = intToFraction(sequence[i], start);
 
-  if (i === 0) return current;
+  const nr = start.split("/").map((num) => BigInt(num));
+  const ns = s.split("/").map((num) => BigInt(num));
 
-  const next = 1 / current;
+  const cn = addFractions(nr, ns).split("/").reverse().join("/");
 
-  return denoteSequence(sequence, i - 1, next);
-}
+  if (i === 0) return cn.split("/").reverse().join("/");
 
-function getSequence(num, sqrt = Math.sqrt(num), sequence = [~~sqrt], a = ~~sqrt, b = 0, c = 1) {
-  const intPart = Math.trunc(sqrt);
-
-  const B = a * c - b;
-  const C = Math.trunc((num - B * B) / c);
-  const A = Math.trunc((intPart + B) / C);
-
-  sequence.push(A);
-
-  if (C === 1) return sequence;
-
-  return getSequence(num, sqrt, sequence, A, B, C);
+  return denoteSequence(sequence, i - 1, cn);
 }
 
 function isEven(number) {
@@ -3500,6 +3423,22 @@ function getDValues(n) {
   }
 
   return D;
+}
+
+// NOTE fraction need to have same denominator
+function addFractions(fract1, fract2) {
+  const [num1, den1] = fract1.map((num) => BigInt(num));
+  const [num2, den2] = fract2.map((num) => BigInt(num));
+
+  return `${num1 + num2}/${den2}`;
+}
+
+function intToFraction(integer, fract) {
+  integer = BigInt(integer);
+
+  const [num, den] = fract.split("/").map((num) => BigInt(num));
+
+  return `${integer * den}/${den}`;
 }
 
 /*
@@ -3525,8 +3464,8 @@ function decimalToFraction(value, donly = true) {
   var i;
 
   if (parseInt(value) == value) {
-    // if value is an integer, stop the script
-    return value.toString();
+    // if value is an integer, change it to fraction and stop function
+    return `${value}/1`;
   } else if (value < 0) {
     negative = true;
     value = -value;
@@ -3552,5 +3491,3 @@ function decimalToFraction(value, donly = true) {
 
   return (negative ? "-" : "") + (donly & (i != 0) ? i + " " : "") + (h1 == 0 ? "" : h1 + "/" + k1);
 }
-
-diophantineEquation(7);
