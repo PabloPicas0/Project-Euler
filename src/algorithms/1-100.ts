@@ -3343,7 +3343,7 @@ function convergentsOfE(n) {
 // Hence, by considering minimal solutions in x for D ≤ 7, the largest x is obtained when D=5.
 
 // Find the value of D ≤ n in minimal solutions of x for which the largest value of x is obtained.
-function diophantineEquation(n) {
+function diophantineEquation(n: number) {
   const D = getDValues(n);
   const solutions = [0n, 0n];
   let dValue = 0n;
@@ -3364,7 +3364,7 @@ function diophantineEquation(n) {
   return Number(dValue.toString());
 }
 
-function getMinimalSolutions(sequence, d) {
+function getMinimalSolutions(sequence: number[], d: bigint) {
   const newSequence = [...sequence];
   const copy = newSequence.slice(1, newSequence.length);
   const slength = newSequence.length - 1;
@@ -3393,7 +3393,7 @@ function getMinimalSolutions(sequence, d) {
   }
 }
 
-function denoteSequence(sequence, i, start) {
+function denoteSequence(sequence: number[], i: number, start: string) {
   const s = intToFraction(sequence[i], start);
 
   const nr = start.split("/").map((num) => BigInt(num));
@@ -3406,12 +3406,12 @@ function denoteSequence(sequence, i, start) {
   return denoteSequence(sequence, i - 1, cn);
 }
 
-function isEven(number) {
+function isEven(number: number) {
   return number % 2 === 0;
 }
 
-function getDValues(n) {
-  const D = [];
+function getDValues(n: number) {
+  const D: number[] = [];
 
   for (let i = 2; i <= n; ++i) {
     const sqrt = Math.sqrt(i);
@@ -3426,14 +3426,14 @@ function getDValues(n) {
 }
 
 // NOTE fraction need to have same denominator
-function addFractions(fract1, fract2) {
+function addFractions(fract1: bigint[], fract2: bigint[]) {
   const [num1, den1] = fract1.map((num) => BigInt(num));
   const [num2, den2] = fract2.map((num) => BigInt(num));
 
   return `${num1 + num2}/${den2}`;
 }
 
-function intToFraction(integer, fract) {
+function intToFraction(integer: number | bigint, fract: string) {
   integer = BigInt(integer);
 
   const [num, den] = fract.split("/").map((num) => BigInt(num));
@@ -3454,16 +3454,16 @@ As long as this notice (including author name and details) is included and
 UNALTERED, this code can be used and distributed freely.
 */
 
-function decimalToFraction(value, donly = true) {
+function decimalToFraction(value: number, donly = true) {
   var tolerance = 1.0e-6; // from how many decimals the number is rounded
   var h1 = 1;
   var h2 = 0;
   var k1 = 0;
   var k2 = 1;
   var negative = false;
-  var i;
+  var i: number;
 
-  if (parseInt(value) == value) {
+  if (Number.isInteger(value)) {
     // if value is an integer, change it to fraction and stop function
     return `${value}/1`;
   } else if (value < 0) {
@@ -3472,7 +3472,7 @@ function decimalToFraction(value, donly = true) {
   }
 
   if (donly) {
-    i = parseInt(value);
+    i = value;
     value -= i;
   }
 
