@@ -3646,5 +3646,37 @@ function sum(k) {
 
 // Find the value of n ≤ limit for which n/ϕ(n) is a maximum.
 function totientMaximum(limit) {
-  return true;
+  let maxKnown = 0;
+  let maxN = 0;
+
+  for (let n = 2; n <= limit; ++n) {
+    const current = n / phi(n);
+
+    if (current > maxKnown) {
+      maxKnown = current;
+      maxN = n;
+    }
+  }
+
+  return maxN;
+}
+
+// Euler's formula time complexity O(Φn*log n)
+// Euler's formula auxiliary space O(1)
+function phi(n) {
+  let result = n;
+
+  for (let i = 2; i * i < n; ++i) {
+    if (n % i === 0) {
+      while (n % i === 0) {
+        n /= i;
+      }
+
+      result *= 1 - 1 / i;
+    }
+  }
+
+  if (n > 1) result -= result / n;
+
+  return parseInt(result);
 }
