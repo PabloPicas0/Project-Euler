@@ -3645,7 +3645,7 @@ function sum(k) {
 // It can be seen that n = 6 produces a maximum n/ϕ(n) for n ≤ 10.
 
 // Find the value of n ≤ limit for which n/ϕ(n) is a maximum.
-function totientMaximum(limit) {
+function totientMaximum(limit: number) {
   let maxKnown = 0;
   let maxN = 0;
 
@@ -3663,7 +3663,7 @@ function totientMaximum(limit) {
 
 // Euler's formula time complexity O(Φn*log n)
 // Euler's formula auxiliary space O(1)
-function phi(n) {
+function phi(n: number) {
   let result = n;
 
   for (let i = 2; i * i < n; ++i) {
@@ -3678,7 +3678,7 @@ function phi(n) {
 
   if (n > 1) result -= result / n;
 
-  return parseInt(result);
+  return parseInt(result.toString());
 }
 
 // Problem 70: Totient permutation
@@ -3692,7 +3692,7 @@ function phi(n) {
 
 // Find the value of n, 1 < n < limit, for which ϕ(n)
 // Is a permutation of n and the ratio n/ϕ(n) produces a minimum.
-function totientPermutation(limit) {
+function totientPermutation(limit: number) {
   const primes = sieve(limit);
   let minimumRatio = 999;
   let nValue = 0;
@@ -3717,7 +3717,7 @@ function totientPermutation(limit) {
   return nValue;
 }
 
-function isPermutation(original, permutation) {
+function isPermutation(original: number, permutation: number) {
   if (!original || !permutation) console.error("Enter all arguments");
 
   const str1 = original.toString();
@@ -3742,5 +3742,29 @@ function isPermutation(original, permutation) {
 // By listing the set of reduced proper fractions for d ≤ limit in ascending order of size, 
 // Find the numerator of the fraction immediately to the left of 3/7
 function orderedFractions(limit) {
-  return true;
+  const set = [];
+
+  for (let n = 1; n < limit; ++n) {
+    for (let d = limit; d > 1; --d) {
+      if (d < n || gcd(n, d) !== 1) continue;
+
+      const fractionAsDecimal = n / d;
+      const fraction = n + "/" + d;
+
+      set.push([fraction, fractionAsDecimal]);
+    }
+  }
+
+  const searchedFractionIndex = set.sort((a, b) => a[1] - b[1]).findIndex((fract) => fract[0] === "3/7") - 1;
+
+  console.log(Number(set[searchedFractionIndex][0].split("/")[0]));
+  return Number(set[searchedFractionIndex][0].split("/")[0]);
+}
+
+function gcd(a, b) {
+  if (!b) {
+    return a;
+  }
+
+  return gcd(b, a % b);
 }
