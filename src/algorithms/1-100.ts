@@ -3666,7 +3666,7 @@ function totientMaximum(limit: number) {
 function phi(n: number) {
   let result = n;
 
-  for (let i = 2; i * i < n; ++i) {
+  for (let i = 2; i * i <= n; ++i) {
     if (n % i === 0) {
       while (n % i === 0) {
         n /= i;
@@ -3682,8 +3682,8 @@ function phi(n: number) {
 }
 
 // Problem 70: Totient permutation
-// Euler's Totient function, ϕ(n) (sometimes called the phi function), 
-// Is used to determine the number of positive numbers less than or equal to n which are relatively prime to n. 
+// Euler's Totient function, ϕ(n) (sometimes called the phi function),
+// Is used to determine the number of positive numbers less than or equal to n which are relatively prime to n.
 // For example, as 1, 2, 4, 5, 7, and 8, are all less than nine and relatively prime to nine, ϕ(9)=6
 // The number 1 is considered to be relatively prime to every positive number, so ϕ(1)=1
 
@@ -3726,7 +3726,7 @@ function isPermutation(original: number, permutation: number) {
   if (str1.length !== str2.length) return false;
 
   return str1.split("").sort().join("") === str2.split("").sort().join("");
-} 
+}
 
 // Problem 71: Ordered fractions
 // Consider the fraction, n/d
@@ -3736,10 +3736,10 @@ function isPermutation(original: number, permutation: number) {
 // If we list the set of reduced proper fractions for d ≤ 8 in ascending order of size, we get:
 
 // 1/8, 1/7, 1/6, 1/5, 1/4, 2/7, 1/3, 3/8, 2/5, 3/7, 1/2, 4/7, 3/5, 5/8, 2/3, 5/7, 3/4, 4/5, 5/6, 6/7, 7/8
- 
+
 // It can be seen that 2/5 is the fraction immediately to the left of  3/7
 
-// By listing the set of reduced proper fractions for d ≤ limit in ascending order of size, 
+// By listing the set of reduced proper fractions for d ≤ limit in ascending order of size,
 // Find the numerator of the fraction immediately to the left of 3/7
 function orderedFractions(limit) {
   const set = [];
@@ -3767,4 +3767,61 @@ function gcd(a, b) {
   }
 
   return gcd(b, a % b);
+}
+
+function sbt(a = 0, b = 1, c = 1, d = 0, level = 1, limit) {
+  if (level > limit) return;
+
+  let x = a + c,
+    y = b + d;
+
+  console.log(x + "/" + y);
+
+  sbt(a, b, x, y, level + 1);
+  sbt(x, y, c, d, level + 1);
+}
+
+function getFareySeq(n) {
+  let x1 = 0,
+    y1 = 1,
+    x2 = 1,
+    y2 = n;
+  let x,
+    y = 0;
+  const seq = [];
+
+  // Initial sequence
+  seq.push([x2, y2]);
+
+  while (y !== 1) {
+    x = Math.floor((y1 + n) / y2) * x2 - x1;
+    y = Math.floor((y1 + n) / y2) * y2 - y1;
+
+    seq.push([x, y]);
+
+    x1 = x2;
+    x2 = x;
+    y1 = y2;
+    y2 = y;
+  }
+
+  seq.pop();
+
+  return seq;
+}
+
+// Problem 72: Counting fractions
+// Consider the fraction, n/d, where n and d are positive integers. If n < d and highest common factor, HCF(n,d)=1
+// It is called a reduced proper fraction.
+
+// If we list the set of reduced proper fractions for d ≤ 8 in ascending order of size, we get:
+
+// 1/8,1/7,1/6,1/5,1/4,2/7,1/3,3/8,2/5,3/7,1/2,4/7,3/5,5/8,2/3,5/7,3/4,4/5,5/6,6/7,7/8
+
+// It can be seen that there are 21 elements in this set.
+
+// How many elements would be contained in the set of reduced proper fractions for d ≤ limit?
+
+function countingFractions(limit) {
+  return true
 }
