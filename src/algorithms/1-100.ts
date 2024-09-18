@@ -3822,6 +3822,15 @@ function getFareySeq(n) {
 
 // How many elements would be contained in the set of reduced proper fractions for d ≤ limit?
 
+// Here you can find formula for sequence length
+// https://en.wikipedia.org/wiki/Farey_sequence#Sequence_length_and_index_of_a_fraction
 function countingFractions(limit) {
-  return true
+  let length = 1
+
+  for (let m = 1; m <= limit; ++m) {
+    length += phi(m)
+  }
+
+  // -2 for fractions like 0/1 and 1/1
+  return length - 2;
 }
