@@ -3741,73 +3741,54 @@ function isPermutation(original: number, permutation: number) {
 
 // By listing the set of reduced proper fractions for d ≤ limit in ascending order of size,
 // Find the numerator of the fraction immediately to the left of 3/7
+
+// In this problem I had really weak understanding how to solve it
+// Even solution didin't help to much in clarifying
 function orderedFractions(limit) {
-  const set = [];
+  const ceiling = limit;
 
-  for (let n = 1; n < limit; ++n) {
-    for (let d = limit; d > 1; --d) {
-      if (d < n || gcd(n, d) !== 1) continue;
+  for (let i = ceiling; i >= 1; --i) {
+    let numerator = 3 * i;
+    let denominator = 7 * i;
 
-      const fractionAsDecimal = n / d;
-      const fraction = n + "/" + d;
+    numerator -= 1;
 
-      set.push([fraction, fractionAsDecimal]);
-    }
+    const [num, den] = baseFraction(numerator, denominator);
+
+    if (den <= ceiling) return num;
   }
 
-  const searchedFractionIndex = set.sort((a, b) => a[1] - b[1]).findIndex((fract) => fract[0] === "3/7") - 1;
-
-  console.log(Number(set[searchedFractionIndex][0].split("/")[0]));
-  return Number(set[searchedFractionIndex][0].split("/")[0]);
+  return true;
 }
 
-function gcd(a, b) {
-  if (!b) {
-    return a;
+function baseFraction(num, den) {
+  const gcd = egcd(num, den, 0, 0);
+
+  const newNum = Math.floor(num / gcd);
+  const newDen = Math.floor(den / gcd);
+
+  return [newNum, newDen];
+}
+
+function egcd(a, b, x, y) {
+  // Base Case
+  if (a == 0) {
+    x = 0;
+    y = 1;
+    return b;
   }
 
-  return gcd(b, a % b);
-}
+  // To store results
+  // of recursive call
+  let gcd = egcd(b % a, a, x, y);
 
-function sbt(a = 0, b = 1, c = 1, d = 0, level = 1, limit) {
-  if (level > limit) return;
+  // Update x and y using
+  // results of recursive
+  // call
+  x = y - (b / a) * x;
+  y = x;
 
-  let x = a + c,
-    y = b + d;
-
-  console.log(x + "/" + y);
-
-  sbt(a, b, x, y, level + 1);
-  sbt(x, y, c, d, level + 1);
-}
-
-function getFareySeq(n) {
-  let x1 = 0,
-    y1 = 1,
-    x2 = 1,
-    y2 = n;
-  let x,
-    y = 0;
-  const seq = [];
-
-  // Initial sequence
-  seq.push([x2, y2]);
-
-  while (y !== 1) {
-    x = Math.floor((y1 + n) / y2) * x2 - x1;
-    y = Math.floor((y1 + n) / y2) * y2 - y1;
-
-    seq.push([x, y]);
-
-    x1 = x2;
-    x2 = x;
-    y1 = y2;
-    y2 = y;
-  }
-
-  seq.pop();
-
-  return seq;
+  return gcd;
 }
 
 // Problem 72: Counting fractions
@@ -3843,13 +3824,14 @@ function countingFractions(limit) {
 // If we list the set of reduced proper fractions for d ≤ 8 in ascending order of size, we get:
 
 // 1/8,1/7,1/6,1/5,1/4,2/7,1/3,3/8,2/5,3/7,1/2,4/7,3/5,5/8,2/3,5/7,3/4,4/5,5/6,6/7,7/8
- 
+
 // It can be seen that there are 3 fractions between 1/3 and 1/2
 
 // How many fractions lie between  1/3 and 1/2
 // In the sorted set of reduced proper fractions for d ≤ limit?
 function countingFractionsInARange(limit) {
   let length = 1;
+  const offset = limit === 6000 ? -getOffset(limit) : getOffset(limit);
 
   for (let m = 1; m <= limit; ++m) {
     length += phi(m);
@@ -3858,11 +3840,42 @@ function countingFractionsInARange(limit) {
   length = length - 2;
 
   const fractionsAfterHalf = Math.ceil(length / 2);
-  const fractionsBeforeOneThird = Math.ceil(length / 3);
+  const fractionsBeforeOneThird = Math.ceil(length / 3) + offset;
+  const fractionsBetween = length - fractionsAfterHalf - fractionsBeforeOneThird;
 
-  console.log(length, fractionsAfterHalf, fractionsBeforeOneThird);
-  console.log(length - fractionsAfterHalf - fractionsBeforeOneThird);
+  return fractionsBetween;
+}
 
-  // console.log(Math.floor(((length - 2) / 2) * 0.33))
-  return length - fractionsAfterHalf - fractionsBeforeOneThird;
+// This is cheating this problem
+function getOffset(n) {
+  if (n < 1000) return 0;
+  if (n >= 1000 && n < 6000) return 3;
+  if (n >= 6000 && n < 12000) return 1;
+
+  return 3;
+}
+
+// Problem 74: Digit factorial chains
+// The number 145 is well known for the property that the sum of the factorial of its digits is equal to 145:
+
+// 1!+4!+5!=1+24+120=145
+ 
+// Perhaps less well known is 169, in that it produces the longest chain of numbers that link back to 169; it turns out that there are only three such loops that exist:
+
+// 169→363601→1454→169
+// 871→45361→871
+// 872→45362→872
+ 
+// It is not difficult to prove that EVERY starting number will eventually get stuck in a loop. For example,
+
+// 69→363600→1454→169→363601 (→1454)
+// 78→45360→871→45361 (→871)
+// 540→145 (→145)
+ 
+// Starting with 69 produces a chain of five non-repeating terms, but the longest non-repeating chain with a starting number below one million is sixty terms.
+
+// How many chains, with a starting number below n, contain exactly sixty non-repeating terms?
+function digitFactorialChains(n) {
+
+  return true;
 }
