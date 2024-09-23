@@ -3931,8 +3931,70 @@ function digitFactorialChains(n) {
 // 120 cm: (30,40,50), (20,48,52), (24,45,51)
 
 // Given that L is the length of the wire, for how many values of L ≤ n can exactly one, integer sided right angle, triangle be formed?
-function singularIntRightTriangles(n) {
-  let triangleNumber = 0;
 
-  return triangleNumber;
+// Useful resources:
+// For generating triangles use Euclid's formula
+// https://en.wikipedia.org/wiki/Pythagorean_triple
+// For faster algorithm run
+// https://codereview.stackexchange.com/questions/250855/efficiently-find-all-the-pythagorean-triplets-where-all-numbers-less-than-1000/250874#250874 
+function singularIntRightTriangles(n) {
+  let triangleNumbers = [];
+  const limit = Math.floor(Math.sqrt(n - 1)) + 1;
+
+  for (let m = 0; m < limit; ++m) {
+    for (let j = 1 + (m % 2); j < Math.min(m, Math.floor(Math.sqrt(n - m * m) + 1)); j += 2) {
+      const isCoprime = egcd(m, j) === 1;
+
+      if (!isCoprime) continue;
+
+      const a = m ** 2 - j ** 2;
+      const b = 2 * m * j;
+      const c = m ** 2 + j ** 2;
+
+      for (let k = 1; k <= Math.floor(n / c) + 1; ++k) {
+        const an = k * a;
+        const bn = k * b;
+        const cn = k * c;
+        const sum = an + bn + cn;
+
+        if (sum > n) continue;
+
+        triangleNumbers.push(sum);
+      }
+    }
+  }
+
+  return removeDuplicates(triangleNumbers.sort((a, b) => a - b)).length;
+}
+
+function removeDuplicates(arr) {
+  const obj = {};
+  const uniqueArray = [];
+
+  arr.forEach((item) => {
+    obj[item] = (obj[item] += 1) || 1;
+  });
+
+  for (let key in obj) {
+    if (obj[key] === 1) {
+      uniqueArray.push(Number(key));
+    }
+  }
+
+  return uniqueArray;
+}
+
+function egcd(a, b, x, y) {
+  if (a == 0) {
+    x = 0;
+    y = 1;
+    return b;
+  }
+
+  let gcd = egcd(b % a, a, x, y);
+
+  x = y - (b / a) * x;
+  y = x;
+
+  return gcd;
 }
