@@ -3936,7 +3936,7 @@ function digitFactorialChains(n) {
 // For generating triangles use Euclid's formula
 // https://en.wikipedia.org/wiki/Pythagorean_triple
 // For faster algorithm run
-// https://codereview.stackexchange.com/questions/250855/efficiently-find-all-the-pythagorean-triplets-where-all-numbers-less-than-1000/250874#250874 
+// https://codereview.stackexchange.com/questions/250855/efficiently-find-all-the-pythagorean-triplets-where-all-numbers-less-than-1000/250874#250874
 function singularIntRightTriangles(n) {
   let triangleNumbers = [];
   const limit = Math.floor(Math.sqrt(n - 1)) + 1;
@@ -3997,4 +3997,19 @@ function egcd(a, b, x, y) {
   y = x;
 
   return gcd;
+}
+
+// Problem 76: Counting summations
+// It is possible to write five as a sum in exactly six different ways:
+
+// 4 + 1
+// 3 + 2
+// 3 + 1 + 1
+// 2 + 2 + 1
+// 2 + 1 + 1 + 1
+// 1 + 1 + 1 + 1 + 1
+
+// How many different ways can n be written as a sum of at least two positive integers?
+function countingSummations(n) {
+  return true
 }
