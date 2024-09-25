@@ -4011,5 +4011,25 @@ function egcd(a, b, x, y) {
 
 // How many different ways can n be written as a sum of at least two positive integers?
 function countingSummations(n) {
-  return true
+  const ways = new Array(n + 1).fill(0);
+
+  ways[0] = 1;
+
+  const numbers = [];
+
+  for (let i = 1; i < n; ++i) {
+    numbers.push(i);
+  }
+
+  for (let i = 0; i < numbers.length; ++i) {
+    const number = numbers[i];
+
+    for (let j = 0; j < ways.length; ++j) {
+      if (number <= j) {
+        ways[j] = ways[j - number] + ways[j];
+      }
+    }
+  }
+
+  return ways[n];
 }
