@@ -4045,5 +4045,33 @@ function countingSummations(n) {
 
 // What is the first value which can be written as the sum of primes in over n ways?
 function primeSummations(n) {
-  return true
+  let value = 0;
+
+  while (true) {
+    const ways = countWays(value);
+
+    if (ways > n) return value;
+
+    ++value;
+  }
+}
+
+function countWays(n) {
+  const ways = new Array(n + 1).fill(0);
+
+  ways[0] = 1;
+
+  const primes = sieve(n + 1);
+
+  for (let i = 0; i < primes.length; ++i) {
+    const prime = primes[i];
+
+    for (let j = 0; j < ways.length; ++j) {
+      if (prime <= j) {
+        ways[j] = ways[j - prime] + ways[j];
+      }
+    }
+  }
+
+  return ways[n];
 }
