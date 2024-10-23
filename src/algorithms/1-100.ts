@@ -4090,6 +4090,57 @@ function countWays(n) {
 // O   O   O   O   O
 
 // Find the least value of n for which ${p}(n)$ is divisible by divisor.
+
+// https://en.wikipedia.org/wiki/Partition_function_(number_theory)#Recurrence_relations
 function coinPartitions(divisor) {
-  return true
+  const coinPartitions = countPartitions(55374);
+
+  for (let i = 0; i < coinPartitions.length; ++i) {
+    const coinPilePossibilities = coinPartitions[i];
+
+    if (coinPilePossibilities % BigInt(divisor) === 0n) {
+      return i;
+    }
+  }
+}
+
+function countPartitions(n) {
+  const partitions = [1n];
+
+  for (let i = 1; i < n + 1; ++i) {
+    let sum = 0n;
+    let k = 1;
+
+    while (true) {
+      const f1 = i - pentagonalNumber(k);
+
+      if (f1 < 0) break;
+
+      if (k % 2) {
+        sum += partitions[f1];
+      } else {
+        sum -= partitions[f1];
+      }
+
+      const f2 = i - pentagonalNumber(-k);
+
+      if (f2 < 0) break;
+
+      if (k % 2) {
+        sum += partitions[f2];
+      } else {
+        sum -= partitions[f2];
+      }
+
+      k += 1;
+    }
+
+    partitions.push(sum);
+  }
+
+  return partitions;
+}
+
+function pentagonalNumber(k) {
+  return Math.floor((k * (3 * k - 1)) / 2);
 }
