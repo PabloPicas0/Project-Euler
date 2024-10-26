@@ -4146,16 +4146,18 @@ function pentagonalNumber(k) {
 }
 
 // Problem 79: Passcode derivation
-// A common security method used for online banking is to ask the user for three random characters from a passcode. 
+// A common security method used for online banking is to ask the user for three random characters from a passcode.
 // For example, if the passcode was 531278, they may ask for the 2nd, 3rd, and 5th characters; the expected reply would be: 317.
 
 // The arrays, keylog1, keylog2, and keylog3, contains fifty successful login attempts.
 
 // Given that the three characters are always asked for in order, analyze the array so as to determine the shortest possible secret passcode of unknown length.
 
-// TODO: Get keylog 2 and 1 for test cases  
+// TODO: Get keylog 2 and 1 for test cases
 const keylog3 = [
-  319,680,180,690,129,620,762,689,762,318,368,710,720,710,629,168,160,689,716,731,736,729,316,729,729,710,769,290,719,680,318,389,162,289,162,718,729,319,790,680,890,362,319,760,316,729,380,319,728,716,
+  319, 680, 180, 690, 129, 620, 762, 689, 762, 318, 368, 710, 720, 710, 629, 168, 160, 689, 716, 731, 736,
+  729, 316, 729, 729, 710, 769, 290, 719, 680, 318, 389, 162, 289, 162, 718, 729, 319, 790, 680, 890, 362,
+  319, 760, 316, 729, 380, 319, 728, 716,
 ];
 
 function passcodeDerivation(arr) {
@@ -4215,4 +4217,15 @@ function getPassCodesDigits(arr) {
   }
 
   return Array.from(new Set(digits)).sort();
+}
+
+// Problem 80: Square root digital expansion
+// It is well known that if the square root of a natural number is not an integer, then it is irrational.
+// The decimal expansion of such square roots is infinite without any repeating pattern at all.
+
+// The square root of two is 1.41421356237309504880..., and the digital sum of the first one hundred decimal digits is 475.
+
+// For the first n natural numbers, find the total of the digital sums of the first one hundred decimal digits for all the irrational square roots.
+function sqrtDigitalExpansion(n) {
+  return true;
 }
