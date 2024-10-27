@@ -4160,7 +4160,7 @@ const keylog3 = [
   319, 760, 316, 729, 380, 319, 728, 716,
 ];
 
-function passcodeDerivation(arr) {
+function passcodeDerivation(arr: number[]) {
   const digits = getPassCodesDigits(arr);
   const passOrder = createPassOrder(digits);
   const pass = [];
@@ -4193,8 +4193,8 @@ function passcodeDerivation(arr) {
   return Number(decryptedPassword);
 }
 
-function createPassOrder(digits) {
-  const passOrder = {};
+function createPassOrder(digits: string[]) {
+  const passOrder: { [key: string]: string[] } = {};
 
   for (let i = 0; i < digits.length; ++i) {
     const digit = digits[i];
@@ -4205,7 +4205,7 @@ function createPassOrder(digits) {
   return passOrder;
 }
 
-function getPassCodesDigits(arr) {
+function getPassCodesDigits(arr: number[]) {
   let digits = [];
 
   for (let i = 0; i < arr.length; ++i) {
