@@ -4091,8 +4091,9 @@ function countWays(n) {
 
 // Find the least value of n for which ${p}(n)$ is divisible by divisor.
 
+// See:
 // https://en.wikipedia.org/wiki/Partition_function_(number_theory)#Recurrence_relations
-function coinPartitions(divisor) {
+function coinPartitions(divisor: number) {
   const coinPartitions = countPartitions(55374);
 
   for (let i = 0; i < coinPartitions.length; ++i) {
@@ -4104,7 +4105,7 @@ function coinPartitions(divisor) {
   }
 }
 
-function countPartitions(n) {
+function countPartitions(n: number) {
   const partitions = [1n];
 
   for (let i = 1; i < n + 1; ++i) {
@@ -4141,7 +4142,7 @@ function countPartitions(n) {
   return partitions;
 }
 
-function pentagonalNumber(k) {
+function pentagonalNumber(k: number) {
   return Math.floor((k * (3 * k - 1)) / 2);
 }
 
@@ -4228,4 +4229,34 @@ function getPassCodesDigits(arr: number[]) {
 // For the first n natural numbers, find the total of the digital sums of the first one hundred decimal digits for all the irrational square roots.
 function sqrtDigitalExpansion(n) {
   return true;
+}
+
+function findSquareRoot(number, numDigits) {
+  function get_power(x, y) {
+    let result = 1n;
+    for (let i = 0; i < y; i++) {
+      result = result * BigInt(x);
+    }
+    return result;
+  }
+
+  let a = 5n * BigInt(number);
+  let b = 5n;
+  const precision_digits = get_power(10, numDigits + 1);
+
+  while (b < precision_digits) {
+    if (a >= b) {
+      a = a - b;
+      b = b + 10n;
+    } else {
+      a = a * 100n;
+      b = (b / 10n) * 100n + 5n;
+    }
+  }
+
+  let decimal_pos = Math.floor(Math.log10(number));
+  if (decimal_pos == 0) decimal_pos = 1;
+  let result = (b / 100n).toString();
+  result = result.slice(0, decimal_pos) + "." + result.slice(decimal_pos);
+  return result;
 }
