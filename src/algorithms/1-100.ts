@@ -53,6 +53,34 @@ function bigIntPower(base, exponent) {
   return result;
 }
 
+// Input: a positive integer, the number of precise digits after the decimal point
+// Output: a string representing the long float square root
+function bigSqrt(number, numDigits) {
+  let a = 5n * BigInt(number);
+  let b = 5n;
+  const precision_digits = bigIntPower(10, numDigits + 1);
+
+  while (b < precision_digits) {
+    if (a >= b) {
+      a = a - b;
+      b = b + 10n;
+    } else {
+      a = a * 100n;
+      b = (b / 10n) * 100n + 5n;
+    }
+  }
+
+  let decimal_pos = Math.floor(Math.log10(number));
+
+  if (decimal_pos == 0) decimal_pos = 1;
+
+  let result = (b / 100n).toString();
+
+  result = result.slice(0, decimal_pos) + "." + result.slice(decimal_pos);
+
+  return result;
+}
+
 // Problem 1: Multiples of 3 or 5
 // If we list all the natural numbers below 10 that are multiples of 3 or 5, we get 3, 5, 6 and 9. The sum of these multiples is 23.
 
@@ -4227,36 +4255,25 @@ function getPassCodesDigits(arr: number[]) {
 // The square root of two is 1.41421356237309504880..., and the digital sum of the first one hundred decimal digits is 475.
 
 // For the first n natural numbers, find the total of the digital sums of the first one hundred decimal digits for all the irrational square roots.
+
+// Source for arbitrary sqrt
+// https://stackoverflow.com/questions/58170806/how-to-compute-and-store-the-digits-of-sqrtn-up-to-106-decimal-places
 function sqrtDigitalExpansion(n) {
-  return true;
-}
+  const sums = [];
 
-function findSquareRoot(number, numDigits) {
-  function get_power(x, y) {
-    let result = 1n;
-    for (let i = 0; i < y; i++) {
-      result = result * BigInt(x);
-    }
-    return result;
+  for (let i = 2; i <= n; ++i) {
+    const isInteger = Number.isInteger(Math.sqrt(i));
+
+    if (isInteger) continue;
+
+    const sum = bigSqrt(i, 100)
+      .split(".")
+      .join("")
+      .split("")
+      .reduce((a, n) => a + Number(n), 0);
+
+    sums.push(sum);
   }
 
-  let a = 5n * BigInt(number);
-  let b = 5n;
-  const precision_digits = get_power(10, numDigits + 1);
-
-  while (b < precision_digits) {
-    if (a >= b) {
-      a = a - b;
-      b = b + 10n;
-    } else {
-      a = a * 100n;
-      b = (b / 10n) * 100n + 5n;
-    }
-  }
-
-  let decimal_pos = Math.floor(Math.log10(number));
-  if (decimal_pos == 0) decimal_pos = 1;
-  let result = (b / 100n).toString();
-  result = result.slice(0, decimal_pos) + "." + result.slice(decimal_pos);
-  return result;
+  return sums.reduce((acc, num) => acc + num);
 }
