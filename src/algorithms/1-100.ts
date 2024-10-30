@@ -629,7 +629,8 @@ function numberLetterCounts(limit: number) {
 // 63 66 04 68 89 53 67 30 73 16 69 87 40 31
 // 04 62 98 27 23 09 70 98 73 93 38 53 60 04 23
 
-// NOTE: As there are only 16384 routes, it is possible to solve this problem by trying every route. However, Problem 67, is the same challenge with a triangle containing one-hundred rows; it cannot be solved by brute force, and requires a clever method! ;o)
+// NOTE: As there are only 16384 routes, it is possible to solve this problem by trying every route. 
+// However, Problem 67, is the same challenge with a triangle containing one-hundred rows; it cannot be solved by brute force, and requires a clever method! ;o)
 function maximumPathSumI(triangle: number[][]) {
   while (triangle.length > 1) {
     const lastLine = triangle.pop();
@@ -3532,7 +3533,10 @@ function decimalToFraction(value: number, donly = true) {
 
 // Find the maximum total from top to bottom in numTriangle, a 2D array defined in the background containing a triangle with one-hundred rows.
 
-// Note: This is a much more difficult version of Problem 18. It is not possible to try every route to solve this problem, as there are 299 altogether! If you could check one trillion (1012) routes every second it would take over twenty billion years to check them all. There is an efficient algorithm to solve it. ;o)
+// Note: This is a much more difficult version of Problem 18. 
+// It is not possible to try every route to solve this problem, as there are 299 altogether! 
+// If you could check one trillion (1012) routes every second it would take over twenty billion years to check them all. 
+// There is an efficient algorithm to solve it. ;o)
 
 function maximumPathSumII(triangle: number[][]) {
   while (triangle.length > 1) {
@@ -4276,4 +4280,27 @@ function sqrtDigitalExpansion(n) {
   }
 
   return sums.reduce((acc, num) => acc + num);
+}
+
+// Problem 81: Path sum: two ways
+// In the 5 by 5 matrix below, the minimal path sum from the top left to the bottom right, by only moving to the right and down, is indicated in bold red and is equal to 2427.
+
+// 131 673 234 103 18
+// 201 96 342 965 150
+// 630 803 746 422 111
+// 537 699 497 121 956
+// 805 732 524 37 331
+
+// 131 -> 201 -> 96 -> 342 -> 746 -> 422 -> 121 -> 37 -> 331
+
+// Find the minimal path sum from the top left to the bottom right by only moving right and down in matrix, a 2D array representing a matrix.
+// The maximum matrix size used in the tests will be 80 by 80.
+
+// For some reason this problem was hard for me cuz it require memorized algo and solution by yourself wasn't obvious
+// Here is the link for good explanation
+// https://algo.monster/liteproblems/64
+
+// TODO: Take test matrix
+function pathSumTwoWays(matrix) {
+  return true
 }
