@@ -629,7 +629,7 @@ function numberLetterCounts(limit: number) {
 // 63 66 04 68 89 53 67 30 73 16 69 87 40 31
 // 04 62 98 27 23 09 70 98 73 93 38 53 60 04 23
 
-// NOTE: As there are only 16384 routes, it is possible to solve this problem by trying every route. 
+// NOTE: As there are only 16384 routes, it is possible to solve this problem by trying every route.
 // However, Problem 67, is the same challenge with a triangle containing one-hundred rows; it cannot be solved by brute force, and requires a clever method! ;o)
 function maximumPathSumI(triangle: number[][]) {
   while (triangle.length > 1) {
@@ -3533,9 +3533,9 @@ function decimalToFraction(value: number, donly = true) {
 
 // Find the maximum total from top to bottom in numTriangle, a 2D array defined in the background containing a triangle with one-hundred rows.
 
-// Note: This is a much more difficult version of Problem 18. 
-// It is not possible to try every route to solve this problem, as there are 299 altogether! 
-// If you could check one trillion (1012) routes every second it would take over twenty billion years to check them all. 
+// Note: This is a much more difficult version of Problem 18.
+// It is not possible to try every route to solve this problem, as there are 299 altogether!
+// If you could check one trillion (1012) routes every second it would take over twenty billion years to check them all.
 // There is an efficient algorithm to solve it. ;o)
 
 function maximumPathSumII(triangle: number[][]) {
@@ -4302,5 +4302,24 @@ function sqrtDigitalExpansion(n) {
 
 // TODO: Take test matrix
 function pathSumTwoWays(matrix) {
-  return true
+  const rowLength = matrix.length;
+  const colLength = matrix[0].length;
+
+  const f = new Array(rowLength).fill(0).map(() => new Array(colLength).fill(0));
+
+  f[0][0] = matrix[0][0];
+
+  for (let i = 1; i < f.length; ++i) {
+    f[i][0] = f[i - 1][0] + matrix[i][0];
+    f[0][i] = f[0][i - 1] + matrix[0][i];
+  }
+
+  for (let i = 1; i < f.length; ++i) {
+    for (let j = 1; j < f[i].length; ++j) {
+      f[i][j] = Math.min(f[i - 1][j], f[i][j - 1]) + matrix[i][j];
+    }
+  }
+
+  return f[rowLength - 1][colLength - 1];
 }
+
