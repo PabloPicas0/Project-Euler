@@ -4364,6 +4364,39 @@ function pathSumTwoWays(matrix) {
 // Find the minimal path sum from the left column to the right column in matrix, a 2D array representing a matrix.
 // The maximum matrix size used in tests will be 80 by 80.
 
+// Pass only testcase 1
+// PARTIALlY SOLVED !
 function pathSumThreeWays(matrix) {
-  return true
+  const revMatrix = [];
+
+  const rowLength = matrix.length;
+  const colLength = matrix[0].length;
+
+  const f = new Array(rowLength).fill(0).map(() => new Array(colLength).fill(0));
+
+  for (let i = 0; i < colLength; ++i) {
+    revMatrix.push(matrix[i].toReversed());
+  }
+
+  // console.log(revMatrix)
+  f[0][0] = revMatrix[0][0];
+
+  for (let i = 1; i < f.length; ++i) {
+    f[i][0] = f[i - 1][0] + revMatrix[i][0];
+    f[0][i] = f[0][i - 1] + revMatrix[0][i];
+  }
+
+  for (let i = 1; i < rowLength; ++i) {
+    for (let j = 1; j < colLength; ++j) {
+      f[i][j] = Math.min(f[i - 1][j], f[i][j - 1]) + revMatrix[i][j];
+    }
+  }
+
+  let ans = Number.MAX_SAFE_INTEGER;
+
+  for (let i = 0; i < rowLength; ++i) {
+    ans = Math.min(ans, f[i][colLength - 1]);
+  }
+
+  return ans;
 }
