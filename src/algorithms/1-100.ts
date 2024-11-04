@@ -4366,7 +4366,7 @@ function pathSumTwoWays(matrix) {
 
 // Pass only testcase 1
 // PARTIALlY SOLVED !
-function pathSumThreeWays(matrix) {
+function pathSumThreeWays(matrix: number[][]) {
   const revMatrix = [];
 
   const rowLength = matrix.length;
@@ -4444,5 +4444,238 @@ function pathSumThreeWays(matrix) {
 
 // If, instead of using two 6-sided dice, two n-sided dice are used, find the six-digit modal string.
 function monopolyOdds(n) {
-  return true
+  const squaresNames = [
+    "GO",
+    "A1",
+    "CC1",
+    "A2",
+    "T1",
+    "R1",
+    "B1",
+    "CH1",
+    "B2",
+    "B3",
+    "JAIL",
+    "C1",
+    "U1",
+    "C2",
+    "C3",
+    "R2",
+    "D1",
+    "CC2",
+    "D2",
+    "D3",
+    "FP",
+    "E1",
+    "CH2",
+    "E2",
+    "E3",
+    "R3",
+    "F1",
+    "F2",
+    "U2",
+    "F3",
+    "G2J",
+    "G1",
+    "G2",
+    "CC3",
+    "G3",
+    "R4",
+    "CH3",
+    "H1",
+    "T2",
+    "H2",
+  ];
+  const ccCards = shuffle(["GO", "JAIL", ...new Array(14)]);
+  const chCards = shuffle([
+    "GO",
+    "JAIL",
+    "C1",
+    "E3",
+    "H2",
+    "R1",
+    "NEXT R",
+    "NEXT R",
+    "NEXT U",
+    "NEXT 3",
+    ...new Array(6),
+  ]);
+
+  const rollsNumber = 1000000;
+  const possibleRoll = getPossibleRolls(n);
+  const squares = [];
+  const squaresNum = squaresNames.length;
+  let lastVisit = 0;
+
+  for (let i = 0; i < squaresNames.length; ++i) {
+    const id = i < 10 ? "0" + i : i;
+    const squareParams = {
+      name: squaresNames[i],
+      id: id,
+      visited: 0,
+    };
+
+    squares.push(squareParams);
+  }
+
+  for (let i = 0; i < rollsNumber; ++i) {
+    const roll = Math.floor(Math.random() * possibleRoll.length);
+    const rollVal = possibleRoll[roll];
+    const nextVisit = lastVisit + rollVal;
+
+    if (nextVisit >= squaresNum) {
+      lastVisit = nextVisit - squaresNum;
+    } else {
+      lastVisit = nextVisit;
+    }
+
+    let visiting = squares[lastVisit];
+
+    if (visiting.name === "G2J") {
+      lastVisit = findSquareIndex(squares, "JAIL");
+
+      squares[lastVisit].visited += 1;
+
+      continue;
+    }
+
+    const isCommunityChest = visiting.name.replace(/\d/g, "") === "CC";
+    const isChance = visiting.name.replace(/\d/g, "") === "CH";
+
+    if (isCommunityChest) {
+      const pickedCard = ccCards.pop();
+
+      if (pickedCard) {
+        lastVisit = findSquareIndex(squares, pickedCard);
+
+        squares[lastVisit].visited += 1;
+
+        ccCards.unshift(pickedCard);
+
+        continue;
+      }
+
+      visiting.visited += 1;
+
+      ccCards.unshift(pickedCard);
+
+      continue;
+    }
+
+    if (isChance) {
+      const pickedCard = chCards.pop();
+      const hasNext = pickedCard?.split(" ")[0] === "NEXT";
+
+      if (pickedCard && !hasNext) {
+        lastVisit = findSquareIndex(squares, pickedCard);
+
+        squares[lastVisit].visited += 1;
+
+        chCards.unshift(pickedCard);
+
+        continue;
+      }
+
+      if (pickedCard && hasNext) {
+        const cardSymbol = pickedCard.split(" ")[1];
+        const isNumber = /\d/g.test(cardSymbol);
+
+        if (isNumber) {
+          const goBack = lastVisit - 3;
+
+          if (goBack < 0) {
+            lastVisit = 40 - goBack;
+          } else {
+            lastVisit = goBack;
+          }
+
+          squares[lastVisit].visited += 1;
+
+          chCards.unshift(pickedCard);
+
+          continue;
+        }
+
+        lastVisit = findNextCompany(squares, lastVisit, cardSymbol);
+
+        squares[lastVisit].visited += 1;
+
+        chCards.unshift(pickedCard);
+
+        continue;
+      }
+
+      chCards.unshift(pickedCard);
+    }
+
+    visiting.visited += 1;
+  }
+
+  squares.forEach((square) => {
+    const { visited } = square;
+
+    square.ratio = visited > 0 ? visited / rollsNumber : 0;
+  });
+
+  squares.sort((a, b) => a.ratio - b.ratio);
+
+  const modal = squares
+    .slice(squaresNum - 3)
+    .map((square) => square.id)
+    .reverse()
+    .join("");
+
+  console.log(modal, squares);
+
+  return modal;
+}
+
+function findNextCompany(squares, currentSquare, companySymbol) {
+  let i = currentSquare < 39 ? currentSquare + 1 : 0;
+
+  while (true) {
+    const hasSymbol = squares[i].name.includes(companySymbol);
+
+    if (hasSymbol) return i;
+
+    if (i === 39) {
+      i = 5;
+
+      continue;
+    }
+
+    ++i;
+  }
+}
+
+function findSquareIndex(squares, name) {
+  return squares.findIndex((square) => square.name === name);
+}
+
+function getPossibleRolls(n) {
+  const rolls = [];
+
+  for (let i = 2; i <= n * 2; ++i) {
+    rolls.push(i);
+  }
+
+  return rolls;
+}
+
+// Source:
+// https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+function shuffle(array) {
+  let currentIndex = array.length;
+
+  // While there remain elements to shuffle...
+  while (currentIndex != 0) {
+    // Pick a remaining element...
+    let randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+  }
+
+  return array;
 }
