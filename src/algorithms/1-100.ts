@@ -4501,9 +4501,9 @@ function monopolyOdds(n) {
     ...new Array(6),
   ]);
 
-  const rollsNumber = 1000000;
-  const possibleRoll = getPossibleRolls(n);
+  const rollsNumber = 500000;
   const squares = [];
+  let dublesRolls = [];
   const squaresNum = squaresNames.length;
   let lastVisit = 0;
 
@@ -4519,9 +4519,27 @@ function monopolyOdds(n) {
   }
 
   for (let i = 0; i < rollsNumber; ++i) {
-    const roll = Math.floor(Math.random() * possibleRoll.length);
-    const rollVal = possibleRoll[roll];
+    const roll1 = roll(n);
+    const roll2 = roll(n);
+    const rollVal = roll1 + roll2;
+    const isDuble = roll1 === roll2;
     const nextVisit = lastVisit + rollVal;
+
+    if (isDuble) {
+      dublesRolls.push(rollVal);
+    } else {
+      dublesRolls = [];
+    }
+
+    if (dublesRolls.length === 3) {
+      lastVisit = findSquareIndex(squares, "JAIL");
+
+      squares[lastVisit].visited += 1;
+
+      dublesRolls = [];
+
+      continue;
+    }
 
     if (nextVisit >= squaresNum) {
       lastVisit = nextVisit - squaresNum;
@@ -4619,6 +4637,12 @@ function monopolyOdds(n) {
 
   squares.sort((a, b) => a.ratio - b.ratio);
 
+  squares.forEach((square) => {
+    const { ratio } = square;
+
+    square.ratio = ratio.toLocaleString(undefined, { style: "percent", minimumFractionDigits: 2 });
+  });
+
   const modal = squares
     .slice(squaresNum - 3)
     .map((square) => square.id)
@@ -4630,13 +4654,21 @@ function monopolyOdds(n) {
   return modal;
 }
 
+function roll(n) {
+  const possibleValue = getPossibleRolls(n);
+  const idx = Math.floor(Math.random() * possibleValue.length);
+  return possibleValue[idx];
+}
+
 function findNextCompany(squares, currentSquare, companySymbol) {
-  let i = currentSquare < 39 ? currentSquare + 1 : 0;
+  let i = currentSquare + 1;
 
   while (true) {
     const hasSymbol = squares[i].name.includes(companySymbol);
 
-    if (hasSymbol) return i;
+    if (hasSymbol) {
+      return i;
+    }
 
     if (i === 39) {
       i = 5;
@@ -4655,7 +4687,7 @@ function findSquareIndex(squares, name) {
 function getPossibleRolls(n) {
   const rolls = [];
 
-  for (let i = 2; i <= n * 2; ++i) {
+  for (let i = 1; i <= n; ++i) {
     rolls.push(i);
   }
 
