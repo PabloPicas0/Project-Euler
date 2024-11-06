@@ -4711,3 +4711,14 @@ function shuffle(array) {
 
   return array;
 }
+
+// Problem 85: Counting rectangles
+// By counting carefully it can be seen that a rectangular grid measuring 3 by 2 contains eighteen rectangles:
+
+// Although there may not exists a rectangular grid that contains exactly n rectangles, find the area of the grid with the nearest solution.
+
+// NOTE: For better problem understanding check: 
+// https://www.freecodecamp.org/learn/project-euler/project-euler-problems-1-to-100/problem-85-counting-rectangles
+function countingRectangles(n) {
+  return true;
+}
