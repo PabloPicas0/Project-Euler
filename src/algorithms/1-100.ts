@@ -4443,7 +4443,14 @@ function pathSumThreeWays(matrix: number[][]) {
 // Statistically it can be shown that the three most popular squares, in order, are JAIL (6.24%) = Square 10, E3 (3.18%) = Square 24, and GO (3.09%) = Square 00. So these three most popular squares can be listed with the six-digit modal string 102400.
 
 // If, instead of using two 6-sided dice, two n-sided dice are used, find the six-digit modal string.
-function monopolyOdds(n) {
+type MonopolySquare = {
+  name: string;
+  id: string;
+  visited: number;
+  ratio: number;
+};
+
+function monopolyOdds(n: number) {
   const squaresNames = [
     "GO",
     "A1",
@@ -4502,17 +4509,18 @@ function monopolyOdds(n) {
   ]);
 
   const rollsNumber = 500000;
-  const squares = [];
-  let dublesRolls = [];
+  const squares: MonopolySquare[] = [];
+  let dublesRolls: number[] = [];
   const squaresNum = squaresNames.length;
   let lastVisit = 0;
 
   for (let i = 0; i < squaresNames.length; ++i) {
-    const id = i < 10 ? "0" + i : i;
+    const id = i < 10 ? "0" + i : i.toString();
     const squareParams = {
       name: squaresNames[i],
       id: id,
       visited: 0,
+      ratio: 0,
     };
 
     squares.push(squareParams);
@@ -4637,11 +4645,12 @@ function monopolyOdds(n) {
 
   squares.sort((a, b) => a.ratio - b.ratio);
 
-  squares.forEach((square) => {
-    const { ratio } = square;
+  // Convert float to percentage
+  // squares.forEach((square) => {
+  //   const { ratio } = square;
 
-    square.ratio = ratio.toLocaleString(undefined, { style: "percent", minimumFractionDigits: 2 });
-  });
+  //   square.ratio = ratio.toLocaleString(undefined, { style: "percent", minimumFractionDigits: 2 });
+  // });
 
   const modal = squares
     .slice(squaresNum - 3)
@@ -4649,18 +4658,16 @@ function monopolyOdds(n) {
     .reverse()
     .join("");
 
-  console.log(modal, squares);
-
   return modal;
 }
 
-function roll(n) {
+function roll(n: number) {
   const possibleValue = getPossibleRolls(n);
   const idx = Math.floor(Math.random() * possibleValue.length);
   return possibleValue[idx];
 }
 
-function findNextCompany(squares, currentSquare, companySymbol) {
+function findNextCompany(squares: MonopolySquare[], currentSquare: number, companySymbol: string) {
   let i = currentSquare + 1;
 
   while (true) {
@@ -4680,11 +4687,11 @@ function findNextCompany(squares, currentSquare, companySymbol) {
   }
 }
 
-function findSquareIndex(squares, name) {
+function findSquareIndex(squares: MonopolySquare[], name: string) {
   return squares.findIndex((square) => square.name === name);
 }
 
-function getPossibleRolls(n) {
+function getPossibleRolls(n: number) {
   const rolls = [];
 
   for (let i = 1; i <= n; ++i) {
@@ -4696,7 +4703,7 @@ function getPossibleRolls(n) {
 
 // Source:
 // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
-function shuffle(array) {
+function shuffle(array: (string | undefined)[]) {
   let currentIndex = array.length;
 
   // While there remain elements to shuffle...
@@ -4717,7 +4724,7 @@ function shuffle(array) {
 
 // Although there may not exists a rectangular grid that contains exactly n rectangles, find the area of the grid with the nearest solution.
 
-// NOTE: For better problem understanding check: 
+// NOTE: For better problem understanding check:
 // https://www.freecodecamp.org/learn/project-euler/project-euler-problems-1-to-100/problem-85-counting-rectangles
 function countingRectangles(n) {
   return true;
