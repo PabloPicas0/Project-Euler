@@ -4325,7 +4325,7 @@ function sqrtDigitalExpansion(n) {
 // https://algo.monster/liteproblems/64
 
 // TODO: Take test matrix
-function pathSumTwoWays(matrix) {
+function pathSumTwoWays(matrix: number[][]) {
   const rowLength = matrix.length;
   const colLength = matrix[0].length;
 
@@ -4509,9 +4509,9 @@ function monopolyOdds(n: number) {
   ]);
 
   const rollsNumber = 500000;
+  const squaresNum = squaresNames.length;
   const squares: MonopolySquare[] = [];
   let dublesRolls: number[] = [];
-  const squaresNum = squaresNames.length;
   let lastVisit = 0;
 
   for (let i = 0; i < squaresNames.length; ++i) {
