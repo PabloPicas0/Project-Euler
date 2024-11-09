@@ -4286,7 +4286,7 @@ function getPassCodesDigits(arr: number[]) {
 
 // Source for arbitrary sqrt
 // https://stackoverflow.com/questions/58170806/how-to-compute-and-store-the-digits-of-sqrtn-up-to-106-decimal-places
-function sqrtDigitalExpansion(n) {
+function sqrtDigitalExpansion(n: number) {
   const sums = [];
 
   for (let i = 2; i <= n; ++i) {
@@ -4727,5 +4727,72 @@ function shuffle(array: (string | undefined)[]) {
 // NOTE: For better problem understanding check:
 // https://www.freecodecamp.org/learn/project-euler/project-euler-problems-1-to-100/problem-85-counting-rectangles
 function countingRectangles(n) {
-  return true;
+  const rects = [[6], [4], [2], [3], [2], [1]];
+  let i = 0;
+
+  while (sum(rects) < n) {
+    switch (i) {
+      case 0:
+        rects[i][0] += 2;
+        break;
+      case 1:
+        const last = rects[i].length - 1;
+        rects[i].push(rects[i][last] + 2);
+        break;
+      case 2:
+        break;
+      case 3:
+        rects[i][0] += 1;
+        break;
+      case 4:
+        const l = rects[i].length - 1;
+        rects[i].push(rects[i][l] + 1);
+        break;
+      case 5:
+        break;
+    }
+
+    // console.log(rects,sum(rects))
+    if (i === rects.length - 1) {
+      i = 0;
+      continue;
+    }
+
+    ++i;
+  }
+
+  console.log(rects, sum(rects));
+
+  // const cols = grid[0].length
+  // const rows = grid.length
+
+  // const initSmallestRes = cols * rows
+
+  // const rects = [initSmallestRes]
+
+  // console.log(grid, rects)
+
+  return rects[0][0];
+}
+
+function sum(arr) {
+  return arr.reduce((acc, val) => {
+    const s = val.reduce((acc, val) => acc + val);
+
+    return acc + s;
+  }, 0);
+}
+
+function createGrid() {
+  const grid = [];
+
+  for (let i = 0; i < 2; ++i) {
+    grid.push([]);
+
+    for (let j = 0; j < 3; ++j) {
+      grid[i].push(false);
+    }
+  }
+
+  return grid;
 }
