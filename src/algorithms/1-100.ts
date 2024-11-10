@@ -4100,7 +4100,7 @@ function countingSummations(n) {
 // 2 + 2 + 2 + 2 + 2
 
 // What is the first value which can be written as the sum of primes in over n ways?
-function primeSummations(n) {
+function primeSummations(n: number) {
   let value = 0;
 
   while (true) {
@@ -4112,7 +4112,7 @@ function primeSummations(n) {
   }
 }
 
-function countWays(n) {
+function countWays(n: number) {
   const ways = new Array(n + 1).fill(0);
 
   ways[0] = 1;
@@ -4795,4 +4795,28 @@ function createGrid() {
   }
 
   return grid;
+}
+
+// Rects formula doesn't count squares thus you have false anwsers
+// You need to find formula for squares and apply it to current solution
+function countingRectangles(n) {
+  let sol = 0
+  let solFound = false
+  
+  for (let i = 1; i <= n; ++i) {
+    for (let j = 1; j <= n; ++j) {
+      const rects = (i + 1) * i / 2 * (j + 1) * j / 2
+
+      if (rects === n || rects > n) {
+        console.log(rects, i, j)
+        sol = j
+        solFound = true
+        break
+      }
+    }
+
+    if (solFound) break
+  }
+  console.log((5 + 1) * 5 / 2 * (3 + 1) * 3 / 2)
+  return sol;
 }
