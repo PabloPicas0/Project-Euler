@@ -4726,97 +4726,38 @@ function shuffle(array: (string | undefined)[]) {
 
 // NOTE: For better problem understanding check:
 // https://www.freecodecamp.org/learn/project-euler/project-euler-problems-1-to-100/problem-85-counting-rectangles
+
+// NOTE: Props for this blog for giving tips how to solve this problem
+// https://euler.stephan-brumme.com/85/
+// https://en.wikipedia.org/wiki/Triangular_number
 function countingRectangles(n) {
-  const rects = [[6], [4], [2], [3], [2], [1]];
-  let i = 0;
+  const limit = Math.floor(Math.sqrt(n)) + 1;
+  let rects = 0;
+  let res = 0;
 
-  while (sum(rects) < n) {
-    switch (i) {
-      case 0:
-        rects[i][0] += 2;
-        break;
-      case 1:
-        const last = rects[i].length - 1;
-        rects[i].push(rects[i][last] + 2);
-        break;
-      case 2:
-        break;
-      case 3:
-        rects[i][0] += 1;
-        break;
-      case 4:
-        const l = rects[i].length - 1;
-        rects[i].push(rects[i][l] + 1);
-        break;
-      case 5:
-        break;
-    }
+  for (let i = 1; i <= limit; ++i) {
+    let j = i;
+    let currentRects = 0;
 
-    // console.log(rects,sum(rects))
-    if (i === rects.length - 1) {
-      i = 0;
-      continue;
-    }
+    while (currentRects < n) {
+      currentRects = A(i, j);
 
-    ++i;
-  }
-
-  console.log(rects, sum(rects));
-
-  // const cols = grid[0].length
-  // const rows = grid.length
-
-  // const initSmallestRes = cols * rows
-
-  // const rects = [initSmallestRes]
-
-  // console.log(grid, rects)
-
-  return rects[0][0];
-}
-
-function sum(arr) {
-  return arr.reduce((acc, val) => {
-    const s = val.reduce((acc, val) => acc + val);
-
-    return acc + s;
-  }, 0);
-}
-
-function createGrid() {
-  const grid = [];
-
-  for (let i = 0; i < 2; ++i) {
-    grid.push([]);
-
-    for (let j = 0; j < 3; ++j) {
-      grid[i].push(false);
-    }
-  }
-
-  return grid;
-}
-
-// Rects formula doesn't count squares thus you have false anwsers
-// You need to find formula for squares and apply it to current solution
-function countingRectangles(n) {
-  let sol = 0
-  let solFound = false
-  
-  for (let i = 1; i <= n; ++i) {
-    for (let j = 1; j <= n; ++j) {
-      const rects = (i + 1) * i / 2 * (j + 1) * j / 2
-
-      if (rects === n || rects > n) {
-        console.log(rects, i, j)
-        sol = j
-        solFound = true
-        break
+      if (Math.abs(currentRects - n) < Math.abs(rects - n)) {
+        rects = currentRects;
+        res = i * j;
       }
-    }
 
-    if (solFound) break
+      ++j;
+    }
   }
-  console.log((5 + 1) * 5 / 2 * (3 + 1) * 3 / 2)
-  return sol;
+
+  return res;
+}
+
+function A(x, y) {
+  return T(x) * T(y);
+}
+
+function T(x) {
+  return (x * (x + 1)) / 2;
 }
