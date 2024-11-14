@@ -4775,5 +4775,39 @@ function T(x) {
 
 // Find the least value of M such that the number of solutions first exceeds n.
 function cuboidRoute(n) {
-  return true;
+  let m = 1;
+  let solutions = 0;
+
+  while (true) {
+    solutions += countSolutions(m);
+
+    if (solutions > n) break;
+
+    ++m;
+  }
+
+  return m;
+}
+
+function countSolutions(m) {
+  let solutions = 0;
+
+  for (let j = 1; j <= m; ++j) {
+    for (let k = j; k <= m; ++k) {
+      const r = [
+        Math.sqrt(m ** 2 + (k + j) ** 2),
+        Math.sqrt((m + j) ** 2 + k ** 2),
+        Math.sqrt((j + m) ** 2 + k ** 2),
+      ];
+
+      const shortestPath = Math.min(...r);
+      const shortestPathIsInteger = Number.isInteger(shortestPath);
+
+      if (shortestPathIsInteger) {
+        solutions += 1;
+      }
+    }
+  }
+
+  return solutions;
 }
