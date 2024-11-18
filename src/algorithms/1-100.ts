@@ -4869,6 +4869,63 @@ function primePowerTriples(n) {
 // In fact, as the complete set of minimal product-sum numbers for 2 ≤ k ≤ 12 is $\{4, 6, 8, 12, 15, 16\}$, the sum is 61.
 
 // What is the sum of all the minimal product-sum numbers for 2 ≤ k ≤ limit?
+
+// Another problem where I had almost 0 understanding whats going on
+// Huge thanks for this resources
+// https://euler.stephan-brumme.com/88/
+// https://www.hackerrank.com/contests/projecteuler/challenges/euler088/forum
+// They helped me a bit to clarify whats the core of the problem
+// But I think that pure alone it was to hard for me this time
 function productSumNumbers(limit) {
-  return true;
+  const minK = new Array(limit + 1).fill(99999);
+
+  let n = 4;
+  let sum = 0;
+  let i = limit - 1;
+
+  while (i > 0) {
+    const found = getMinK(n, n, n, minK);
+
+    if (found > 0) {
+      i -= found;
+      sum += n;
+    }
+
+    n += 1;
+  }
+
+  return sum;
+}
+
+function isValid(n, k, minK) {
+  if (k >= minK.length) {
+    return 0;
+  }
+
+  if (minK[k] > n) {
+    minK[k] = n;
+    return 1;
+  }
+
+  return 0;
+}
+
+function getMinK(n, product, sum, minK, depth = 1, minFactor = 2) {
+  if (product === 1) return isValid(n, depth + sum - 1, minK);
+
+  let result = 0;
+
+  if (depth > 1) {
+    if (sum === product) return isValid(n, depth, minK);
+
+    if (isValid(n, depth + sum - product, minK)) result += 1;
+  }
+
+  for (let i = minFactor; i * i <= product; ++i) {
+    if (product % i === 0) {
+      result += getMinK(n, Math.floor(product / i), sum - i, minK, depth + 1, i);
+    }
+  }
+
+  return result;
 }
