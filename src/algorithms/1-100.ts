@@ -4876,8 +4876,8 @@ function primePowerTriples(n) {
 // https://www.hackerrank.com/contests/projecteuler/challenges/euler088/forum
 // They helped me a bit to clarify whats the core of the problem
 // But I think that pure alone it was to hard for me this time
-function productSumNumbers(limit) {
-  const minK = new Array(limit + 1).fill(99999);
+function productSumNumbers(limit: number) {
+  const minK: number[] = new Array(limit + 1).fill(99999);
 
   let n = 4;
   let sum = 0;
@@ -4897,7 +4897,7 @@ function productSumNumbers(limit) {
   return sum;
 }
 
-function isValid(n, k, minK) {
+function isValid(n: number, k: number, minK: number[]) {
   if (k >= minK.length) {
     return 0;
   }
@@ -4910,7 +4910,7 @@ function isValid(n, k, minK) {
   return 0;
 }
 
-function getMinK(n, product, sum, minK, depth = 1, minFactor = 2) {
+function getMinK(n: number, product: number, sum: number, minK: number[], depth = 1, minFactor = 2) {
   if (product === 1) return isValid(n, depth + sum - 1, minK);
 
   let result = 0;
