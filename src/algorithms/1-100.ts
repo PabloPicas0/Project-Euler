@@ -4822,7 +4822,7 @@ function countSolutions(m) {
 // 47 = 22 + 33 + 24
 
 // How many numbers below n can be expressed as the sum of a prime square, prime cube, and prime fourth power?
-function primePowerTriples(n) {
+function primePowerTriples(n: number) {
   const primes = sieve(Math.floor(n / 4));
   let nums = new Map();
 
