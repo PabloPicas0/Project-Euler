@@ -4774,7 +4774,7 @@ function T(x) {
 // This is the least value of M for which the number of solutions first exceeds two thousand; the number of solutions when M = 99 is 1975.
 
 // Find the least value of M such that the number of solutions first exceeds n.
-function cuboidRoute(n) {
+function cuboidRoute(n: number) {
   let m = 1;
   let solutions = 0;
 
@@ -4789,7 +4789,7 @@ function cuboidRoute(n) {
   return m;
 }
 
-function countSolutions(m) {
+function countSolutions(m: number) {
   let solutions = 0;
 
   for (let j = 1; j <= m; ++j) {
