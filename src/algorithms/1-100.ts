@@ -4730,7 +4730,7 @@ function shuffle(array: (string | undefined)[]) {
 // NOTE: Props for this blog for giving tips how to solve this problem
 // https://euler.stephan-brumme.com/85/
 // https://en.wikipedia.org/wiki/Triangular_number
-function countingRectangles(n) {
+function countingRectangles(n: number) {
   const limit = Math.floor(Math.sqrt(n)) + 1;
   let rects = 0;
   let res = 0;
@@ -4754,11 +4754,11 @@ function countingRectangles(n) {
   return res;
 }
 
-function A(x, y) {
+function A(x: number, y: number) {
   return T(x) * T(y);
 }
 
-function T(x) {
+function T(x: number) {
   return (x * (x + 1)) / 2;
 }
 
