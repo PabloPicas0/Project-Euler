@@ -4066,12 +4066,12 @@ function egcd(a, b, x, y) {
 // 1 + 1 + 1 + 1 + 1
 
 // How many different ways can n be written as a sum of at least two positive integers?
-function countingSummations(n) {
-  const ways = new Array(n + 1).fill(0);
+function countingSummations(n: number) {
+  const ways: number[] = new Array(n + 1).fill(0);
 
   ways[0] = 1;
 
-  const numbers = [];
+  const numbers: number[] = [];
 
   for (let i = 1; i < n; ++i) {
     numbers.push(i);
@@ -4959,6 +4959,73 @@ function getMinK(n: number, product: number, sum: number, minK: number[], depth 
 // Find the number of characters saved by writing each of these in their minimal form.
 
 // Note: You can assume that all the Roman numerals in the array contain no more than four consecutive identical units.
+// [ 'X', 'X', 'X', 'X', 'V', 'I' ] === ["X", "L", "V", "I"]
 function romanNumerals(roman) {
-  return true;
+  const romanNums = {
+    I: 1,
+    V: 5,
+    X: 10,
+    L: 50,
+    C: 100,
+    D: 500,
+    M: 1000,
+  };
+
+  const reducedForms = {
+    4: "IV",
+    6: "VI", // Special Case
+    9: "IX",
+    40: "XL",
+    90: "XC",
+    400: "CD",
+    900: "CM",
+  };
+
+  let charsSaved = 0;
+
+  for (let i = 0; i < roman.length; ++i) {
+    const rNumeral = roman[i].split("");
+    const charCount = rNumeral.reduce((acc, num) => {
+      acc[num] = acc[num] + 1 || 1;
+
+      return acc;
+    }, {});
+
+    const oldLength = rNumeral.length;
+    const minimalNumeral = getMinimalNumeral(charCount, reducedForms, romanNums);
+    const newLength = minimalNumeral.length;
+    // console.log(oldLength, newLength, oldLength - newLength)
+    // console.log(rNumeral.join(""), oldLength ,minimalNumeral, newLength)
+    charsSaved += oldLength - newLength;
+  }
+  console.log(charsSaved);
+  return charsSaved;
+}
+
+function getMinimalNumeral(charCount, reducedForms, romanNums) {
+  const charKeys = Object.keys(charCount);
+  let minimal = "";
+
+  for (let j = 0; j < charKeys.length; ++j) {
+    const key = charKeys[j];
+    const count = charCount[key];
+
+    if (count >= 4 && key !== "M") {
+      let reduced = count * romanNums[key];
+      const isReducable = reducedForms[reduced];
+      // console.log(reduced, isReducable)
+      if (isReducable) minimal += isReducable;
+
+      continue;
+    }
+
+    minimal += key.repeat(count);
+    // // console.log(key, chars)
+  }
+
+  const n = minimal.replace("VIV", reducedForms[9]).replace("DCD", reducedForms[900]);
+
+  // console.log(charCount, n);
+
+  return n;
 }
