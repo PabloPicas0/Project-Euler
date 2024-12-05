@@ -4959,7 +4959,6 @@ function getMinK(n: number, product: number, sum: number, minK: number[], depth 
 // Find the number of characters saved by writing each of these in their minimal form.
 
 // Note: You can assume that all the Roman numerals in the array contain no more than four consecutive identical units.
-// [ 'X', 'X', 'X', 'X', 'V', 'I' ] === ["X", "L", "V", "I"]
 function romanNumerals(roman) {
   const romanNums = {
     I: 1,
@@ -4973,7 +4972,7 @@ function romanNumerals(roman) {
 
   const reducedForms = {
     4: "IV",
-    6: "VI", // Special Case
+    6: "IVII", // Special Case
     9: "IX",
     40: "XL",
     90: "XC",
@@ -4985,47 +4984,64 @@ function romanNumerals(roman) {
 
   for (let i = 0; i < roman.length; ++i) {
     const rNumeral = roman[i].split("");
-    const charCount = rNumeral.reduce((acc, num) => {
-      acc[num] = acc[num] + 1 || 1;
-
-      return acc;
-    }, {});
-
+    const c = splitApart(rNumeral);
+    const charCount = c.map((char) => [char[0], char.length]);
+    const minimal = getMinimalNumeral(charCount, romanNums, reducedForms);
     const oldLength = rNumeral.length;
-    const minimalNumeral = getMinimalNumeral(charCount, reducedForms, romanNums);
-    const newLength = minimalNumeral.length;
-    // console.log(oldLength, newLength, oldLength - newLength)
-    // console.log(rNumeral.join(""), oldLength ,minimalNumeral, newLength)
+    const newLength = minimal.length;
+
     charsSaved += oldLength - newLength;
   }
-  console.log(charsSaved);
+
   return charsSaved;
 }
 
-function getMinimalNumeral(charCount, reducedForms, romanNums) {
-  const charKeys = Object.keys(charCount);
+function getMinimalNumeral(arr, romanNums, reducedForms) {
   let minimal = "";
 
-  for (let j = 0; j < charKeys.length; ++j) {
-    const key = charKeys[j];
-    const count = charCount[key];
+  for (let i = 0; i < arr.length; ++i) {
+    const [key, count] = arr[i];
+    const num = romanNums[key];
+    const reduced = num * count;
+    const isReducable = reducedForms[reduced];
 
-    if (count >= 4 && key !== "M") {
-      let reduced = count * romanNums[key];
-      const isReducable = reducedForms[reduced];
-      // console.log(reduced, isReducable)
-      if (isReducable) minimal += isReducable;
-
+    if (isReducable) {
+      minimal += isReducable;
       continue;
     }
 
     minimal += key.repeat(count);
-    // // console.log(key, chars)
   }
 
-  const n = minimal.replace("VIV", reducedForms[9]).replace("DCD", reducedForms[900]);
-
-  // console.log(charCount, n);
+  const n = minimal
+    .replace("VIV", reducedForms[9])
+    .replace("LXL", reducedForms[90])
+    .replace("DCD", reducedForms[900]);
 
   return n;
+}
+
+function splitApart(arr) {
+  let begin = 0;
+  let end = 1;
+  let prevChar = arr[0];
+  const parts = [];
+
+  for (let i = 1; i < arr.length; ++i) {
+    const currChar = arr[i];
+
+    if (prevChar !== currChar) {
+      const part = arr.slice(begin, end);
+      parts.push(part);
+
+      prevChar = arr[i];
+      begin = i;
+    }
+
+    end += 1;
+  }
+
+  parts.push(arr.slice(begin));
+
+  return parts;
 }
