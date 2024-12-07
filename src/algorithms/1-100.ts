@@ -4959,7 +4959,7 @@ function getMinK(n: number, product: number, sum: number, minK: number[], depth 
 // Find the number of characters saved by writing each of these in their minimal form.
 
 // Note: You can assume that all the Roman numerals in the array contain no more than four consecutive identical units.
-function romanNumerals(roman) {
+function romanNumerals(roman: string[]) {
   const romanNums = {
     I: 1,
     V: 5,
@@ -4985,7 +4985,7 @@ function romanNumerals(roman) {
   for (let i = 0; i < roman.length; ++i) {
     const rNumeral = roman[i].split("");
     const c = splitApart(rNumeral);
-    const charCount = c.map((char) => [char[0], char.length]);
+    const charCount = c.map((char) => [char[0], char.length]) as [string, number][];
     const minimal = getMinimalNumeral(charCount, romanNums, reducedForms);
     const oldLength = rNumeral.length;
     const newLength = minimal.length;
@@ -4996,7 +4996,11 @@ function romanNumerals(roman) {
   return charsSaved;
 }
 
-function getMinimalNumeral(arr, romanNums, reducedForms) {
+function getMinimalNumeral(
+  arr: [string, number][],
+  romanNums: { [key: string]: number },
+  reducedForms: { [key: number]: string }
+) {
   let minimal = "";
 
   for (let i = 0; i < arr.length; ++i) {
@@ -5021,7 +5025,7 @@ function getMinimalNumeral(arr, romanNums, reducedForms) {
   return n;
 }
 
-function splitApart(arr) {
+function splitApart(arr: string[]) {
   let begin = 0;
   let end = 1;
   let prevChar = arr[0];
