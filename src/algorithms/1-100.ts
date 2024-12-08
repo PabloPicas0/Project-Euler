@@ -3826,7 +3826,7 @@ function baseFraction(num, den) {
   return [newNum, newDen];
 }
 
-function egcd(a, b, x, y) {
+function egcd(a: number, b: number, x?: number, y?: number) {
   // Base Case
   if (a == 0) {
     x = 0;
@@ -3836,7 +3836,7 @@ function egcd(a, b, x, y) {
 
   // To store results
   // of recursive call
-  let gcd = egcd(b % a, a, x, y);
+  let gcd: number = egcd(b % a, a, x, y);
 
   // Update x and y using
   // results of recursive
@@ -3993,7 +3993,7 @@ function digitFactorialChains(n) {
 // https://en.wikipedia.org/wiki/Pythagorean_triple
 // For faster algorithm run
 // https://codereview.stackexchange.com/questions/250855/efficiently-find-all-the-pythagorean-triplets-where-all-numbers-less-than-1000/250874#250874
-function singularIntRightTriangles(n) {
+function singularIntRightTriangles(n: number) {
   let triangleNumbers = [];
   const limit = Math.floor(Math.sqrt(n - 1)) + 1;
 
@@ -4023,8 +4023,8 @@ function singularIntRightTriangles(n) {
   return removeDuplicates(triangleNumbers.sort((a, b) => a - b)).length;
 }
 
-function removeDuplicates(arr) {
-  const obj = {};
+function removeDuplicates(arr: number[]) {
+  const obj: { [key: number]: number } = {};
   const uniqueArray = [];
 
   arr.forEach((item) => {
@@ -4038,21 +4038,6 @@ function removeDuplicates(arr) {
   }
 
   return uniqueArray;
-}
-
-function egcd(a, b, x, y) {
-  if (a == 0) {
-    x = 0;
-    y = 1;
-    return b;
-  }
-
-  let gcd = egcd(b % a, a, x, y);
-
-  x = y - (b / a) * x;
-  y = x;
-
-  return gcd;
 }
 
 // Problem 76: Counting summations
