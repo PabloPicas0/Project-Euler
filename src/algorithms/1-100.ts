@@ -3935,7 +3935,7 @@ function getOffset(n) {
 // Repeating digits in every number that have 60 non-repeating terms are
 // 4,7,9
 // It can be easily seen while brute forcing solution
-function digitFactorialChains(n) {
+function digitFactorialChains(n: number) {
   let chainsNumber = 0;
   // factorial of digits from 1 to 9
   let fact = [1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880];
@@ -3952,11 +3952,13 @@ function digitFactorialChains(n) {
 
     while (terms.length < 60) {
       const lastTerm = terms.length - 1;
-      const nextTerm = terms[lastTerm]
-        .toString()
-        .split("")
-        // Each digit is string so initial acc value is needed
-        .reduce((acc, num) => acc + fact[Number(num)], 0);
+      const nextTerm = BigInt(
+        terms[lastTerm]
+          .toString()
+          .split("")
+          // Each digit is string so initial acc value is needed
+          .reduce((acc, num) => acc + fact[Number(num)], 0)
+      );
 
       if (terms.includes(nextTerm)) break;
 
