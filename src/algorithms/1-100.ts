@@ -5061,5 +5061,78 @@ function splitApart(arr: string[]) {
 
 // How many distinct arrangements of the two cubes allow for all of the square numbers to be displayed?
 function cubeDigitPairs() {
-  return true;
+  let ans = 0;
+  const squares = [
+    [0, 1],
+    [0, 4],
+    [0, 9],
+    [1, 6],
+    [2, 5],
+    [3, 6],
+    [4, 9],
+    [6, 4],
+    [8, 1],
+  ];
+
+  const set = createSet();
+
+  for (let i = 0; i < set.length; ++i) {
+    for (let j = i + 1; j < set.length; ++j) {
+      let hasAllSquareNums = true;
+      const cube1 = set[i];
+      const cube2 = set[j];
+
+      for (let k = 0; k < squares.length; ++k) {
+        const [a, b] = squares[k];
+        const squareCanBeFormed = findSquareDigits(cube1, cube2, a, b);
+
+        if (!squareCanBeFormed) {
+          hasAllSquareNums = false;
+          break;
+        }
+      }
+
+      if (hasAllSquareNums) {
+        ans += 1;
+      }
+    }
+  }
+
+  return ans;
+}
+
+function findSquareDigits(cube1, cube2, a, b) {
+  const hasDigits = (cube1.has(a) && cube2.has(b)) || (cube2.has(a) && cube1.has(b));
+
+  if (hasDigits) return true;
+
+  if (!hasDigits && a === 6) return (cube1.has(9) && cube2.has(b)) || (cube2.has(9) && cube1.has(b));
+
+  if (!hasDigits && a === 9) return (cube1.has(6) && cube2.has(b)) || (cube2.has(6) && cube1.has(b));
+
+  if (!hasDigits && b === 6) return (cube1.has(a) && cube2.has(9)) || (cube2.has(a) && cube1.has(9));
+
+  if (!hasDigits && b === 9) return (cube1.has(a) && cube2.has(6)) || (cube2.has(a) && cube1.has(6));
+
+  return false;
+}
+
+function createSet() {
+  const set = [];
+
+  function generateSet(start, depth, digits) {
+    if (depth === 0) {
+      const map = new Map();
+      digits.forEach((digit) => map.set(digit, true));
+      set.push(map);
+      return;
+    }
+
+    for (let i = start; i < 10; ++i) {
+      generateSet(i + 1, depth - 1, [...digits, i]);
+    }
+  }
+
+  generateSet(0, 6, []);
+  return set;
 }
