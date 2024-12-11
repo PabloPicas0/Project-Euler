@@ -5136,3 +5136,17 @@ function createSet() {
   generateSet(0, 6, []);
   return set;
 }
+
+// Problem 91: Right triangles with integer coordinates
+// The points  P(x1,y1) and  Q(x2,y2)
+// Are plotted at integer coordinates and are joined to the origin,  O(0,0) to form  ΔOPQ
+
+// A graph plotting points P (x_1, y_1) and Q(x_2, y_2) at integer coordinates that are joined to the origin O (0, 0)
+// There are exactly fourteen triangles containing a right angle that can be formed when each coordinate lies between 0 and 2 inclusive; that is,  0≤x1,y1,x2,y2≤2
+
+// a diagram showing the 14 triangles containing a right angle that can be formed when each coordinate is between 0 and 2
+// Given that  0≤x1,y1,x2,y2≤limit
+// How many right triangles can be formed?
+function rightTrianglesIntCoords(limit) {
+  return true
+}
