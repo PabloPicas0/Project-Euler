@@ -5178,3 +5178,20 @@ function rightTrianglesIntCoords(limit) {
 function testPythagoras(a, b, c) {
   return Math.round(c ** 2) === Math.round(a ** 2 + b ** 2);
 }
+
+// Problem 92: Square digit chains
+// A number chain is created by continuously adding the square of the digits in a number to form a new number until it has been seen before.
+
+// For example,
+// 44→32→13→10→1→1
+// 44→32→13→10→1→185→89→145→42→20→4→16→37→58→89
+
+// Therefore any chain that arrives at 1 or 89 will become stuck in an endless loop. What is most amazing is that EVERY starting number will eventually arrive at 1 or 89.
+
+// How many starting numbers below limit will arrive at 89?
+// NOTE: seen variable is not needed
+// But i left it here for visualization purpose
+function squareDigitChains(limit) {
+return true
+}
+
