@@ -5192,6 +5192,220 @@ function testPythagoras(a, b, c) {
 // NOTE: seen variable is not needed
 // But i left it here for visualization purpose
 function squareDigitChains(limit) {
-return true
+  const squares = {
+    "0": 0 ** 2,
+    "1": 1 ** 2,
+    "2": 2 ** 2,
+    "3": 3 ** 2,
+    "4": 4 ** 2,
+    "5": 5 ** 2,
+    "6": 6 ** 2,
+    "7": 7 ** 2,
+    "8": 8 ** 2,
+    "9": 9 ** 2,
+  };
+  let nums = 0;
+
+  for (let i = 2; i < limit; ++i) {
+    let next = getNextChain(i, squares);
+    const seen = [i, next];
+
+    while (true) {
+      next = getNextChain(next, squares);
+
+      if (next === 1) {
+        seen.push(next);
+        break;
+      }
+
+      if (next === 89) {
+        seen.push(next);
+        nums += 1;
+        break;
+      }
+
+      seen.push(next);
+    }
+  }
+
+  return nums;
 }
 
+function getNextChain(i, square) {
+  return i
+    .toString()
+    .split("")
+    .map((n) => square[n])
+    .reduce((acc, val) => acc + val);
+}
+
+// Problem 93: Arithmetic expressions
+// By using each of the digits from the set, {1, 2, 3, 4}, exactly once, and making use of the four arithmetic operations (+, −, *, /) and brackets/parentheses,
+// it is possible to form different positive integer targets.
+
+// For example,
+
+// 8 = (4 * (1 + 3)) / 2
+// 14 = 4 * (3 + 1 / 2)
+// 19 = 4 * (2 + 3) − 1
+// 36 = 3 * 4 * (2 + 1)
+// Note that concatenations of the digits, like 12 + 34, are not allowed.
+
+// Using the set, {1, 2, 3, 4}, it is possible to obtain thirty-one different target numbers of which 36 is the maximum,
+// and each of the numbers 1 to 28 can be obtained before encountering the first non-expressible number.
+
+// Find the set of four distinct digits, a < b < c < d,
+// for which the longest set of consecutive positive integers, 1 to n, can be obtained, giving your answer as a string: abcd.
+function arithmeticExpressions() {
+  const longestSet = [];
+  const operators = ["+", "-", "*", "/"];
+  const opCombinations = getCombinations(operators);
+  console.log(opCombinations);
+  for (let d = 4; d <= 9; ++d) {
+    for (let c = 3; c < d; ++c) {
+      for (let b = 2; b < c; ++b) {
+        for (let a = 1; a < b; ++a) {
+          const set = [a, b, c, d].join("");
+          const currentSet = [];
+          // console.log(set)
+          // permuteDigits(set, currentSet)
+          // console.log(currentSet)
+        }
+      }
+    }
+  }
+
+  return longestSet.length;
+}
+
+function getCombinations(operators) {
+  const combo = [];
+
+  for (let op1 of operators) {
+    for (let op2 of operators) {
+      for (let op3 of operators) {
+        combo.push([op1, op2, op3]);
+      }
+    }
+  }
+
+  return combo;
+}
+
+function permuteDigits(str, currentSet, y = str.length, strArr = str.split("")) {
+  if (y === 1) {
+    const [a, b, c, d] = strArr.map(Number);
+    const digit1 = (a * (b + c)) / d;
+    const digit2 = a * (b + c / d);
+    const digit3 = a * (b + c) - d;
+    const digit4 = a * b * (c + d);
+    const intDigits = [digit1, digit2, digit3, digit4].filter(Number.isInteger);
+    // console.log([a,b,c,d].join(""))
+    intDigits.forEach((digit) => {
+      if (!currentSet.includes(digit)) currentSet.push(digit);
+    });
+    currentSet.sort((a, b) => a - b);
+    console.log(currentSet);
+  } else {
+    for (let i = 0; i < y; i++) {
+      permuteDigits(str, currentSet, y - 1, strArr);
+      if (y % 2 === 0) {
+        swap(strArr, i, y - 1);
+      } else {
+        swap(strArr, 0, y - 1);
+      }
+    }
+  }
+}
+
+function swap(strArr, i, j) {
+  const temp = strArr[i];
+  strArr[i] = strArr[j];
+  strArr[j] = temp;
+}
+
+
+function arithmeticExpressions() {
+  const longestSet = [];
+  const operators = ["+", "-", "*", "/"];
+  const opCombinations = getCombinations(operators);
+  const digits = getAllDigits();
+
+  // console.log(opCombinations)
+  for (let digit of digits) {
+    const strDigit = digit.join("");
+    const currentSet = [];
+
+    permuteDigits(strDigit, currentSet, opCombinations);
+  }
+
+  return longestSet.length;
+}
+
+function getAllDigits() {
+  const sets = [];
+
+  for (let d = 4; d <= 9; ++d) {
+    for (let c = 3; c < d; ++c) {
+      for (let b = 2; b < c; ++b) {
+        for (let a = 1; a < b; ++a) {
+          const set = [a, b, c, d];
+          sets.push(set);
+        }
+      }
+    }
+  }
+
+  return sets;
+}
+
+function getCombinations(operators) {
+  const combo = [];
+
+  for (let op1 of operators) {
+    for (let op2 of operators) {
+      for (let op3 of operators) {
+        combo.push([op1, op2, op3]);
+      }
+    }
+  }
+
+  return combo;
+}
+
+function permuteDigits(str, currentSet, y = str.length, strArr = str.split("")) {
+  if (y === 1) {
+    const [a, b, c, d] = strArr.map(Number);
+
+    const digit1 = (a * (b + c)) / d;
+    const digit2 = a * (b + c / d);
+    const digit3 = a * (b + c) - d;
+    const digit4 = a * b * (c + d);
+    const intDigits = [digit1, digit2, digit3, digit4].filter(Number.isInteger);
+
+    console.log([a, b, c, d]);
+
+    intDigits.forEach((digit) => {
+      if (!currentSet.includes(digit)) currentSet.push(digit);
+    });
+
+    currentSet.sort((a, b) => a - b);
+
+    // console.log(currentSet);
+  } else {
+    for (let i = 0; i < y; i++) {
+      permuteDigits(str, currentSet, opCombinations, y - 1, strArr);
+      if (y % 2 === 0) {
+        swap(strArr, i, y - 1);
+      } else {
+        swap(strArr, 0, y - 1);
+      }
+    }
+  }
+}
+
+function swap(strArr, i, j) {
+  const temp = strArr[i];
+  strArr[i] = strArr[j];
+  strArr[j] = temp;
+}
