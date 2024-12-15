@@ -5256,6 +5256,7 @@ function getNextChain(i, square) {
 
 // Find the set of four distinct digits, a < b < c < d,
 // for which the longest set of consecutive positive integers, 1 to n, can be obtained, giving your answer as a string: abcd.
+
 function arithmeticExpressions() {
   const longestSet = [];
   const operators = ["+", "-", "*", "/"];
