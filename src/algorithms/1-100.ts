@@ -5256,60 +5256,80 @@ function getNextChain(i, square) {
 
 // Find the set of four distinct digits, a < b < c < d,
 // for which the longest set of consecutive positive integers, 1 to n, can be obtained, giving your answer as a string: abcd.
-
 function arithmeticExpressions() {
-  const longestSet = [];
+  let longestSet = "";
+  let last = 0;
   const operators = ["+", "-", "*", "/"];
   const opCombinations = getCombinations(operators);
-  console.log(opCombinations);
-  for (let d = 4; d <= 9; ++d) {
-    for (let c = 3; c < d; ++c) {
-      for (let b = 2; b < c; ++b) {
-        for (let a = 1; a < b; ++a) {
-          const set = [a, b, c, d].join("");
-          const currentSet = [];
-          // console.log(set)
-          // permuteDigits(set, currentSet)
-          // console.log(currentSet)
-        }
-      }
+  const digits = getAllDigits();
+
+  for (let digit of digits) {
+    let current = 0;
+    const strDigit = digit.join("");
+    const currentSet = [];
+
+    permuteDigits(strDigit, currentSet, opCombinations);
+
+    currentSet.sort((a, b) => a - b);
+
+    for (let i = 1; i < currentSet.length; ++i) {
+      if (currentSet[i] !== currentSet[i - 1] + 1) break;
+
+      current += 1;
+    }
+
+    if (current > last) {
+      last = current;
+      longestSet = strDigit;
     }
   }
 
-  return longestSet.length;
+  return Number(longestSet);
 }
 
-function getCombinations(operators) {
-  const combo = [];
-
-  for (let op1 of operators) {
-    for (let op2 of operators) {
-      for (let op3 of operators) {
-        combo.push([op1, op2, op3]);
-      }
-    }
+function evl(a, b, operator) {
+  switch (operator) {
+    case "+":
+      return a + b;
+    case "-":
+      return a - b;
+    case "*":
+      return a * b;
+    case "/":
+      return a / b;
   }
-
-  return combo;
 }
 
-function permuteDigits(str, currentSet, y = str.length, strArr = str.split("")) {
+function permuteDigits(str, currentSet, op, y = str.length, strArr = str.split("")) {
   if (y === 1) {
     const [a, b, c, d] = strArr.map(Number);
-    const digit1 = (a * (b + c)) / d;
-    const digit2 = a * (b + c / d);
-    const digit3 = a * (b + c) - d;
-    const digit4 = a * b * (c + d);
-    const intDigits = [digit1, digit2, digit3, digit4].filter(Number.isInteger);
-    // console.log([a,b,c,d].join(""))
+    let intDigits = [];
+
+    // ((a b) c) d , (a b) (c d) , (a (b c)) d , a ((b c) d) , a (b (c d))
+    for (let i = 0; i < op.length; ++i) {
+      const [o1, o2, o3] = op[i];
+
+      // This magic here is representation of ordering this comment above
+      // For all possible 3 operators combinations
+      const res1 = evl(evl(evl(a, b, o1), c, o2), d, o3);
+      const res2 = evl(evl(a, b, o1), evl(c, d, o2), o3);
+      const res3 = evl(evl(a, evl(b, c, o2), o1), d, o3);
+      const res4 = evl(a, evl(evl(b, c, o2), d, o3), o1);
+      const res5 = evl(a, evl(b, evl(c, d, o2), o2), o1);
+
+      const digits = Array.from(new Set([res1, res2, res3, res4, res5])).filter(
+        (n) => Number.isInteger(n) && n > 0
+      );
+
+      intDigits = intDigits.concat(digits);
+    }
+
     intDigits.forEach((digit) => {
       if (!currentSet.includes(digit)) currentSet.push(digit);
     });
-    currentSet.sort((a, b) => a - b);
-    console.log(currentSet);
   } else {
     for (let i = 0; i < y; i++) {
-      permuteDigits(str, currentSet, y - 1, strArr);
+      permuteDigits(str, currentSet, op, y - 1, strArr);
       if (y % 2 === 0) {
         swap(strArr, i, y - 1);
       } else {
@@ -5317,30 +5337,6 @@ function permuteDigits(str, currentSet, y = str.length, strArr = str.split("")) 
       }
     }
   }
-}
-
-function swap(strArr, i, j) {
-  const temp = strArr[i];
-  strArr[i] = strArr[j];
-  strArr[j] = temp;
-}
-
-
-function arithmeticExpressions() {
-  const longestSet = [];
-  const operators = ["+", "-", "*", "/"];
-  const opCombinations = getCombinations(operators);
-  const digits = getAllDigits();
-
-  // console.log(opCombinations)
-  for (let digit of digits) {
-    const strDigit = digit.join("");
-    const currentSet = [];
-
-    permuteDigits(strDigit, currentSet, opCombinations);
-  }
-
-  return longestSet.length;
 }
 
 function getAllDigits() {
@@ -5372,41 +5368,4 @@ function getCombinations(operators) {
   }
 
   return combo;
-}
-
-function permuteDigits(str, currentSet, y = str.length, strArr = str.split("")) {
-  if (y === 1) {
-    const [a, b, c, d] = strArr.map(Number);
-
-    const digit1 = (a * (b + c)) / d;
-    const digit2 = a * (b + c / d);
-    const digit3 = a * (b + c) - d;
-    const digit4 = a * b * (c + d);
-    const intDigits = [digit1, digit2, digit3, digit4].filter(Number.isInteger);
-
-    console.log([a, b, c, d]);
-
-    intDigits.forEach((digit) => {
-      if (!currentSet.includes(digit)) currentSet.push(digit);
-    });
-
-    currentSet.sort((a, b) => a - b);
-
-    // console.log(currentSet);
-  } else {
-    for (let i = 0; i < y; i++) {
-      permuteDigits(str, currentSet, opCombinations, y - 1, strArr);
-      if (y % 2 === 0) {
-        swap(strArr, i, y - 1);
-      } else {
-        swap(strArr, 0, y - 1);
-      }
-    }
-  }
-}
-
-function swap(strArr, i, j) {
-  const temp = strArr[i];
-  strArr[i] = strArr[j];
-  strArr[j] = temp;
 }
