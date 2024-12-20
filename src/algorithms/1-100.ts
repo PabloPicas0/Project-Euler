@@ -5444,7 +5444,7 @@ function* getTriples(k) {
 // This solution is not fastest
 // And it checks not all numbers but every 4th
 // But this speeds up enough to pass all test cases
-function amicableChains(limit) {
+function amicableChains(limit: number) {
   const primes = sieveMap(limit);
   let i = 28;
   let longestChain = 0;
@@ -5484,7 +5484,7 @@ function amicableChains(limit) {
   return smallest;
 }
 
-function getDevisors(num) {
+function getDevisors(num: number) {
   const devisors = [1];
 
   for (let i = 2; i <= Math.sqrt(num); ++i) {
