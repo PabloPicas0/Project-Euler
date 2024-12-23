@@ -5573,5 +5573,20 @@ function suDoku(puzzlesArr) {
 
 // Find the last ten digits of that non-Mersenne prime in the form  multiplier×2power+1
 function largeNonMersennePrime(multiplier, power) {
-  return true
+  const m = BigInt(multiplier);
+  const p = BigInt(power);
+
+  return (m * fasterBigIntPow(2n, p) + 1n).toString().slice(-10);
+}
+
+function fasterBigIntPow(base, exp) {
+  if (exp === 0n) {
+    return 1n;
+  } else if (exp == 1n) {
+    return base;
+  } else if ((exp & 1n) != 0n) {
+    return base * fasterBigIntPow(base * base, exp / 2n);
+  } else {
+    return fasterBigIntPow(base * base, exp / 2n);
+  }
 }
