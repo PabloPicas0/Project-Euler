@@ -5560,8 +5560,40 @@ function getDevisors(num: number) {
 // By solving all puzzles in puzzlesArr, find the sum of the 3-digit numbers found in the top left corner of each solution grid; for example,
 // 483 is the 3-digit number found in the top left corner of the solution grid above.
 function suDoku(puzzlesArr) {
-  return true;
+  let sum = 0;
+
+  for (let i = 0; i < puzzlesArr.length; ++i) {
+    for (let j = 0; j < puzzlesArr[i].length; j += 27) {
+      const puzzle = puzzlesArr[i];
+      const box1 = getBox(puzzle, j);
+      const box2 = getBox(puzzle, j + 3);
+      const box3 = getBox(puzzle, j + 6);
+
+      const numbersInBox = getNeumbersInBox(box1);
+
+      console.log(box1, box2, box3, numbersInBox);
+    }
+  }
+
+  return sum;
 }
+
+function getBox(puzzle, start) {
+  const row1 = puzzle.slice(start, start + 3);
+  const row2 = puzzle.slice(start + 9, start + 12);
+  const row3 = puzzle.slice(start + 18, start + 21);
+
+  return [row1, row2, row3];
+}
+
+function getNumbesInRow(puzzle) {}
+
+function getNeumbersInBox(box) {
+  return box.map((number) => number.replace(/0/g, "").split("")).flat();
+}
+
+// 4,5,7,8
+// 3,6,9,1,2
 
 
 // Problem 97: Large non-Mersenne prime
@@ -5572,14 +5604,14 @@ function suDoku(puzzlesArr) {
 // However, in 2004 there was found a massive non-Mersenne prime which contains 2,357,207 digits:  28433×27830457+1
 
 // Find the last ten digits of that non-Mersenne prime in the form  multiplier×2power+1
-function largeNonMersennePrime(multiplier, power) {
+function largeNonMersennePrime(multiplier: number, power: number) {
   const m = BigInt(multiplier);
   const p = BigInt(power);
 
   return (m * fasterBigIntPow(2n, p) + 1n).toString().slice(-10);
 }
 
-function fasterBigIntPow(base, exp) {
+function fasterBigIntPow(base: bigint, exp: bigint): bigint {
   if (exp === 0n) {
     return 1n;
   } else if (exp == 1n) {
