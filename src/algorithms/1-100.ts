@@ -5380,7 +5380,7 @@ function getCombinations(operators) {
 // Here is usefull resource on how to think about this problem
 // https://stackoverflow.com/questions/64933639/how-do-i-solve-this-billion-iteration-sum-project-euler-problem-94-python
 // More to this i learned something new about JS and yield keyword
-function almostEquilateralTriangles(limit) {
+function almostEquilateralTriangles(limit: number) {
   let sum = 0;
   const lim = Math.floor(limit / 3 + 2);
   const triples = getTriples(lim);
@@ -5403,7 +5403,7 @@ function almostEquilateralTriangles(limit) {
   return sum;
 }
 
-function* getTriples(k) {
+function* getTriples(k: number) {
   let n = 1;
   let m = 2;
   while (m * m + 1 < k) {
@@ -5565,17 +5565,30 @@ function suDoku(puzzlesArr) {
   for (let i = 0; i < puzzlesArr.length; ++i) {
     for (let j = 0; j < puzzlesArr[i].length; j += 27) {
       const puzzle = puzzlesArr[i];
-      const box1 = getBox(puzzle, j);
-      const box2 = getBox(puzzle, j + 3);
-      const box3 = getBox(puzzle, j + 6);
+      const box = [getBox(puzzle, j), getBox(puzzle, j + 3), getBox(puzzle, j + 6)];
 
-      const numbersInBox = getNeumbersInBox(box1);
+      traverseBox(box);
 
-      console.log(box1, box2, box3, numbersInBox);
+      console.log(box);
     }
   }
 
   return sum;
+}
+
+function traverseBox(box) {
+  for (let k = 0; k < box.length; ++k) {
+    for (let i = 0; i < box[k].length; ++i) {
+      const numbersInBox = getNumbersInBox(box[k]);
+      const numbersInNeighbourBox = getNumbersInNeighbourRow(box, i);
+      const numsToExclude = new Set([...numbersInBox, ...numbersInNeighbourBox].map(Number));
+      const numbersLeftToInsert = new Set([...Array(9).keys()].map((_, i) => i + 1)).symmetricDifference(
+        numsToExclude
+      );
+
+      console.log(numbersLeftToInsert, numsToExclude);
+    }
+  }
 }
 
 function getBox(puzzle, start) {
@@ -5586,15 +5599,16 @@ function getBox(puzzle, start) {
   return [row1, row2, row3];
 }
 
-function getNumbesInRow(puzzle) {}
-
-function getNeumbersInBox(box) {
+function getNumbersInBox(box) {
   return box.map((number) => number.replace(/0/g, "").split("")).flat();
+}
+
+function getNumbersInNeighbourRow(box, rowNumber) {
+  return getNumbersInBox(box.map((nums) => nums[rowNumber]));
 }
 
 // 4,5,7,8
 // 3,6,9,1,2
-
 
 // Problem 97: Large non-Mersenne prime
 // The first known prime found to exceed one million digits was discovered in 1999, and is a Mersenne prime of the form  26972593−1
