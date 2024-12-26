@@ -1863,6 +1863,9 @@ function goldbachsOtherConjecture() {
 
   for (let i = 0; i < compositeNumbers.size; ++i) {
     const compositeNumber = compositeNumbers.get(i);
+
+    if (!compositeNumber) return false;
+
     const primeTable = sieve(compositeNumber);
     let isComposite = false;
 
