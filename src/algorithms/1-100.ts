@@ -2019,7 +2019,11 @@ function selfPowers(power: number, lastDigits: number) {
   sumAsString = String(sum).replace("n", "").split("");
 
   for (let i = lastDigits; i > 0; --i) {
-    lastNDigits.push(sumAsString.at(-i));
+    const digit = sumAsString.at(-i);
+
+    if (digit) {
+      lastNDigits.push(digit);
+    }
   }
 
   return Number(lastNDigits.join(""));
