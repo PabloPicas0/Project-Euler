@@ -2042,6 +2042,9 @@ function primePermutations() {
 
   for (let i = nextPrime; i < primes.size; ++i) {
     const prime = primes.get(i);
+
+    if (!prime) continue;
+
     const digits = String(prime).split("");
     let nextPossiblePrime = prime;
     let isPermutation = true;
