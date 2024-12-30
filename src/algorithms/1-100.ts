@@ -2446,7 +2446,8 @@ function handRank(cardValues: number[], suits: { [key: string]: number }) {
   if (x === 2 && y === 2) return { rank: 3, ...handInfo };
   if (x === 3 && !y) return { rank: 4, ...handInfo };
   if (x === 2 && y === 3) return { rank: 7, ...handInfo };
-  if (x === 4 && !y) return { rank: 8, ...handInfo };
+  
+  return { rank: 8, ...handInfo };
 }
 
 function isConsecutive(cardValues: number[]) {
