@@ -1250,7 +1250,7 @@ function digitnPowers(n) {
 
 // 1×£1 + 1×50p + 2×20p + 1×5p + 1×2p + 3×1p
 // How many different ways can n pence be made using any number of coins?
-function coinSums(n) {
+function coinSums(n: number) {
   const ways = new Array(n + 1).fill(0);
 
   ways[0] = 1;
