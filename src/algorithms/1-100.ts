@@ -1225,10 +1225,10 @@ function distinctPowers(n: number) {
 // The sum of these numbers is 1634 + 8208 + 9474 = 19316.
 
 // Find the sum of all the numbers that can be written as the sum of n powers of their digits.
-function digitnPowers(n) {
+function digitnPowers(n: number) {
   if (n < 3) return 0;
 
-  const numbers = [];
+  const numbers: number[] = [];
   const isDivisible = n % 2 === 0;
 
   for (let i = 10; isDivisible ? numbers.length < n - 1 : numbers.length <= n; ++i) {
