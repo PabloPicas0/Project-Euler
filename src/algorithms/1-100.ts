@@ -1200,18 +1200,7 @@ function distinctPowers(n: number) {
 
   terms.sort((a, b) => a - b);
 
-  for (let i = 0; i < terms.length; ++i) {
-    for (let j = i + 1; j < terms.length; ++j) {
-      const firstTerm = terms[i];
-      const secondTerm = terms[j];
-
-      if (firstTerm === secondTerm) {
-        terms.splice(j, 1, "repeat");
-      }
-    }
-  }
-
-  return terms.filter((term) => typeof term !== "string").length;
+  return Array.from(new Set(terms)).length;
 }
 
 // Problem 30: Digit n powers
