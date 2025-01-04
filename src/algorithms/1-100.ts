@@ -1067,8 +1067,8 @@ function isPrime(num) {
 // It can be verified that the sum of the numbers on the diagonals is 101.
 
 // What is the sum of the numbers on the diagonals in an n by n spiral formed in the same way?
-function spiralDiagonals(n) {
-  const spiral = [];
+function spiralDiagonals(n: number) {
+  const spiral:  number[][] = [];
 
   const dir = ["left", "down", "right", "up"];
   let idx = 0;
@@ -1079,7 +1079,7 @@ function spiralDiagonals(n) {
     spiral.push([]);
 
     for (let j = 0; j < n; ++j) {
-      spiral[i].push(false);
+      spiral[i].push(0);
     }
   }
 
@@ -1155,7 +1155,7 @@ function spiralDiagonals(n) {
   return countSpiral(spiral);
 }
 
-function countSpiral(spiral) {
+function countSpiral(spiral: number[][]) {
   const mid = Math.floor(spiral.length / 2);
   const sum = [1];
 
