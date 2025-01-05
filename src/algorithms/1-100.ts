@@ -1025,7 +1025,7 @@ function fractionToDecimal(a: number, b: number) {
 //  , starting with  n=0
 //  .
 
-function quadraticPrimes(range) {
+function quadraticPrimes(range: number) {
   let longestConsecutivePrimes = 0;
   let coefficient_a = 0;
   let coefficient_b = 0;
@@ -1049,7 +1049,7 @@ function quadraticPrimes(range) {
   return coefficient_a * coefficient_b;
 }
 
-function isPrime(num) {
+function isPrime(num: number) {
   for (let i = 2, s = Math.sqrt(num); i <= s; i++) {
     if (num % i === 0) return false;
   }
@@ -1068,7 +1068,7 @@ function isPrime(num) {
 
 // What is the sum of the numbers on the diagonals in an n by n spiral formed in the same way?
 function spiralDiagonals(n: number) {
-  const spiral:  number[][] = [];
+  const spiral: number[][] = [];
 
   const dir = ["left", "down", "right", "up"];
   let idx = 0;
@@ -2435,7 +2435,7 @@ function handRank(cardValues: number[], suits: { [key: string]: number }) {
   if (x === 2 && y === 2) return { rank: 3, ...handInfo };
   if (x === 3 && !y) return { rank: 4, ...handInfo };
   if (x === 2 && y === 3) return { rank: 7, ...handInfo };
-  
+
   return { rank: 8, ...handInfo };
 }
 
@@ -5566,29 +5566,84 @@ function suDoku(puzzlesArr) {
     for (let j = 0; j < puzzlesArr[i].length; j += 27) {
       const puzzle = puzzlesArr[i];
       const box = [getBox(puzzle, j), getBox(puzzle, j + 3), getBox(puzzle, j + 6)];
-
-      traverseBox(box);
-
-      console.log(box);
+      const combinations = getPossibleCombinations(box);
+      tryCombinations(box, combinations);
+      // console.log(combinations.get(0));
     }
   }
 
   return sum;
 }
 
-function traverseBox(box) {
-  for (let k = 0; k < box.length; ++k) {
-    for (let i = 0; i < box[k].length; ++i) {
-      const numbersInBox = getNumbersInBox(box[k]);
-      const numbersInNeighbourBox = getNumbersInNeighbourRow(box, i);
-      const numsToExclude = new Set([...numbersInBox, ...numbersInNeighbourBox].map(Number));
-      const numbersLeftToInsert = new Set([...Array(9).keys()].map((_, i) => i + 1)).symmetricDifference(
-        numsToExclude
-      );
-
-      console.log(numbersLeftToInsert, numsToExclude);
+function tryCombinations(box, combinations) {
+  let tempBox = structuredClone(box);
+  // console.log(tempBox[0])
+  for (let i = 0; i < combinations.get(0).length; ++i) {
+    const combo1 = combinations.get(0)[i];
+    const possibleCombo = insertCombination(combo1, tempBox[0]);
+    console.log(possibleCombo, combo1);
+    for (let j = 0; j < combinations.get(1).length; ++j) {
+      for (let k = 0; k < combinations.get(2).length; ++k) {}
     }
   }
+}
+
+function insertCombination(combinations, boxRows) {
+  const possibleCombo = [];
+  let counter = 0;
+
+  for (let i = 0; i < boxRows.length; ++i) {
+    const row = boxRows[i].split("");
+
+    if (row[0] === "0") {
+      row[0] = combinations[counter];
+      counter += 1;
+    }
+
+    if (row[1] === "0") {
+      row[1] = combinations[counter];
+      counter += 1;
+    }
+
+    if (row[2] === "0") {
+      row[2] = combinations[counter];
+      counter += 1;
+    }
+
+    possibleCombo.push(row.join(""));
+  }
+
+  return possibleCombo;
+}
+
+function getPossibleCombinations(box) {
+  const boxCombinations = new Map();
+
+  for (let k = 0; k < box.length; ++k) {
+    const numsToInsert = getNumbersToInsert(box, k);
+    const combinations = [];
+    permute(numsToInsert.join(""), combinations);
+    boxCombinations.set(k, combinations);
+  }
+
+  return boxCombinations;
+}
+
+function getNumbersToInsert(box, k) {
+  const nums = [];
+
+  for (let i = 0; i < box[k].length; ++i) {
+    const numbersInBox = getNumbersInBox(box[k]);
+    const numbersInNeighbourBox = getNumbersInNeighbourRow(box, i);
+    const numsToExclude = new Set([...numbersInBox, ...numbersInNeighbourBox].map(Number));
+    const numbersLeftToInsert = Array.from(
+      new Set([...Array(9).keys()].map((_, i) => i + 1)).symmetricDifference(numsToExclude)
+    );
+
+    nums.push(...numbersLeftToInsert);
+  }
+
+  return Array.from(new Set(nums));
 }
 
 function getBox(puzzle, start) {
