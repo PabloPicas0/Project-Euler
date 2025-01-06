@@ -1267,8 +1267,8 @@ function coinSums(n: number) {
 // Find the sum of all products whose multiplicand/multiplier/product identity can be written as a 1 through n pandigital.
 
 // Hint: Some products can be obtained in more than one way so be sure to only include it once in your sum.
-function pandigitalProducts(n) {
-  const products = [];
+function pandigitalProducts(n: number) {
+  const products: number[] = [];
 
   for (let i = 1; i <= Math.ceil(9999 / 2); ++i) {
     for (let j = 1; j <= Math.floor(9999 / i); ++j) {
@@ -1293,17 +1293,7 @@ function pandigitalProducts(n) {
     }
   }
 
-  for (let i = 0; i < products.length; ++i) {
-    const currentNumber = products[i];
-
-    for (let j = i + 1; j < products.length; ++j) {
-      const nextNumber = products[j];
-
-      if (currentNumber === nextNumber) products.splice(j, 1, "repeat");
-    }
-  }
-
-  return products.filter((product) => product !== "repeat").reduce((acc, number) => acc + number, 0);
+  return Array.from(new Set(products)).reduce((acc, number) => acc + number, 0);
 }
 
 // Problem 33: Digit cancelling fractions
@@ -5661,6 +5651,523 @@ function getNumbersInBox(box) {
 function getNumbersInNeighbourRow(box, rowNumber) {
   return getNumbersInBox(box.map((nums) => nums[rowNumber]));
 }
+
+
+
+
+
+
+
+function suDoku(puzzlesArr) {
+  let sum = 0;
+
+  for (let i = 0; i < puzzlesArr.length; ++i) {
+    const puzzle = puzzlesArr[i];
+    const box = [
+      createBox(puzzle, 0),
+      createBox(puzzle, 3),
+      createBox(puzzle, 6),
+
+      createBox(puzzle, 27),
+      createBox(puzzle, 27 + 3),
+      createBox(puzzle, 27 + 6),
+
+      createBox(puzzle, 27 * 2),
+      createBox(puzzle, 27 * 2 + 3),
+      createBox(puzzle, 27 * 2 + 6),
+    ];
+    const combinations = getPossibleCombinations(box);
+    // tryCombinations(box, combinations);
+    // console.log(combinations.get(0));
+    // console.log(box)
+  }
+  // 1,2,3,4,5,6,7,8,9
+  // 1,2,3,6,7,8,9
+  return sum;
+}
+
+function tryCombinations(box, combinations) {
+  let tempBox = structuredClone(box);
+  // console.log(tempBox[0])
+  for (let i = 0; i < combinations.get(0).length; ++i) {
+    const combo1 = combinations.get(0)[i];
+    const possibleCombo1 = insertCombination(combo1, tempBox[0]);
+    let terminateOuterLoop1 = false;
+
+    for (let j = 0; j < combinations.get(1).length; ++j) {
+      const combo2 = combinations.get(1)[j];
+      const possibleCombo2 = insertCombination(combo2, tempBox[1]);
+      let terminateOuterLoop2 = false;
+
+      for (let k = 0; k < combinations.get(2).length; ++k) {
+        const combo3 = combinations.get(2)[k];
+        const possibleCombo3 = insertCombination(combo3, tempBox[2]);
+        const possibleSolution = [possibleCombo1, possibleCombo2, possibleCombo3];
+
+        if (isUnique(possibleSolution)) {
+          console.log(possibleSolution);
+          terminateOuterLoop2 = true;
+          terminateOuterLoop1 = true;
+          break;
+        }
+      }
+      if (terminateOuterLoop2) break;
+    }
+    if (terminateOuterLoop1) break;
+  }
+}
+
+function isUnique(possibleSolution) {
+  for (let i = 0; i < 3; ++i) {
+    const neighbourNumbers = getNumbersInNeighbourRow(possibleSolution, i);
+    const hasPossibleDuplicates = Array.from(new Set(neighbourNumbers));
+
+    if (neighbourNumbers.length > hasPossibleDuplicates.length) return false;
+  }
+
+  return true;
+}
+
+function insertCombination(combinations, boxRows) {
+  const possibleCombo = [];
+  let counter = 0;
+
+  for (let i = 0; i < boxRows.length; ++i) {
+    const row = boxRows[i].split("");
+
+    if (row[0] === "0") {
+      row[0] = combinations[counter];
+      counter += 1;
+    }
+
+    if (row[1] === "0") {
+      row[1] = combinations[counter];
+      counter += 1;
+    }
+
+    if (row[2] === "0") {
+      row[2] = combinations[counter];
+      counter += 1;
+    }
+
+    possibleCombo.push(row.join(""));
+  }
+
+  return possibleCombo;
+}
+
+function getPossibleCombinations(box) {
+  const boxCombinations = new Map();
+
+  for (let k = 0; k < box.length; ++k) {
+    const numsToInsert = getNumbersToInsert(box, k);
+    // console.log(numsToInsert)
+    const combinations = [];
+    permute(numsToInsert.join(""), combinations);
+    boxCombinations.set(k, combinations);
+  }
+
+  return boxCombinations;
+}
+
+function getNumbersToInsert(box, k) {
+  const nums = [];
+  let start = 0;
+
+  for (let i = 0; i < box[k].length; ++i) {
+    const end = start + 3;
+    const numbersInBox = getNumbersInBox(box[k]);
+    const numbersInNeighbourRow = getNumbersInNeighbourRow(box.slice(start, end), i);
+    const numbersInNeighbourCol = getNumbersInNeigbourCol(box, i);
+    const numsToExclude = new Set(
+      [...numbersInBox, ...numbersInNeighbourRow, ...numbersInNeighbourCol].map(Number)
+    );
+    const numbersLeftToInsert = Array.from(
+      new Set([...Array(9).keys()].map((_, i) => i + 1)).symmetricDifference(numsToExclude)
+    );
+    console.log(numsToExclude, numbersLeftToInsert);
+
+    nums.push(...numbersLeftToInsert);
+
+    if (k % 3 === 0 && k > 0) start += 3;
+  }
+
+  return Array.from(new Set(nums));
+}
+
+function createBox(puzzle, start) {
+  const row1 = puzzle.slice(start, start + 3);
+  const row2 = puzzle.slice(start + 9, start + 12);
+  const row3 = puzzle.slice(start + 18, start + 21);
+
+  return [row1, row2, row3];
+}
+
+function getNumbersInBox(box) {
+  return box.map((number) => number.replace(/0/g, "").split("")).flat();
+}
+
+function getNumbersInNeighbourRow(box, rowNumber) {
+  return getNumbersInBox(box.map((nums) => nums[rowNumber]));
+}
+
+function getNumbersInNeigbourCol(box, colNumber) {
+  const cols = box.reduce((acc, nums, idx) => {
+    if (idx % 3 === 0) {
+      acc.push(nums.map((num) => num[colNumber]).join(""));
+    }
+
+    return acc;
+  }, []);
+  const numbersInNeigbourCol = getNumbersInBox(cols);
+
+  return numbersInNeigbourCol;
+}
+
+
+
+
+
+
+function suDoku(puzzlesArr) {
+  let sum = 0;
+
+  for (let i = 0; i < puzzlesArr.length; ++i) {
+    const puzzle = puzzlesArr[i];
+    const box = [
+      createBox(puzzle, 0),
+      createBox(puzzle, 3),
+      createBox(puzzle, 6),
+
+      createBox(puzzle, 27),
+      createBox(puzzle, 27 + 3),
+      createBox(puzzle, 27 + 6),
+
+      createBox(puzzle, 27 * 2),
+      createBox(puzzle, 27 * 2 + 3),
+      createBox(puzzle, 27 * 2 + 6),
+    ];
+    const combinations = getPossibleCombinations(box);
+    // tryCombinations(box, combinations);
+    // console.log(combinations.get(0));
+    // console.log(box)
+  }
+  // 1,2,3,4,5,6,7,8,9
+  // 1,2,3,6,7,8,9
+  return sum;
+}
+
+function getPossibleCombinations(box) {
+  const boxCombinations = new Map();
+
+  for (let k = 0; k < box.length; ++k) {
+    const numsToInsert = getNumbersToInsert(box, k);
+    // console.log(numsToInsert)
+    console.log(numsToInsert, k);
+    const combinations = [];
+    // permute(numsToInsert.join(""), combinations);
+    // boxCombinations.set(k, combinations);
+  }
+
+  return boxCombinations;
+}
+
+function getNumbersToInsert(box, k) {
+  const nums = [];
+  let start = 0;
+
+  for (let i = 0; i < box[k].length; ++i) {
+    for (let j = 0; j < box[k][i].length; ++j) {
+      if (box[k][i][j] !== "0") continue;
+
+      const end = start + 3;
+      const numbersInBox = getNumbersInBox(box[k]);
+      const numbersInNeighbourRow = getNumbersInNeighbourRow(box.slice(start, end), i);
+      const numbersInNeighbourCol = getNumbersInNeigbourCol(box, k, j);
+      const numsToExclude = new Set(
+        [...numbersInBox, ...numbersInNeighbourRow, ...numbersInNeighbourCol].map(Number)
+      );
+      const numbersLeftToInsert = Array.from(
+        new Set([...Array(9).keys()].map((_, i) => i + 1)).symmetricDifference(numsToExclude)
+      );
+      // console.log(numsToExclude, numbersLeftToInsert, numbersInNeighbourCol ,box[k][i])
+
+      nums.push(numbersLeftToInsert);
+
+      if (k % 3 === 0 && k > 0) start += 3;
+    }
+  }
+  console.log(Array.from(new Set(temp)));
+  return nums;
+}
+
+function createBox(puzzle, start) {
+  const row1 = puzzle.slice(start, start + 3);
+  const row2 = puzzle.slice(start + 9, start + 12);
+  const row3 = puzzle.slice(start + 18, start + 21);
+
+  return [row1, row2, row3];
+}
+
+function getNumbersInBox(box) {
+  return box.map((number) => number.replace(/0/g, "").split("")).flat();
+}
+
+function getNumbersInNeighbourRow(box, rowNumber) {
+  return getNumbersInBox(box.map((nums) => nums[rowNumber]));
+}
+
+function getNumbersInNeigbourCol(box, cellNumber, colNumber) {
+  let cols = [];
+
+  switch (cellNumber) {
+    case 1:
+    case 4:
+    case 7:
+      cols = box.reduce((acc, nums, idx) => {
+        if (idx === 1 || idx === 4 || idx === 7) {
+          acc.push(nums.map((num) => num[colNumber]).join(""));
+        }
+
+        return acc;
+      }, []);
+      break;
+    case 2:
+    case 5:
+    case 8:
+      cols = box.reduce((acc, nums, idx) => {
+        if (idx === 2 || idx === 5 || idx === 8) {
+          acc.push(nums.map((num) => num[colNumber]).join(""));
+        }
+
+        return acc;
+      }, []);
+      break;
+    default:
+      cols = box.reduce((acc, nums, idx) => {
+        if (idx % 3 === 0) {
+          acc.push(nums.map((num) => num[colNumber]).join(""));
+        }
+
+        return acc;
+      }, []);
+  }
+
+  const numbersInNeigbourCol = getNumbersInBox(cols);
+
+  return numbersInNeigbourCol;
+}
+
+
+
+
+
+
+
+
+
+
+// TO TEST IN CONSOLE 
+function suDoku(puzzlesArr) {
+  let sum = 0;
+
+  for (let i = 0; i < puzzlesArr.length; ++i) {
+    const puzzle = puzzlesArr[i];
+    const box = [
+      createBox(puzzle, 0),
+      createBox(puzzle, 3),
+      createBox(puzzle, 6),
+
+      createBox(puzzle, 27),
+      createBox(puzzle, 27 + 3),
+      createBox(puzzle, 27 + 6),
+
+      createBox(puzzle, 27 * 2),
+      createBox(puzzle, 27 * 2 + 3),
+      createBox(puzzle, 27 * 2 + 6),
+    ];
+    const combinations = getPossibleCombinations(box);
+    tryCombinations(box, combinations);
+    // console.log(combinations.get(0));
+    // console.log(box)
+  }
+  // 1,2,3,4,5,6,7,8,9
+  // 1,2,3,6,7,8,9
+  return sum;
+}
+
+function tryCombinations(box, combinations) {
+  let tempBox = structuredClone(box);
+  const c1 = combinations.get(0),
+    c2 = combinations.get(1),
+    c3 = combinations.get(2);
+  // console.log(tempBox[0])
+  for (let i = 0; i < combinations.get(0).length; ++i) {
+    const combo1 = c1[i];
+    const possibleCombo1 = insertCombination(combo1, tempBox[0]);
+    let terminateOuterLoop1 = false;
+
+    for (let j = 0; j < combinations.get(1).length; ++j) {
+      const combo2 = c2[j];
+      const possibleCombo2 = insertCombination(combo2, tempBox[1]);
+      let terminateOuterLoop2 = false;
+
+      for (let k = 0; k < combinations.get(2).length; ++k) {
+        const combo3 = c3[k];
+        const possibleCombo3 = insertCombination(combo3, tempBox[2]);
+        const possibleSolution = [possibleCombo1, possibleCombo2, possibleCombo3];
+
+        if (
+          possibleCombo1.join("") === "483967251" &&
+          possibleCombo2.join("") === "921345876" &&
+          possibleCombo3.join("") === "65782149"
+        ) {
+          console.log(possibleSolution, combo1, combo2, combo3);
+          // terminateOuterLoop2 = true;
+          // terminateOuterLoop1 = true;
+          break;
+        }
+      }
+      if (terminateOuterLoop2) break;
+    }
+    if (terminateOuterLoop1) break;
+  }
+}
+
+function isUnique(possibleSolution) {
+  for (let i = 0; i < 3; ++i) {
+    const neighbourNumbers = getNumbersInNeighbourRow(possibleSolution, i);
+    const hasPossibleDuplicates = Array.from(new Set(neighbourNumbers));
+
+    if (neighbourNumbers.length > hasPossibleDuplicates.length) return false;
+  }
+
+  return true;
+}
+
+function insertCombination(combinations, boxRows) {
+  const possibleCombo = [];
+  let counter = 0;
+
+  for (let i = 0; i < boxRows.length; ++i) {
+    const row = boxRows[i].split("");
+
+    if (row[0] === "0") {
+      row[0] = combinations[counter];
+      counter += 1;
+    }
+
+    if (row[1] === "0") {
+      row[1] = combinations[counter];
+      counter += 1;
+    }
+
+    if (row[2] === "0") {
+      row[2] = combinations[counter];
+      counter += 1;
+    }
+
+    possibleCombo.push(row.join(""));
+  }
+
+  return possibleCombo;
+}
+
+function getPossibleCombinations(box) {
+  const boxCombinations = new Map();
+
+  for (let k = 0; k < box.length; ++k) {
+    const numsToInsert = getNumbersToInsert(box, k);
+    // console.log(numsToInsert)
+    const combinations = [];
+    permute(numsToInsert.join(""), combinations);
+    boxCombinations.set(k, combinations);
+  }
+
+  return boxCombinations;
+}
+
+function getNumbersToInsert(box, k) {
+  const nums = [];
+  let start = 0;
+
+  for (let i = 0; i < box[k].length; ++i) {
+    const end = start + 3;
+    const numbersInBox = getNumbersInBox(box[k]);
+    const numbersInNeighbourRow = getNumbersInNeighbourRow(box.slice(start, end), i);
+    const numbersInNeighbourCol = getNumbersInNeigbourCol(box, i);
+    const numsToExclude = new Set(
+      [...numbersInBox, ...numbersInNeighbourRow, ...numbersInNeighbourCol].map(Number)
+    );
+    const numbersLeftToInsert = Array.from(
+      new Set([...Array(9).keys()].map((_, i) => i + 1)).symmetricDifference(numsToExclude)
+    );
+    // console.log(numsToExclude, numbersLeftToInsert);
+
+    nums.push(...numbersLeftToInsert);
+
+    if (k % 3 === 0 && k > 0) start += 3;
+  }
+
+  return Array.from(new Set(nums));
+}
+
+function createBox(puzzle, start) {
+  const row1 = puzzle.slice(start, start + 3);
+  const row2 = puzzle.slice(start + 9, start + 12);
+  const row3 = puzzle.slice(start + 18, start + 21);
+
+  return [row1, row2, row3];
+}
+
+function getNumbersInBox(box) {
+  return box.map((number) => number.replace(/0/g, "").split("")).flat();
+}
+
+function getNumbersInNeighbourRow(box, rowNumber) {
+  return getNumbersInBox(box.map((nums) => nums[rowNumber]));
+}
+
+function getNumbersInNeigbourCol(box, colNumber) {
+  const cols = box.reduce((acc, nums, idx) => {
+    if (idx % 3 === 0) {
+      acc.push(nums.map((num) => num[colNumber]).join(""));
+    }
+
+    return acc;
+  }, []);
+  const numbersInNeigbourCol = getNumbersInBox(cols);
+
+  return numbersInNeigbourCol;
+}
+
+function permute(str, combinations, y = str.length, strArr = str.split("")) {
+  if (y === 1) {
+    const combination = strArr.map(Number);
+    combinations.push(combination);
+  } else {
+    for (let i = 0; i < y; i++) {
+      permute(str, combinations, y - 1, strArr);
+      if (y % 2 === 0) {
+        swap(strArr, i, y - 1);
+      } else {
+        swap(strArr, 0, y - 1);
+      }
+    }
+  }
+}
+
+function swap(strArr, i, j) {
+  const temp = strArr[i];
+  strArr[i] = strArr[j];
+  strArr[j] = temp;
+}
+
+// Only change code above this line
+
+const testPuzzles1 = ["003020600900305001001806400008102900700000008006708200002609500800203009005010300"];
+
+suDoku(testPuzzles1);
 
 // 4,5,7,8
 // 3,6,9,1,2
