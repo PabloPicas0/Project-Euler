@@ -1391,7 +1391,7 @@ function circularPrimes(n: number) {
     }
 
     for (let j = 0; j < rotations.length; ++j) {
-      if (!isPrime(rotations[j])) {
+      if (!isPrime(Number(rotations[j]))) {
         isCircular = false;
         break;
       }
