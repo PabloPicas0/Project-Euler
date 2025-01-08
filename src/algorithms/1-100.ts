@@ -660,6 +660,8 @@ function maximumPathSumI(triangle: number[][]) {
     const lastLine = triangle.pop();
     const aboveLine = triangle.pop();
 
+    if (!aboveLine || !lastLine) continue
+
     for (let i = 0; i < aboveLine.length; ++i) {
       aboveLine[i] = Math.max(aboveLine[i] + lastLine[i], aboveLine[i] + lastLine[i + 1]);
     }
@@ -5549,114 +5551,25 @@ function getDevisors(num: number) {
 
 // By solving all puzzles in puzzlesArr, find the sum of the 3-digit numbers found in the top left corner of each solution grid; for example,
 // 483 is the 3-digit number found in the top left corner of the solution grid above.
-function suDoku(puzzlesArr) {
-  let sum = 0;
 
-  for (let i = 0; i < puzzlesArr.length; ++i) {
-    for (let j = 0; j < puzzlesArr[i].length; j += 27) {
-      const puzzle = puzzlesArr[i];
-      const box = [getBox(puzzle, j), getBox(puzzle, j + 3), getBox(puzzle, j + 6)];
-      const combinations = getPossibleCombinations(box);
-      tryCombinations(box, combinations);
-      // console.log(combinations.get(0));
-    }
-  }
+const testPuzzles1 = [
+  "003020600900305001001806400008102900700000008006708200002609500800203009005010300",
+  "200080300060070084030500209000105408000000000402706000301007040720040060004010003",
+  "000000907000420180000705026100904000050000040000507009920108000034059000507000000",
+];
 
-  return sum;
-}
-
-function tryCombinations(box, combinations) {
-  let tempBox = structuredClone(box);
-  // console.log(tempBox[0])
-  for (let i = 0; i < combinations.get(0).length; ++i) {
-    const combo1 = combinations.get(0)[i];
-    const possibleCombo = insertCombination(combo1, tempBox[0]);
-    console.log(possibleCombo, combo1);
-    for (let j = 0; j < combinations.get(1).length; ++j) {
-      for (let k = 0; k < combinations.get(2).length; ++k) {}
-    }
-  }
-}
-
-function insertCombination(combinations, boxRows) {
-  const possibleCombo = [];
-  let counter = 0;
-
-  for (let i = 0; i < boxRows.length; ++i) {
-    const row = boxRows[i].split("");
-
-    if (row[0] === "0") {
-      row[0] = combinations[counter];
-      counter += 1;
-    }
-
-    if (row[1] === "0") {
-      row[1] = combinations[counter];
-      counter += 1;
-    }
-
-    if (row[2] === "0") {
-      row[2] = combinations[counter];
-      counter += 1;
-    }
-
-    possibleCombo.push(row.join(""));
-  }
-
-  return possibleCombo;
-}
-
-function getPossibleCombinations(box) {
-  const boxCombinations = new Map();
-
-  for (let k = 0; k < box.length; ++k) {
-    const numsToInsert = getNumbersToInsert(box, k);
-    const combinations = [];
-    permute(numsToInsert.join(""), combinations);
-    boxCombinations.set(k, combinations);
-  }
-
-  return boxCombinations;
-}
-
-function getNumbersToInsert(box, k) {
-  const nums = [];
-
-  for (let i = 0; i < box[k].length; ++i) {
-    const numbersInBox = getNumbersInBox(box[k]);
-    const numbersInNeighbourBox = getNumbersInNeighbourRow(box, i);
-    const numsToExclude = new Set([...numbersInBox, ...numbersInNeighbourBox].map(Number));
-    const numbersLeftToInsert = Array.from(
-      new Set([...Array(9).keys()].map((_, i) => i + 1)).symmetricDifference(numsToExclude)
-    );
-
-    nums.push(...numbersLeftToInsert);
-  }
-
-  return Array.from(new Set(nums));
-}
-
-function getBox(puzzle, start) {
-  const row1 = puzzle.slice(start, start + 3);
-  const row2 = puzzle.slice(start + 9, start + 12);
-  const row3 = puzzle.slice(start + 18, start + 21);
-
-  return [row1, row2, row3];
-}
-
-function getNumbersInBox(box) {
-  return box.map((number) => number.replace(/0/g, "").split("")).flat();
-}
-
-function getNumbersInNeighbourRow(box, rowNumber) {
-  return getNumbersInBox(box.map((nums) => nums[rowNumber]));
-}
-
-
-
-
-
-
+const s = [
+  ["483", "967", "251"],
+  ["921", "345", "876"],
+  ["657", "821", "493"],
+  ["548", "729", "136"],
+  ["132", "564", "798"],
+  ["976", "138", "245"],
+  ["372", "814", "695"],
+  ["689", "253", "417"],
+  ["514", "769", "382"],
+];
+console.log(isUnique(s));
 
 function suDoku(puzzlesArr) {
   let sum = 0;
@@ -5677,63 +5590,45 @@ function suDoku(puzzlesArr) {
       createBox(puzzle, 27 * 2 + 6),
     ];
     const combinations = getPossibleCombinations(box);
-    // tryCombinations(box, combinations);
     // console.log(combinations.get(0));
     // console.log(box)
+    generateCombinations(box, combinations, 0, []);
   }
   // 1,2,3,4,5,6,7,8,9
   // 1,2,3,6,7,8,9
   return sum;
 }
 
-function tryCombinations(box, combinations) {
-  let tempBox = structuredClone(box);
-  // console.log(tempBox[0])
-  for (let i = 0; i < combinations.get(0).length; ++i) {
-    const combo1 = combinations.get(0)[i];
-    const possibleCombo1 = insertCombination(combo1, tempBox[0]);
-    let terminateOuterLoop1 = false;
-
-    for (let j = 0; j < combinations.get(1).length; ++j) {
-      const combo2 = combinations.get(1)[j];
-      const possibleCombo2 = insertCombination(combo2, tempBox[1]);
-      let terminateOuterLoop2 = false;
-
-      for (let k = 0; k < combinations.get(2).length; ++k) {
-        const combo3 = combinations.get(2)[k];
-        const possibleCombo3 = insertCombination(combo3, tempBox[2]);
-        const possibleSolution = [possibleCombo1, possibleCombo2, possibleCombo3];
-
-        if (isUnique(possibleSolution)) {
-          console.log(possibleSolution);
-          terminateOuterLoop2 = true;
-          terminateOuterLoop1 = true;
-          break;
-        }
-      }
-      if (terminateOuterLoop2) break;
+function generateCombinations(box, combinations, depth, digits) {
+  if (depth === 9) {
+    if (isUnique(digits)) {
+      console.log(digits, isUnique(digits));
     }
-    if (terminateOuterLoop1) break;
+  } else {
+    const currentCombinations = combinations.get(depth);
+    const currentBox = box[depth];
+
+    for (let i = 0; i < currentCombinations.length; ++i) {
+      const currentCombination = currentCombinations[i];
+      const combination = insertCombination(currentBox, currentCombination);
+      generateCombinations(box, combinations, depth + 1, [...digits, combination]);
+    }
   }
 }
 
-function isUnique(possibleSolution) {
-  for (let i = 0; i < 3; ++i) {
-    const neighbourNumbers = getNumbersInNeighbourRow(possibleSolution, i);
-    const hasPossibleDuplicates = Array.from(new Set(neighbourNumbers));
+function isUnique(solution) {
+  const isRowValid = areNumbersValidInNeighbourRow(solution);
+  const isColValid = areNumbersValidInNeighbourCol(solution);
 
-    if (neighbourNumbers.length > hasPossibleDuplicates.length) return false;
-  }
-
-  return true;
+  return isRowValid && isColValid;
 }
 
-function insertCombination(combinations, boxRows) {
+function insertCombination(numbersInBox, combinations) {
   const possibleCombo = [];
   let counter = 0;
 
-  for (let i = 0; i < boxRows.length; ++i) {
-    const row = boxRows[i].split("");
+  for (let i = 0; i < numbersInBox.length; ++i) {
+    const row = numbersInBox[i].split("");
 
     if (row[0] === "0") {
       row[0] = combinations[counter];
@@ -5778,14 +5673,12 @@ function getNumbersToInsert(box, k) {
     const end = start + 3;
     const numbersInBox = getNumbersInBox(box[k]);
     const numbersInNeighbourRow = getNumbersInNeighbourRow(box.slice(start, end), i);
-    const numbersInNeighbourCol = getNumbersInNeigbourCol(box, i);
-    const numsToExclude = new Set(
-      [...numbersInBox, ...numbersInNeighbourRow, ...numbersInNeighbourCol].map(Number)
-    );
+    // const numbersInNeighbourCol = getNumbersInNeigbourCol(box, i);
+    const numsToExclude = new Set([...numbersInBox, ...numbersInNeighbourRow].map(Number));
     const numbersLeftToInsert = Array.from(
       new Set([...Array(9).keys()].map((_, i) => i + 1)).symmetricDifference(numsToExclude)
     );
-    console.log(numsToExclude, numbersLeftToInsert);
+    // console.log(numsToExclude, numbersLeftToInsert);
 
     nums.push(...numbersLeftToInsert);
 
@@ -5795,110 +5688,38 @@ function getNumbersToInsert(box, k) {
   return Array.from(new Set(nums));
 }
 
-function createBox(puzzle, start) {
-  const row1 = puzzle.slice(start, start + 3);
-  const row2 = puzzle.slice(start + 9, start + 12);
-  const row3 = puzzle.slice(start + 18, start + 21);
-
-  return [row1, row2, row3];
-}
-
-function getNumbersInBox(box) {
-  return box.map((number) => number.replace(/0/g, "").split("")).flat();
-}
-
-function getNumbersInNeighbourRow(box, rowNumber) {
-  return getNumbersInBox(box.map((nums) => nums[rowNumber]));
-}
-
-function getNumbersInNeigbourCol(box, colNumber) {
-  const cols = box.reduce((acc, nums, idx) => {
-    if (idx % 3 === 0) {
-      acc.push(nums.map((num) => num[colNumber]).join(""));
-    }
-
-    return acc;
-  }, []);
-  const numbersInNeigbourCol = getNumbersInBox(cols);
-
-  return numbersInNeigbourCol;
-}
-
-
-
-
-
-
-function suDoku(puzzlesArr) {
-  let sum = 0;
-
-  for (let i = 0; i < puzzlesArr.length; ++i) {
-    const puzzle = puzzlesArr[i];
-    const box = [
-      createBox(puzzle, 0),
-      createBox(puzzle, 3),
-      createBox(puzzle, 6),
-
-      createBox(puzzle, 27),
-      createBox(puzzle, 27 + 3),
-      createBox(puzzle, 27 + 6),
-
-      createBox(puzzle, 27 * 2),
-      createBox(puzzle, 27 * 2 + 3),
-      createBox(puzzle, 27 * 2 + 6),
-    ];
-    const combinations = getPossibleCombinations(box);
-    // tryCombinations(box, combinations);
-    // console.log(combinations.get(0));
-    // console.log(box)
-  }
-  // 1,2,3,4,5,6,7,8,9
-  // 1,2,3,6,7,8,9
-  return sum;
-}
-
-function getPossibleCombinations(box) {
-  const boxCombinations = new Map();
-
-  for (let k = 0; k < box.length; ++k) {
-    const numsToInsert = getNumbersToInsert(box, k);
-    // console.log(numsToInsert)
-    console.log(numsToInsert, k);
-    const combinations = [];
-    // permute(numsToInsert.join(""), combinations);
-    // boxCombinations.set(k, combinations);
-  }
-
-  return boxCombinations;
-}
-
-function getNumbersToInsert(box, k) {
-  const nums = [];
+function areNumbersValidInNeighbourRow(solution) {
   let start = 0;
 
-  for (let i = 0; i < box[k].length; ++i) {
-    for (let j = 0; j < box[k][i].length; ++j) {
-      if (box[k][i][j] !== "0") continue;
-
+  for (let i = 0; i < solution.length; ++i) {
+    for (let j = 0; j < solution[i].length; ++j) {
       const end = start + 3;
-      const numbersInBox = getNumbersInBox(box[k]);
-      const numbersInNeighbourRow = getNumbersInNeighbourRow(box.slice(start, end), i);
-      const numbersInNeighbourCol = getNumbersInNeigbourCol(box, k, j);
-      const numsToExclude = new Set(
-        [...numbersInBox, ...numbersInNeighbourRow, ...numbersInNeighbourCol].map(Number)
-      );
-      const numbersLeftToInsert = Array.from(
-        new Set([...Array(9).keys()].map((_, i) => i + 1)).symmetricDifference(numsToExclude)
-      );
-      // console.log(numsToExclude, numbersLeftToInsert, numbersInNeighbourCol ,box[k][i])
+      const gridRow = solution.slice(start, end);
+      const gridRowNumbers = getNumbersInNeighbourRow(gridRow, j);
 
-      nums.push(numbersLeftToInsert);
+      const areValid = gridRowNumbers.length === new Set(gridRowNumbers).size;
 
-      if (k % 3 === 0 && k > 0) start += 3;
+      if (!areValid) return false;
+    }
+    if (i % 3 === 0 && i > 0) start += 3;
+  }
+
+  return true;
+}
+
+function areNumbersValidInNeighbourCol(solution) {
+  for (let i = 0; i < solution[0].length; ++i) {
+    const cols = solution[0][i].split("");
+
+    for (let j = 0; j < cols.length; ++j) {
+      const gridColsNumbers = getNumbersInNeighbourCol(solution, i, j);
+      const areValid = gridColsNumbers.length === new Set(gridColsNumbers).size;
+
+      if (!areValid) return false;
     }
   }
-  console.log(Array.from(new Set(temp)));
-  return nums;
+
+  return true;
 }
 
 function createBox(puzzle, start) {
@@ -5917,7 +5738,7 @@ function getNumbersInNeighbourRow(box, rowNumber) {
   return getNumbersInBox(box.map((nums) => nums[rowNumber]));
 }
 
-function getNumbersInNeigbourCol(box, cellNumber, colNumber) {
+function getNumbersInNeighbourCol(box, cellNumber, colNumber) {
   let cols = [];
 
   switch (cellNumber) {
@@ -5967,7 +5788,21 @@ function getNumbersInNeigbourCol(box, cellNumber, colNumber) {
 
 
 
-// TO TEST IN CONSOLE 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function suDoku(puzzlesArr) {
   let sum = 0;
 
@@ -5987,70 +5822,49 @@ function suDoku(puzzlesArr) {
       createBox(puzzle, 27 * 2 + 6),
     ];
     const combinations = getPossibleCombinations(box);
-    tryCombinations(box, combinations);
-    // console.log(combinations.get(0));
+
+    // for (let j = 0; j < combinations.size; ++j) {
+    //   console.log(combinations.get(j).length, j);
+    // }
     // console.log(box)
+    // console.log(combinations)
+    // generateCombinations(box, combinations,0 ,0, []);
   }
   // 1,2,3,4,5,6,7,8,9
   // 1,2,3,6,7,8,9
   return sum;
 }
 
-function tryCombinations(box, combinations) {
-  let tempBox = structuredClone(box);
-  const c1 = combinations.get(0),
-    c2 = combinations.get(1),
-    c3 = combinations.get(2);
-  // console.log(tempBox[0])
-  for (let i = 0; i < combinations.get(0).length; ++i) {
-    const combo1 = c1[i];
-    const possibleCombo1 = insertCombination(combo1, tempBox[0]);
-    let terminateOuterLoop1 = false;
+function generateCombinations(box, combinations, start, depth, digits) {
+  if (depth === 9) {
+    if (!isUnique(digits)) return;
 
-    for (let j = 0; j < combinations.get(1).length; ++j) {
-      const combo2 = c2[j];
-      const possibleCombo2 = insertCombination(combo2, tempBox[1]);
-      let terminateOuterLoop2 = false;
+    console.log(digits);
+  } else {
+    const currentCombinations = combinations.get(depth);
+    const currentBox = box[depth];
 
-      for (let k = 0; k < combinations.get(2).length; ++k) {
-        const combo3 = c3[k];
-        const possibleCombo3 = insertCombination(combo3, tempBox[2]);
-        const possibleSolution = [possibleCombo1, possibleCombo2, possibleCombo3];
-
-        if (
-          possibleCombo1.join("") === "483967251" &&
-          possibleCombo2.join("") === "921345876" &&
-          possibleCombo3.join("") === "65782149"
-        ) {
-          console.log(possibleSolution, combo1, combo2, combo3);
-          // terminateOuterLoop2 = true;
-          // terminateOuterLoop1 = true;
-          break;
-        }
-      }
-      if (terminateOuterLoop2) break;
+    for (let i = start; i < currentCombinations.length; ++i) {
+      const currentCombination = currentCombinations[i];
+      const combination = insertCombination(currentBox, currentCombination);
+      generateCombinations(box, combinations, start + 1, depth + 1, [...digits, combination]);
     }
-    if (terminateOuterLoop1) break;
   }
 }
 
-function isUnique(possibleSolution) {
-  for (let i = 0; i < 3; ++i) {
-    const neighbourNumbers = getNumbersInNeighbourRow(possibleSolution, i);
-    const hasPossibleDuplicates = Array.from(new Set(neighbourNumbers));
+function isUnique(solution) {
+  const isRowValid = areNumbersValidInNeighbourRow(solution);
+  const isColValid = areNumbersValidInNeighbourCol(solution);
 
-    if (neighbourNumbers.length > hasPossibleDuplicates.length) return false;
-  }
-
-  return true;
+  return isRowValid && isColValid;
 }
 
-function insertCombination(combinations, boxRows) {
+function insertCombination(numbersInBox, combinations) {
   const possibleCombo = [];
   let counter = 0;
 
-  for (let i = 0; i < boxRows.length; ++i) {
-    const row = boxRows[i].split("");
+  for (let i = 0; i < numbersInBox.length; ++i) {
+    const row = numbersInBox[i].split("");
 
     if (row[0] === "0") {
       row[0] = combinations[counter];
@@ -6078,10 +5892,10 @@ function getPossibleCombinations(box) {
 
   for (let k = 0; k < box.length; ++k) {
     const numsToInsert = getNumbersToInsert(box, k);
-    // console.log(numsToInsert)
-    const combinations = [];
-    permute(numsToInsert.join(""), combinations);
-    boxCombinations.set(k, combinations);
+    console.log(numsToInsert);
+    // const combinations = [];
+    // permute(numsToInsert.join(""), combinations);
+    // boxCombinations.set(k, combinations);
   }
 
   return boxCombinations;
@@ -6092,24 +5906,64 @@ function getNumbersToInsert(box, k) {
   let start = 0;
 
   for (let i = 0; i < box[k].length; ++i) {
+    for (let j = 0; j < box[k][i].length; ++j) {
+      if (box[k][i][j] !== "0") continue;
+
+      const end = start + 3;
+      const numbersInBox = getNumbersInBox(box[k]);
+      const numbersInNeighbourRow = getNumbersInNeighbourRow(box.slice(start, end), i);
+      const numbersInNeighbourCol = getNumbersInNeighbourCol(box, k, j);
+      const numsToExclude = new Set(
+        [...numbersInBox, ...numbersInNeighbourRow, ...numbersInNeighbourCol].map(Number)
+      );
+      const numbersLeftToInsert = Array.from(
+        new Set([...Array(9).keys()].map((_, i) => i + 1)).symmetricDifference(numsToExclude)
+      );
+      // console.log(numsToExclude, numbersLeftToInsert, numbersInNeighbourCol ,box[k][i])
+
+      nums.push(numbersLeftToInsert);
+
+      if (k % 3 === 0 && k > 0) start += 3;
+    }
+  }
+  // console.log(Array.from(new Set(nums)));
+  return nums;
+}
+
+function areNumbersValidInNeighbourRow(solution) {
+  let start = 0;
+
+  for (let i = 0; i < solution.length; ++i) {
     const end = start + 3;
-    const numbersInBox = getNumbersInBox(box[k]);
-    const numbersInNeighbourRow = getNumbersInNeighbourRow(box.slice(start, end), i);
-    const numbersInNeighbourCol = getNumbersInNeigbourCol(box, i);
-    const numsToExclude = new Set(
-      [...numbersInBox, ...numbersInNeighbourRow, ...numbersInNeighbourCol].map(Number)
-    );
-    const numbersLeftToInsert = Array.from(
-      new Set([...Array(9).keys()].map((_, i) => i + 1)).symmetricDifference(numsToExclude)
-    );
-    // console.log(numsToExclude, numbersLeftToInsert);
+    const gridRow = solution.slice(start, end);
 
-    nums.push(...numbersLeftToInsert);
+    for (let j = 0; j < solution[i].length; ++j) {
+      const gridRowNumbers = getNumbersInNeighbourRow(gridRow, j);
 
-    if (k % 3 === 0 && k > 0) start += 3;
+      const areValid = gridRowNumbers.length === new Set(gridRowNumbers).size;
+
+      if (!areValid) return false;
+    }
+
+    if (i % 3 === 0 && i > 0) start += 3;
   }
 
-  return Array.from(new Set(nums));
+  return true;
+}
+
+function areNumbersValidInNeighbourCol(solution) {
+  for (let i = 0; i < solution[0].length; ++i) {
+    const cols = solution[0][i].split("");
+
+    for (let j = 0; j < cols.length; ++j) {
+      const gridColsNumbers = getNumbersInNeighbourCol(solution, i, j);
+      const areValid = gridColsNumbers.length === new Set(gridColsNumbers).size;
+
+      if (!areValid) return false;
+    }
+  }
+
+  return true;
 }
 
 function createBox(puzzle, start) {
@@ -6128,14 +5982,42 @@ function getNumbersInNeighbourRow(box, rowNumber) {
   return getNumbersInBox(box.map((nums) => nums[rowNumber]));
 }
 
-function getNumbersInNeigbourCol(box, colNumber) {
-  const cols = box.reduce((acc, nums, idx) => {
-    if (idx % 3 === 0) {
-      acc.push(nums.map((num) => num[colNumber]).join(""));
-    }
+function getNumbersInNeighbourCol(box, cellNumber, colNumber) {
+  let cols = [];
 
-    return acc;
-  }, []);
+  switch (cellNumber) {
+    case 1:
+    case 4:
+    case 7:
+      cols = box.reduce((acc, nums, idx) => {
+        if (idx === 1 || idx === 4 || idx === 7) {
+          acc.push(nums.map((num) => num[colNumber]).join(""));
+        }
+
+        return acc;
+      }, []);
+      break;
+    case 2:
+    case 5:
+    case 8:
+      cols = box.reduce((acc, nums, idx) => {
+        if (idx === 2 || idx === 5 || idx === 8) {
+          acc.push(nums.map((num) => num[colNumber]).join(""));
+        }
+
+        return acc;
+      }, []);
+      break;
+    default:
+      cols = box.reduce((acc, nums, idx) => {
+        if (idx % 3 === 0) {
+          acc.push(nums.map((num) => num[colNumber]).join(""));
+        }
+
+        return acc;
+      }, []);
+  }
+
   const numbersInNeigbourCol = getNumbersInBox(cols);
 
   return numbersInNeigbourCol;
@@ -6165,13 +6047,13 @@ function swap(strArr, i, j) {
 
 // Only change code above this line
 
-const testPuzzles1 = ["003020600900305001001806400008102900700000008006708200002609500800203009005010300"];
+const testPuzzles1 = [
+  "003020600900305001001806400008102900700000008006708200002609500800203009005010300",
+  "200080300060070084030500209000105408000000000402706000301007040720040060004010003",
+  "000000907000420180000705026100904000050000040000507009920108000034059000507000000",
+];
 
 suDoku(testPuzzles1);
-
-// 4,5,7,8
-// 3,6,9,1,2
-
 // Problem 97: Large non-Mersenne prime
 // The first known prime found to exceed one million digits was discovered in 1999, and is a Mersenne prime of the form  26972593−1
 // it contains exactly 2,098,960 digits. Subsequently other Mersenne primes, of the form  2p−1
