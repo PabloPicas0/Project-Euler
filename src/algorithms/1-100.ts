@@ -5593,18 +5593,14 @@ function suDoku(puzzlesArr) {
 
 function generateCombinations(box, start, depth, digits) {
   if (depth === 9) {
-    if (!isUnique(digits)) return;
-
     console.log(digits);
   } else {
     const currentCombinations = getNumbersToInsert(box, depth);
     const currentBox = box[depth];
     // console.log(currentBox, currentCombinations)
-    for (let i = start; i < currentCombinations.length; ++i) {
-      const combination = solve(currentBox, currentCombinations);
-      box[depth] = combination;
-      generateCombinations(box, start + 1, depth + 1, [...digits, combination]);
-    }
+    const combination = solve(currentBox, currentCombinations);
+    box[depth] = combination;
+    generateCombinations(box, start + 1, depth + 1, [...digits, combination]);
   }
 }
 
@@ -5617,6 +5613,42 @@ function solve(numbersInBox, combinations) {
     .split("");
   const hasBlanks = /0/;
   const shortest = findShortestCombinationIndex(combinations, visited, numbersUsed);
+
+  // Search for combinations with only one possibility
+  for (let i = 0; i < combinations.length; ++i) {
+    if (combinations[i].length === 1) {
+      blanks[i] = combinations[i][0];
+      visited.push(i);
+      numbersUsed.push(combinations[i][0]);
+    }
+  }
+
+  // Search for combinations with same length and numbers
+  // If found search for combinations that have
+  // one number same as combinations above
+  // if found take first number from second combination with same length and numbers
+  for (let i = 0; i < combinations.length; ++i) {
+    const next = i + 1;
+
+    if (next === combinations.length) break;
+
+    const [a, c] = combinations[i];
+    const [b, d] = combinations[next];
+    const combinationsHaveSameLength = combinations[i].length === combinations[next].length;
+
+    if (a === b && c === d && combinationsHaveSameLength) {
+      for (let j = next + 1; j < combinations.length; ++j) {
+        const combinationsAreIntersecting =
+          new Set(combinations[j]).intersection(new Set(combinations[next])).size > 0;
+
+        if (combinationsAreIntersecting) {
+          blanks[next] = combinations[next][0];
+          visited.push(next);
+          numbersUsed.push(combinations[next][0]);
+        }
+      }
+    }
+  }
 
   while (hasBlanks.test(blanks)) {
     const allNumbersAreUsed = numbersUsed.length === blanks.length;
@@ -5724,48 +5756,12 @@ function getNumbersToInsert(box, k) {
         new Set([...Array(9).keys()].map((_, i) => i + 1)).symmetricDifference(numsToExclude)
       );
       // console.log(numsToExclude, numbersLeftToInsert, numbersInNeighbourCol ,box[k][i])
-      // console.log(numbersInNeighbourCol, numbersInNeighbourRow, k)
+      // console.log(numbersInNeighbourCol, numbersInNeighbourRow, start, end)
       nums.push(numbersLeftToInsert);
     }
   }
 
   return nums;
-}
-
-function areNumbersValidInNeighbourRow(solution) {
-  let start = 0;
-
-  for (let i = 0; i < solution.length; ++i) {
-    const end = start + 3;
-    const gridRow = solution.slice(start, end);
-
-    for (let j = 0; j < solution[i].length; ++j) {
-      const gridRowNumbers = getNumbersInNeighbourRow(gridRow, j);
-
-      const areValid = gridRowNumbers.length === new Set(gridRowNumbers).size;
-
-      if (!areValid) return false;
-    }
-
-    if (i % 3 === 0 && i > 0) start += 3;
-  }
-
-  return true;
-}
-
-function areNumbersValidInNeighbourCol(solution) {
-  for (let i = 0; i < solution[0].length; ++i) {
-    const cols = solution[0][i].split("");
-
-    for (let j = 0; j < cols.length; ++j) {
-      const gridColsNumbers = getNumbersInNeighbourCol(solution, i, j);
-      const areValid = gridColsNumbers.length === new Set(gridColsNumbers).size;
-
-      if (!areValid) return false;
-    }
-  }
-
-  return true;
 }
 
 function createBox(puzzle, start) {
