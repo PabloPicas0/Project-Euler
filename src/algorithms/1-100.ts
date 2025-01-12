@@ -5598,9 +5598,9 @@ function generateCombinations(box, start, depth, digits) {
     const currentCombinations = getNumbersToInsert(box, depth);
     const currentBox = box[depth];
     // console.log(currentBox, currentCombinations)
-    const combination = solve(currentBox, currentCombinations);
-    box[depth] = combination;
-    generateCombinations(box, start + 1, depth + 1, [...digits, combination]);
+      const combination = solve(currentBox, currentCombinations);
+      box[depth] = combination;
+      generateCombinations(box, start + 1, depth + 1, [...digits, combination]);
   }
 }
 
@@ -5615,41 +5615,61 @@ function solve(numbersInBox, combinations) {
   const shortest = findShortestCombinationIndex(combinations, visited, numbersUsed);
 
   // Search for combinations with only one possibility
-  for (let i = 0; i < combinations.length; ++i) {
-    if (combinations[i].length === 1) {
-      blanks[i] = combinations[i][0];
-      visited.push(i);
-      numbersUsed.push(combinations[i][0]);
+  // Search for combinations where one number is uniqe
+    for (let i = 0; i < combinations.length; ++i) {
+      let uniqe = new Set(combinations[i])
+       const currentCombination = combinations[i].filter((combination) => !numbersUsed.includes(combination));
+
+      if (currentCombination.length === 1) {
+        blanks[i] = currentCombination[0]
+        visited.push(i)
+        numbersUsed.push(currentCombination[0])
     }
-  }
 
-  // Search for combinations with same length and numbers
-  // If found search for combinations that have
-  // one number same as combinations above
-  // if found take first number from second combination with same length and numbers
-  for (let i = 0; i < combinations.length; ++i) {
-    const next = i + 1;
+      for (let j = 0; j < combinations.length; ++j) {
+        if (j === i) continue
 
-    if (next === combinations.length) break;
+        uniqe = uniqe.difference(new Set(combinations[j]))
+      }
 
-    const [a, c] = combinations[i];
-    const [b, d] = combinations[next];
-    const combinationsHaveSameLength = combinations[i].length === combinations[next].length;
-
-    if (a === b && c === d && combinationsHaveSameLength) {
-      for (let j = next + 1; j < combinations.length; ++j) {
-        const combinationsAreIntersecting =
-          new Set(combinations[j]).intersection(new Set(combinations[next])).size > 0;
-
-        if (combinationsAreIntersecting) {
-          blanks[next] = combinations[next][0];
-          visited.push(next);
-          numbersUsed.push(combinations[next][0]);
-        }
+      if (uniqe.size === 1 && !visited.includes(i)) {
+        // const num = uniqe.values().next().value
+        // blanks[i] = num
+        // visited.push(i)
+        // numbersUsed.push(num)
+        console.log(uniqe, i)
       }
     }
-  }
 
+   // Search for combinations with same length and numbers
+   // If found search for combinations that have 
+   // one number same as combinations above
+   // if found take first number from second combination 
+   // with same length and numbers
+  for (let i = 0; i < combinations.length; ++i) {
+    const next = i + 1
+
+    if (next === combinations.length) break
+
+    const [a, c] = combinations[i]
+    const [b, d] = combinations[next]
+    const combinationsHaveSameLength = combinations[i].length === combinations[next].length
+  
+    if (a === b && c === d && combinationsHaveSameLength) {
+      for (let j = next + 1; j < combinations.length; ++j) {
+        const combinationsAreIntersecting = new Set(combinations[j]).intersection(new Set(combinations[next])).size > 0
+        
+        // Possible bug here 
+        if (combinationsAreIntersecting) {
+          blanks[next] = combinations[next][0]
+          visited.push(next)
+          numbersUsed.push(combinations[next][0])
+        }
+
+      } 
+    }
+  }
+ 
   while (hasBlanks.test(blanks)) {
     const allNumbersAreUsed = numbersUsed.length === blanks.length;
 
@@ -5685,6 +5705,7 @@ function* findShortestCombinationIndex(combinations, visited, numbersUsed) {
   let shortestIndex = 0;
   let shortestCombinationVisited = [];
   let i = 0;
+  
 
   while (true) {
     const currentCombination = combinations[i].filter((combination) => !numbersUsed.includes(combination));
