@@ -660,7 +660,7 @@ function maximumPathSumI(triangle: number[][]) {
     const lastLine = triangle.pop();
     const aboveLine = triangle.pop();
 
-    if (!aboveLine || !lastLine) continue
+    if (!aboveLine || !lastLine) continue;
 
     for (let i = 0; i < aboveLine.length; ++i) {
       aboveLine[i] = Math.max(aboveLine[i] + lastLine[i], aboveLine[i] + lastLine[i + 1]);
@@ -5259,7 +5259,7 @@ function arithmeticExpressions() {
   while (digit) {
     let current = 0;
     const strDigit = digit.join("");
-    const currentSet:number[] = [];
+    const currentSet: number[] = [];
 
     permuteDigits(strDigit, currentSet, opCombinations);
 
@@ -5292,12 +5292,18 @@ function evl(a: number, b: number, operator: string) {
       return a * b;
     case "/":
       return a / b;
-      default:
-      return 0
+    default:
+      return 0;
   }
 }
 
-function permuteDigits(str: string, currentSet: number[], op: string[][], y = str.length, strArr = str.split("")) {
+function permuteDigits(
+  str: string,
+  currentSet: number[],
+  op: string[][],
+  y = str.length,
+  strArr = str.split("")
+) {
   if (y === 1) {
     const [a, b, c, d] = strArr.map(Number);
     let intDigits: number[] = [];
@@ -5579,158 +5585,109 @@ function suDoku(puzzlesArr) {
       createBox(puzzle, 27 * 2 + 6),
     ];
 
-    // for (let j = 0; j < combinations.size; ++j) {
-    //   console.log(combinations.get(j).length, j);
-    // }
-    // console.log(box)
-    // console.log(combinations.get(0))
-    generateCombinations(box, 0, 0, []);
+    const solved = solve(box);
+    // console.log(solved)
+    sum += Number(solved[0][0]);
   }
-  // 1,2,3,4,5,6,7,8,9
-  // 1,2,3,6,7,8,9
+
+  console.log(sum);
   return sum;
 }
 
-function generateCombinations(box, start, depth, digits) {
-  if (depth === 9) {
-    console.log(digits);
-  } else {
-    const currentCombinations = getNumbersToInsert(box, depth);
-    const currentBox = box[depth];
-    // console.log(currentBox, currentCombinations)
-      const combination = solve(currentBox, currentCombinations);
-      box[depth] = combination;
-      generateCombinations(box, start + 1, depth + 1, [...digits, combination]);
+function solve(box) {
+  const boxClone = structuredClone(box);
+  const prevProgress = [];
+  const isProgressMade = [];
+  let depth = 0;
+
+  while (true) {
+    const numbersToInsert = getNumbersToInsert(boxClone, depth);
+    const currentProgress = numbersToInsert.map((number) => number.length);
+    const currentBox = boxClone[depth];
+    const hasBlanks = isBlank(boxClone, depth);
+
+    if (!prevProgress[depth]) {
+      prevProgress[depth] = currentProgress;
+      isProgressMade[depth] = true;
+    } else {
+      const isDifference = currentProgress.some((progress, idx) => progress !== prevProgress[depth][idx]);
+
+      // console.log(prevProgress[depth], currentProgress, isProgressMade, depth, isDifference)
+      // console.log(numbersToInsert, depth)
+      isProgressMade[depth] = isDifference;
+      prevProgress[depth] = currentProgress;
+
+      const progressIsDead = isProgressMade.every((progress) => progress === false);
+
+      if (progressIsDead) {
+        depth = 0;
+        break;
+      }
+    }
+
+    if (hasBlanks) {
+      const combination = getUniqePossibility(currentBox, numbersToInsert);
+      // console.log(numbersToInsert, depth, currentProgress)
+      boxClone[depth] = combination;
+    }
+
+    if (depth === 8) {
+      depth = 0;
+      continue;
+    }
+
+    ++depth;
   }
+
+  const stillNotSolved = isBlank(boxClone, -1);
+
+  if (stillNotSolved) {
+    console.log(stillNotSolved, boxClone);
+  }
+
+  return boxClone;
 }
 
-function solve(numbersInBox, combinations) {
+function getUniqePossibility(numbersInBox, numbersToInsert) {
   const numbersUsed = [];
   const visited = [];
   let blanks = numbersInBox
     .map((number) => number.replace(/[1-9]/g, ""))
     .join("")
     .split("");
-  const hasBlanks = /0/;
-  const shortest = findShortestCombinationIndex(combinations, visited, numbersUsed);
+
+  function usedNumber(combination) {
+    return !numbersUsed.includes(combination);
+  }
 
   // Search for combinations with only one possibility
   // Search for combinations where one number is uniqe
-    for (let i = 0; i < combinations.length; ++i) {
-      let uniqe = new Set(combinations[i])
-       const currentCombination = combinations[i].filter((combination) => !numbersUsed.includes(combination));
+  for (let i = 0; i < numbersToInsert.length; ++i) {
+    const currentNumber = numbersToInsert[i].filter(usedNumber);
+    let unique = new Set(numbersToInsert[i]);
 
-      if (currentCombination.length === 1) {
-        blanks[i] = currentCombination[0]
-        visited.push(i)
-        numbersUsed.push(currentCombination[0])
+    if (currentNumber.length === 1) {
+      blanks[i] = currentNumber[0];
+      visited.push(i);
+      numbersUsed.push(currentNumber[0]);
+      continue;
     }
 
-      for (let j = 0; j < combinations.length; ++j) {
-        if (j === i) continue
+    for (let j = 0; j < numbersToInsert.length; ++j) {
+      if (j === i) continue;
 
-        uniqe = uniqe.difference(new Set(combinations[j]))
-      }
-
-      if (uniqe.size === 1 && !visited.includes(i)) {
-        // const num = uniqe.values().next().value
-        // blanks[i] = num
-        // visited.push(i)
-        // numbersUsed.push(num)
-        console.log(uniqe, i)
-      }
+      unique = unique.difference(new Set(numbersToInsert[j]));
     }
 
-   // Search for combinations with same length and numbers
-   // If found search for combinations that have 
-   // one number same as combinations above
-   // if found take first number from second combination 
-   // with same length and numbers
-  for (let i = 0; i < combinations.length; ++i) {
-    const next = i + 1
-
-    if (next === combinations.length) break
-
-    const [a, c] = combinations[i]
-    const [b, d] = combinations[next]
-    const combinationsHaveSameLength = combinations[i].length === combinations[next].length
-  
-    if (a === b && c === d && combinationsHaveSameLength) {
-      for (let j = next + 1; j < combinations.length; ++j) {
-        const combinationsAreIntersecting = new Set(combinations[j]).intersection(new Set(combinations[next])).size > 0
-        
-        // Possible bug here 
-        if (combinationsAreIntersecting) {
-          blanks[next] = combinations[next][0]
-          visited.push(next)
-          numbersUsed.push(combinations[next][0])
-        }
-
-      } 
+    if (unique.size === 1) {
+      const num = unique.values().next().value;
+      blanks[i] = num;
+      visited.push(i);
+      numbersUsed.push(num);
     }
   }
- 
-  while (hasBlanks.test(blanks)) {
-    const allNumbersAreUsed = numbersUsed.length === blanks.length;
-
-    if (allNumbersAreUsed && hasBlanks.test(blanks)) {
-      const blanksFilled = new Set(blanks.filter((num) => typeof num !== "string"));
-      const usedNumbers = new Set(numbersUsed);
-      const difference = usedNumbers.difference(blanksFilled);
-      const idx = blanks.indexOf("0");
-
-      blanks[idx] = difference.values().next().value;
-
-      break;
-    }
-
-    const [currentCombination, index] = shortest.next().value;
-    const currentNumber = currentCombination[0];
-
-    blanks[index] = currentNumber;
-    numbersUsed.push(currentNumber);
-    visited.push(index);
-    console.log(index, blanks, currentNumber, combinations);
-  }
-
-  const n = merge(numbersInBox, blanks);
-
-  console.log(n);
 
   return merge(numbersInBox, blanks);
-}
-
-function* findShortestCombinationIndex(combinations, visited, numbersUsed) {
-  let shortestCombination = Number.POSITIVE_INFINITY;
-  let shortestIndex = 0;
-  let shortestCombinationVisited = [];
-  let i = 0;
-  
-
-  while (true) {
-    const currentCombination = combinations[i].filter((combination) => !numbersUsed.includes(combination));
-
-    if (visited.includes(i) && !currentCombination.length) {
-      ++i;
-      continue;
-    }
-
-    if (shortestCombination >= currentCombination.length && currentCombination.length) {
-      shortestCombination = currentCombination.length;
-      shortestIndex = i;
-      shortestCombinationVisited = currentCombination;
-      yield [currentCombination, i];
-    }
-
-    if (shortestCombination === 1) shortestCombination += 1;
-
-    if (i === combinations.length - 1) {
-      i = 0;
-      continue;
-    }
-
-    ++i;
-  }
 }
 
 function merge(numbersInBox, blanks) {
@@ -5776,8 +5733,7 @@ function getNumbersToInsert(box, k) {
       const numbersLeftToInsert = Array.from(
         new Set([...Array(9).keys()].map((_, i) => i + 1)).symmetricDifference(numsToExclude)
       );
-      // console.log(numsToExclude, numbersLeftToInsert, numbersInNeighbourCol ,box[k][i])
-      // console.log(numbersInNeighbourCol, numbersInNeighbourRow, start, end)
+
       nums.push(numbersLeftToInsert);
     }
   }
@@ -5791,6 +5747,34 @@ function createBox(puzzle, start) {
   const row3 = puzzle.slice(start + 18, start + 21);
 
   return [row1, row2, row3];
+}
+
+function isBlank(box, depth) {
+  const blank = /0/;
+
+  if (depth >= 0) {
+    const currentBox = box[depth];
+    let blanks = currentBox
+      .map((number) => number.replace(/[1-9]/g, ""))
+      .join("")
+      .split("");
+    const hasBlanks = blank.test(blanks);
+
+    return hasBlanks;
+  } else {
+    for (let i = 0; i < box.length; ++i) {
+      const currentBox = box[i];
+      let blanks = currentBox
+        .map((number) => number.replace(/[1-9]/g, ""))
+        .join("")
+        .split("");
+      const hasBlanks = blank.test(blanks);
+
+      if (hasBlanks) return hasBlanks;
+    }
+
+    return false;
+  }
 }
 
 function getNumbersInBox(box) {
@@ -5841,6 +5825,7 @@ function getNumbersInNeighbourCol(box, cellNumber, colNumber) {
 
   return numbersInNeigbourCol;
 }
+
 // Problem 97: Large non-Mersenne prime
 // The first known prime found to exceed one million digits was discovered in 1999, and is a Mersenne prime of the form  26972593−1
 // it contains exactly 2,098,960 digits. Subsequently other Mersenne primes, of the form  2p−1
