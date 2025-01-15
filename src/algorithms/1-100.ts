@@ -3877,7 +3877,7 @@ function countingFractions(limit) {
 
 // How many fractions lie between  1/3 and 1/2
 // In the sorted set of reduced proper fractions for d ≤ limit?
-function countingFractionsInARange(limit) {
+function countingFractionsInARange(limit: number) {
   let length = 1;
   const offset = limit === 6000 ? -getOffset(limit) : getOffset(limit);
 
@@ -3895,7 +3895,7 @@ function countingFractionsInARange(limit) {
 }
 
 // This is cheating this problem
-function getOffset(n) {
+function getOffset(n: number) {
   if (n < 1000) return 0;
   if (n >= 1000 && n < 6000) return 3;
   if (n >= 6000 && n < 12000) return 1;
