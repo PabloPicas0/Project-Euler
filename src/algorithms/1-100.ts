@@ -5560,6 +5560,7 @@ function getDevisors(num: number) {
 // By solving all puzzles in puzzlesArr, find the sum of the 3-digit numbers found in the top left corner of each solution grid; for example,
 // 483 is the 3-digit number found in the top left corner of the solution grid above.
 
+// Passess only one test case from two !
 const testPuzzles1 = [
   "003020600900305001001806400008102900700000008006708200002609500800203009005010300",
   "200080300060070084030500209000105408000000000402706000301007040720040060004010003",
@@ -5585,17 +5586,23 @@ function suDoku(puzzlesArr) {
       createBox(puzzle, 27 * 2 + 6),
     ];
 
-    const solved = solve(box);
-    // console.log(solved)
-    sum += Number(solved[0][0]);
+    const initialTry = solve(box);
+
+    const stillNotSolved = isBlank(initialTry, -1);
+
+    if (stillNotSolved) {
+      const find = guessAndTest(initialTry, 0, []);
+      sum += Number(find[0][0]);
+    } else {
+      sum += Number(initialTry[0][0]);
+    }
   }
 
   console.log(sum);
   return sum;
 }
 
-function solve(box) {
-  const boxClone = structuredClone(box);
+function solve(boxClone) {
   const prevProgress = [];
   const isProgressMade = [];
   let depth = 0;
@@ -5612,8 +5619,6 @@ function solve(box) {
     } else {
       const isDifference = currentProgress.some((progress, idx) => progress !== prevProgress[depth][idx]);
 
-      // console.log(prevProgress[depth], currentProgress, isProgressMade, depth, isDifference)
-      // console.log(numbersToInsert, depth)
       isProgressMade[depth] = isDifference;
       prevProgress[depth] = currentProgress;
 
@@ -5627,7 +5632,6 @@ function solve(box) {
 
     if (hasBlanks) {
       const combination = getUniqePossibility(currentBox, numbersToInsert);
-      // console.log(numbersToInsert, depth, currentProgress)
       boxClone[depth] = combination;
     }
 
@@ -5639,13 +5643,66 @@ function solve(box) {
     ++depth;
   }
 
-  const stillNotSolved = isBlank(boxClone, -1);
+  return boxClone;
+}
 
-  if (stillNotSolved) {
-    console.log(stillNotSolved, boxClone);
+function guessAndTest(box, depth, digits) {
+  if (depth === 9) {
+    const solved = solve(digits);
+    const stillNotSolved = isBlank(solved, -1);
+
+    if (!stillNotSolved) return solved;
+  } else {
+    const numbersToInsert = getNumbersToInsert(box, depth);
+    const mostFrequent = getMostFrequentNum(numbersToInsert);
+    const mostFrequentIndexes = numbersToInsert.reduce((acc, combination, idx) => {
+      const frequentNumberExists = combination.includes(mostFrequent);
+
+      if (frequentNumberExists) acc.push(idx);
+
+      return acc;
+    }, []);
+    const currentBox = box[depth];
+
+    if (!mostFrequentIndexes.length) {
+      const solveCombination = guessAndTest(box, depth + 1, [...digits, currentBox]);
+
+      if (solveCombination) return solveCombination;
+    }
+
+    for (let i = 0; i < mostFrequentIndexes.length; ++i) {
+      const blanks = currentBox
+        .map((number) => number.replace(/[1-9]/g, ""))
+        .join("")
+        .split("");
+      const idx = mostFrequentIndexes[i];
+      blanks[idx] = mostFrequent;
+      const newBox = merge(currentBox, blanks);
+
+      const solveCombination = guessAndTest(box, depth + 1, [...digits, newBox]);
+
+      if (solveCombination) return solveCombination;
+    }
+  }
+}
+
+function getMostFrequentNum(arr) {
+  let m = {};
+  let maxCount = 0;
+  let res = null;
+
+  for (let x of arr) {
+    for (let y of x) {
+      m[y] = (m[y] || 0) + 1;
+
+      if (m[y] > maxCount) {
+        maxCount = m[y];
+        res = y;
+      }
+    }
   }
 
-  return boxClone;
+  return res;
 }
 
 function getUniqePossibility(numbersInBox, numbersToInsert) {
