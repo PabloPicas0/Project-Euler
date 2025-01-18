@@ -5921,5 +5921,19 @@ function fasterBigIntPow(base: bigint, exp: bigint): bigint {
 
 // https://www.quora.com/How-do-I-calculate-numbers-with-high-exponents-in-the-fastest-way
 function largestExponential(baseExp) {
-  return true
+  const nums = []
+
+  for (let i = 0; i < baseExp.length; ++i) {
+    const [base, exp] = baseExp[i]
+    const num = Math.log(base) * exp
+
+    nums.push(num)
+  }
+
+  nums.shift()
+
+  const max = Math.max(...nums)
+  const index = nums.indexOf(max) + 1
+
+  return baseExp[index]
 }
