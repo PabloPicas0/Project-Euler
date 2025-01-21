@@ -5922,7 +5922,116 @@ function fasterBigIntPow(base: bigint, exp: bigint): bigint {
 
 // Note: All anagrams formed must be contained in the given words array.
 function anagramicSquares(words) {
-  return true
+  let longest = 0
+  const anagrams = getAnagrams(words)
+  const squareTableLength = getLongestAnagram(anagrams)
+  const squaresTable = createAnagramiceSquareTable(squareTableLength) 
+
+  for (let i = 0; i < anagrams.length; ++i) {
+    const [anagramA, anagramB] = anagrams[i]
+    const length = anagramA.length
+    const squares = squaresTable[length]
+    const squaresIterator = squares.values()
+
+    for (let j = 0; j < squares.size; ++j) {
+      const squareDigits = squaresIterator.next().value.toString().split("")
+ 
+      const mapAnagramAToNumbers = anagramA.split("").reduce((acc, letter, idx) => {
+        acc[letter] = squareDigits[idx]
+
+        return acc
+      }, {})
+      const mapAnagramBToNumbers = Number(anagramB.split("").map(letter => mapAnagramAToNumbers[letter]).join(""))
+      const isAnagramicSquare = squares.has(mapAnagramBToNumbers)
+
+      if (isAnagramicSquare && longest < mapAnagramBToNumbers) {
+        longest = mapAnagramBToNumbers
+      }
+    }
+  }
+
+  return longest;
+}
+
+function getLongestAnagram(anagrams) {
+  let longest = 0
+
+  for (let i = 0; i < anagrams.length; ++i) {
+    const [a] = anagrams[i]
+    if (longest < a.length) longest = a.length
+  }
+
+  return longest
+}
+
+function getAnagrams(words) {
+  const anagrams = []
+
+  for (let i = 0; i < words.length; ++i) {
+    const firstWord = words[i].split("").sort().join("")
+
+    for (let j = i + 1; j < words.length; ++j) {
+      const nextWord = words[j].split("").sort().join("")
+
+      if (nextWord !== firstWord) continue;
+
+      anagrams.push([words[i], words[j]])
+    }
+  }
+
+
+  return anagrams
+}
+
+function createAnagramiceSquareTable(limit) {
+  const squareTable = {}
+  let i = 4
+
+  while(true) {
+    const square = i * i
+    const squareLength = square.toString().length
+    const squareDigits = square.toString().split("")
+    const hasRepeats = new Set(squareDigits).size !== squareLength
+    const hasZero = squareDigits.includes("0")
+
+    if (squareLength > limit) break
+    if (hasRepeats || hasZero) {
+      ++i
+      continue
+    }
+    
+    if (!squareTable[squareLength]) {
+      squareTable[squareLength] = []
+      squareTable[squareLength].push(square)
+    } else {
+      squareTable[squareLength].push(square)
+    }
+
+    ++i
+  }
+
+  const tableKeys = Object.keys(squareTable)
+  const anagramicTable = {}
+
+  for (const key of tableKeys) {
+    const currSquares = squareTable[key]
+
+    if (!anagramicTable[key]) anagramicTable[key] = new Set()
+
+    for (let i = 0; i < currSquares.length; ++i) {
+      const firstNum = currSquares[i].toString().split("").sort((a,b) => a - b).join("")
+      for (let j = i + 1; j < currSquares.length; ++j) {
+        const secondNum = currSquares[j].toString().split("").sort((a,b) => a - b).join("")
+
+        if (firstNum === secondNum) {
+          // console.log(firstNum, secondNum, currSquares[i], currSquares[j], i,j)
+          anagramicTable[key].add(currSquares[i]).add(currSquares[j])
+        }
+      }
+    }
+  }
+
+  return anagramicTable
 }
 
 // Problem 99: Largest exponential
