@@ -6024,7 +6024,6 @@ function createAnagramiceSquareTable(limit) {
         const secondNum = currSquares[j].toString().split("").sort((a,b) => a - b).join("")
 
         if (firstNum === secondNum) {
-          // console.log(firstNum, secondNum, currSquares[i], currSquares[j], i,j)
           anagramicTable[key].add(currSquares[i]).add(currSquares[j])
         }
       }
@@ -6044,7 +6043,7 @@ function createAnagramiceSquareTable(limit) {
 // Using the 2D baseExp array of base/exponent pairs, determine pair with the greatest numerical value and return it.
 
 // https://www.quora.com/How-do-I-calculate-numbers-with-high-exponents-in-the-fastest-way
-function largestExponential(baseExp) {
+function largestExponential(baseExp: number[][]) {
   const nums = []
 
   for (let i = 0; i < baseExp.length; ++i) {
