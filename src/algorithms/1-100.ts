@@ -44,18 +44,18 @@ export function nthPrmie(n: number) {
 // FCC doesn't support power of BigInts
 // Here is workaround
 
-function bigIntPower(base, exponent) {
-  base = BigInt(base);
+function bigIntPower(base: number | bigint, exponent: number) {
+  const newBase = BigInt(base);
   let result = 1n;
   for (let count = 0; count < exponent; count++) {
-    result *= base;
+    result *= newBase;
   }
   return result;
 }
 
 // Input: a positive integer, the number of precise digits after the decimal point
 // Output: a string representing the long float square root
-function bigSqrt(number, numDigits) {
+function bigSqrt(number: number, numDigits: number) {
   let a = 5n * BigInt(number);
   let b = 5n;
   const precision_digits = bigIntPower(10, numDigits + 1);
@@ -85,7 +85,7 @@ function bigSqrt(number, numDigits) {
 // If we list all the natural numbers below 10 that are multiples of 3 or 5, we get 3, 5, 6 and 9. The sum of these multiples is 23.
 
 // Find the sum of all the multiples of 3 or 5 below the provided parameter value number.
-function multiplesOf3Or5(number) {
+function multiplesOf3Or5(number: number) {
   let sum = 0;
 
   for (let i = 1; i < number; ++i) {
@@ -107,7 +107,7 @@ function multiplesOf3Or5(number) {
 
 // What is the largest prime factor of the given number?
 
-function largestPrimeFactor(number) {
+function largestPrimeFactor(number: number) {
   const primes = sieve(10000);
   const factors = [];
 
@@ -574,7 +574,7 @@ const numbersToWords = {
   70: "seventy",
   80: "eighty",
   90: "ninety",
-};
+} as { [key: number]: string };
 
 function numberLetterCounts(limit: number) {
   const numbersAsWords: string[] = [];
@@ -3136,7 +3136,7 @@ function cubicPermutations(n: number) {
     3: cubes.indexOf(41063625),
     4: cubes.indexOf(1006012008),
     5: cubes.indexOf(127035954683),
-  };
+  } as { [key: number]: number };
 
   for (let i = start[n]; i < cubes.length; ++i) {
     permutations.push(cubes[i]);
@@ -3252,7 +3252,7 @@ function powerfulDigitCounts(n: number) {
 
 // Good source to help with this problem
 // https://stackoverflow.com/questions/12182701/generating-continued-fractions-for-square-roots
-function oddPeriodSqrts(n) {
+function oddPeriodSqrts(n: number) {
   // Periods of first ten continued fraction
   // Representations square roots
   const periods = [1, 2, 1, 2, 4, 2, 1, 2, 2, 5];
@@ -3277,7 +3277,7 @@ function oddPeriodSqrts(n) {
   return periods.filter(isOdd).length;
 }
 
-function getSequence(num, sqrt = Math.sqrt(num), sequence = [~~sqrt], a = ~~sqrt, b = 0, c = 1) {
+function getSequence(num: number, sqrt = Math.sqrt(num), sequence = [~~sqrt], a = ~~sqrt, b = 0, c = 1) {
   const intPart = Math.trunc(sqrt);
 
   const B = a * c - b;
@@ -3291,7 +3291,7 @@ function getSequence(num, sqrt = Math.sqrt(num), sequence = [~~sqrt], a = ~~sqrt
   return getSequence(num, sqrt, sequence, A, B, C);
 }
 
-function isOdd(number) {
+function isOdd(number: number) {
   return number % 2 !== 0;
 }
 
@@ -3327,7 +3327,7 @@ function isOdd(number) {
 // Third fraction in sequence is odd and to obtain next fraction you need to use this formula n_i * k + n_i - 1 for both numerator and denominator
 // After each odd period k -> k + 2
 
-function convergentsOfE(n) {
+function convergentsOfE(n: number) {
   const series = [
     [2n, 2n],
     [3n, 3n],
@@ -3436,6 +3436,8 @@ function getMinimalSolutions(sequence: number[], d: bigint) {
 
     newSequence.splice(1, 0, ...copy);
   }
+
+  return [0n, 0n, 0n];
 }
 
 function denoteSequence(sequence: number[], i: number, start: string) {
@@ -3559,6 +3561,8 @@ function maximumPathSumII(triangle: number[][]) {
     const lastLine = triangle.pop();
     const aboveLine = triangle.pop();
 
+    if (!lastLine || !aboveLine) continue;
+
     for (let i = 0; i < aboveLine.length; ++i) {
       aboveLine[i] = Math.max(aboveLine[i] + lastLine[i], aboveLine[i] + lastLine[i + 1]);
     }
@@ -3591,7 +3595,7 @@ function magic5GonRing() {
   const innerVerticesNumbers = getInnerVerticesNumber(k);
   const ivnl = innerVerticesNumbers.length - 1;
   const outerVerticesNumber = getOuterViericesNumber(innerVerticesNumbers[ivnl] + 1, 2 * n);
-  const solutionSet = [];
+  const solutionSet: number[][] = [];
 
   // console.log(
   // "sum of the numbers on the vertices of the inner N-gon is between",
@@ -3635,7 +3639,7 @@ function magic5GonRing() {
   return parseInt(solutionSet.reduce((acc, set) => acc + set.join(""), ""));
 }
 
-function getOuterViericesNumber(start, end) {
+function getOuterViericesNumber(start: number, end: number) {
   const numbers = [];
 
   for (let i = start; i <= end; ++i) {
@@ -3649,8 +3653,8 @@ function getOuterViericesNumber(start, end) {
   return numbers.concat(reversed);
 }
 
-function getInnerVerticesNumber(x) {
-  const numbers = [];
+function getInnerVerticesNumber(x: number) {
+  const numbers: number[] = [];
   let sum = numbers.reduce((acc, val) => acc + val, 0);
   let y = 1;
 
@@ -3662,9 +3666,11 @@ function getInnerVerticesNumber(x) {
     numbers.push(y);
     ++y;
   }
+
+  return numbers;
 }
 
-function sum(k) {
+function sum(k: number) {
   let sum = 0;
 
   for (let i = 1; i <= k; ++i) {
@@ -3792,7 +3798,7 @@ function isPermutation(original: number, permutation: number) {
 
 // In this problem I had really weak understanding how to solve it
 // Even solution didin't help to much in clarifying
-function orderedFractions(limit) {
+function orderedFractions(limit: number) {
   const ceiling = limit;
 
   for (let i = ceiling; i >= 1; --i) {
@@ -3809,7 +3815,7 @@ function orderedFractions(limit) {
   return true;
 }
 
-function baseFraction(num, den) {
+function baseFraction(num: number, den: number) {
   const gcd = egcd(num, den, 0, 0);
 
   const newNum = Math.floor(num / gcd);
@@ -3853,7 +3859,7 @@ function egcd(a: number, b: number, x?: number, y?: number) {
 
 // Here you can find formula for sequence length
 // https://en.wikipedia.org/wiki/Farey_sequence#Sequence_length_and_index_of_a_fraction
-function countingFractions(limit) {
+function countingFractions(limit: number) {
   let length = 1;
 
   for (let m = 1; m <= limit; ++m) {
@@ -5093,7 +5099,7 @@ function cubeDigitPairs() {
   return ans;
 }
 
-function findSquareDigits(cube1, cube2, a, b) {
+function findSquareDigits(cube1: Map<number, boolean>, cube2: Map<number, boolean>, a: number, b: number) {
   const hasDigits = (cube1.has(a) && cube2.has(b)) || (cube2.has(a) && cube1.has(b));
 
   if (hasDigits) return true;
@@ -5110,11 +5116,11 @@ function findSquareDigits(cube1, cube2, a, b) {
 }
 
 function createSet() {
-  const set = [];
+  const set: Map<number, boolean>[] = [];
 
-  function generateSet(start, depth, digits) {
+  function generateSet(start: number, depth: number, digits: number[]) {
     if (depth === 0) {
-      const map = new Map();
+      const map = new Map<number, boolean>();
       digits.forEach((digit) => map.set(digit, true));
       set.push(map);
       return;
@@ -5126,6 +5132,7 @@ function createSet() {
   }
 
   generateSet(0, 6, []);
+
   return set;
 }
 
@@ -5142,7 +5149,7 @@ function createSet() {
 
 // For better problem understanding see:
 // www.freecodecamp.org/learn/project-euler/project-euler-problems-1-to-100/problem-91-right-triangles-with-integer-coordinates
-function rightTrianglesIntCoords(limit) {
+function rightTrianglesIntCoords(limit: number) {
   let ans = 0;
 
   for (let y2 = 0; y2 <= limit; ++y2) {
@@ -5167,7 +5174,7 @@ function rightTrianglesIntCoords(limit) {
   return ans;
 }
 
-function testPythagoras(a, b, c) {
+function testPythagoras(a: number, b: number, c: number) {
   return Math.round(c ** 2) === Math.round(a ** 2 + b ** 2);
 }
 
@@ -5183,7 +5190,7 @@ function testPythagoras(a, b, c) {
 // How many starting numbers below limit will arrive at 89?
 // NOTE: seen variable is not needed
 // But i left it here for visualization purpose
-function squareDigitChains(limit) {
+function squareDigitChains(limit: number) {
   const squares = {
     "0": 0 ** 2,
     "1": 1 ** 2,
@@ -5223,7 +5230,7 @@ function squareDigitChains(limit) {
   return nums;
 }
 
-function getNextChain(i, square) {
+function getNextChain(i: number, square: { [key: string]: number }) {
   return i
     .toString()
     .split("")
@@ -5567,7 +5574,7 @@ const testPuzzles1 = [
   "000000907000420180000705026100904000050000040000507009920108000034059000507000000",
 ];
 
-function suDoku(puzzlesArr) {
+function suDoku(puzzlesArr: string[]) {
   let sum = 0;
 
   for (let i = 0; i < puzzlesArr.length; ++i) {
@@ -5602,9 +5609,9 @@ function suDoku(puzzlesArr) {
   return sum;
 }
 
-function solve(boxClone) {
-  const prevProgress = [];
-  const isProgressMade = [];
+function solve(boxClone: string[][]) {
+  const prevProgress: number[][] = [];
+  const isProgressMade: boolean[] = [];
   let depth = 0;
 
   while (true) {
@@ -5646,12 +5653,14 @@ function solve(boxClone) {
   return boxClone;
 }
 
-function guessAndTest(box, depth, digits) {
+function guessAndTest(box: string[][], depth: number, digits: string[][]): string[][] {
   if (depth === 9) {
     const solved = solve(digits);
     const stillNotSolved = isBlank(solved, -1);
 
     if (!stillNotSolved) return solved;
+
+    return [];
   } else {
     const numbersToInsert = getNumbersToInsert(box, depth);
     const mostFrequent = getMostFrequentNum(numbersToInsert);
@@ -5667,7 +5676,7 @@ function guessAndTest(box, depth, digits) {
     if (!mostFrequentIndexes.length) {
       const solveCombination = guessAndTest(box, depth + 1, [...digits, currentBox]);
 
-      if (solveCombination) return solveCombination;
+      if (solveCombination.length) return solveCombination;
     }
 
     for (let i = 0; i < mostFrequentIndexes.length; ++i) {
@@ -5676,20 +5685,22 @@ function guessAndTest(box, depth, digits) {
         .join("")
         .split("");
       const idx = mostFrequentIndexes[i];
-      blanks[idx] = mostFrequent;
+      blanks[idx] = mostFrequent.toString();
       const newBox = merge(currentBox, blanks);
 
       const solveCombination = guessAndTest(box, depth + 1, [...digits, newBox]);
 
-      if (solveCombination) return solveCombination;
+      if (solveCombination.length) return solveCombination;
     }
+
+    return [];
   }
 }
 
-function getMostFrequentNum(arr) {
-  let m = {};
+function getMostFrequentNum(arr: number[][]) {
+  let m = {} as { [key: number]: number };
   let maxCount = 0;
-  let res = null;
+  let res = 0;
 
   for (let x of arr) {
     for (let y of x) {
@@ -5705,15 +5716,15 @@ function getMostFrequentNum(arr) {
   return res;
 }
 
-function getUniqePossibility(numbersInBox, numbersToInsert) {
-  const numbersUsed = [];
+function getUniqePossibility(numbersInBox: string[], numbersToInsert: number[][]) {
+  const numbersUsed: number[] = [];
   const visited = [];
   let blanks = numbersInBox
     .map((number) => number.replace(/[1-9]/g, ""))
     .join("")
     .split("");
 
-  function usedNumber(combination) {
+  function usedNumber(combination: number) {
     return !numbersUsed.includes(combination);
   }
 
@@ -5724,7 +5735,7 @@ function getUniqePossibility(numbersInBox, numbersToInsert) {
     let unique = new Set(numbersToInsert[i]);
 
     if (currentNumber.length === 1) {
-      blanks[i] = currentNumber[0];
+      blanks[i] = currentNumber[0].toString();
       visited.push(i);
       numbersUsed.push(currentNumber[0]);
       continue;
@@ -5747,7 +5758,7 @@ function getUniqePossibility(numbersInBox, numbersToInsert) {
   return merge(numbersInBox, blanks);
 }
 
-function merge(numbersInBox, blanks) {
+function merge(numbersInBox: string[], blanks: string[]) {
   const newBox = [];
   const numbers = numbersInBox.join("").split("");
   let current = 0;
@@ -5769,7 +5780,7 @@ function merge(numbersInBox, blanks) {
   return newBox;
 }
 
-function getNumbersToInsert(box, k) {
+function getNumbersToInsert(box: string[][], k: number) {
   const nums = [];
   let start = 0;
 
@@ -5798,7 +5809,7 @@ function getNumbersToInsert(box, k) {
   return nums;
 }
 
-function createBox(puzzle, start) {
+function createBox(puzzle: string, start: number) {
   const row1 = puzzle.slice(start, start + 3);
   const row2 = puzzle.slice(start + 9, start + 12);
   const row3 = puzzle.slice(start + 18, start + 21);
@@ -5806,25 +5817,21 @@ function createBox(puzzle, start) {
   return [row1, row2, row3];
 }
 
-function isBlank(box, depth) {
+function isBlank(box: string[][], depth: number) {
   const blank = /0/;
 
   if (depth >= 0) {
     const currentBox = box[depth];
-    let blanks = currentBox
-      .map((number) => number.replace(/[1-9]/g, ""))
-      .join("")
-      .split("");
+    let blanks = currentBox.map((number) => number.replace(/[1-9]/g, "")).join("");
+
     const hasBlanks = blank.test(blanks);
 
     return hasBlanks;
   } else {
     for (let i = 0; i < box.length; ++i) {
       const currentBox = box[i];
-      let blanks = currentBox
-        .map((number) => number.replace(/[1-9]/g, ""))
-        .join("")
-        .split("");
+      let blanks = currentBox.map((number) => number.replace(/[1-9]/g, "")).join("");
+
       const hasBlanks = blank.test(blanks);
 
       if (hasBlanks) return hasBlanks;
@@ -5834,15 +5841,15 @@ function isBlank(box, depth) {
   }
 }
 
-function getNumbersInBox(box) {
+function getNumbersInBox(box: string[]) {
   return box.map((number) => number.replace(/0/g, "").split("")).flat();
 }
 
-function getNumbersInNeighbourRow(box, rowNumber) {
+function getNumbersInNeighbourRow(box: string[][], rowNumber: number) {
   return getNumbersInBox(box.map((nums) => nums[rowNumber]));
 }
 
-function getNumbersInNeighbourCol(box, cellNumber, colNumber) {
+function getNumbersInNeighbourCol(box: string[][], cellNumber: number, colNumber: number) {
   let cols = [];
 
   switch (cellNumber) {
@@ -5855,7 +5862,7 @@ function getNumbersInNeighbourCol(box, cellNumber, colNumber) {
         }
 
         return acc;
-      }, []);
+      }, [] as string[]);
       break;
     case 2:
     case 5:
@@ -5913,7 +5920,7 @@ function fasterBigIntPow(base: bigint, exp: bigint): bigint {
 // Problem 98: Anagramic squares
 // By replacing each of the letters in the word CARE with 1, 2, 9, and 6 respectively, we form a square number: 1296=36^2
 // What is remarkable is that, by using the same digital substitutions, the anagram, RACE, also forms a square number:  9216=96^2
-// We shall call CARE (and RACE) a square anagram word pair and specify further that leading zeroes are not permitted, 
+// We shall call CARE (and RACE) a square anagram word pair and specify further that leading zeroes are not permitted,
 // neither may a different letter have the same digital value as another letter.
 
 // Using the words array, find all the square anagram word pairs (a palindromic word is NOT considered to be an anagram of itself).
@@ -5921,31 +5928,35 @@ function fasterBigIntPow(base: bigint, exp: bigint): bigint {
 // What is the largest square number formed by any member of such a pair?
 
 // Note: All anagrams formed must be contained in the given words array.
-function anagramicSquares(words) {
-  let longest = 0
-  const anagrams = getAnagrams(words)
-  const squareTableLength = getLongestAnagram(anagrams)
-  const squaresTable = createAnagramiceSquareTable(squareTableLength) 
+function anagramicSquares(words: string[]) {
+  let longest = 0;
+  const anagrams = getAnagrams(words);
+  const squareTableLength = getLongestAnagram(anagrams);
+  const squaresTable = createAnagramiceSquareTable(squareTableLength);
 
   for (let i = 0; i < anagrams.length; ++i) {
-    const [anagramA, anagramB] = anagrams[i]
-    const length = anagramA.length
-    const squares = squaresTable[length]
-    const squaresIterator = squares.values()
+    const [anagramA, anagramB] = anagrams[i];
+    const length = anagramA.length;
+    const squares = squaresTable[length];
 
-    for (let j = 0; j < squares.size; ++j) {
-      const squareDigits = squaresIterator.next().value.toString().split("")
- 
+    for (const square of squares) {
+      const squareDigits = square.toString().split("");
+
       const mapAnagramAToNumbers = anagramA.split("").reduce((acc, letter, idx) => {
-        acc[letter] = squareDigits[idx]
+        acc[letter] = squareDigits[idx];
 
-        return acc
-      }, {})
-      const mapAnagramBToNumbers = Number(anagramB.split("").map(letter => mapAnagramAToNumbers[letter]).join(""))
-      const isAnagramicSquare = squares.has(mapAnagramBToNumbers)
+        return acc;
+      }, {} as {[key: string]: string});
+      const mapAnagramBToNumbers = Number(
+        anagramB
+          .split("")
+          .map((letter) => mapAnagramAToNumbers[letter])
+          .join("")
+      );
+      const isAnagramicSquare = squares.has(mapAnagramBToNumbers);
 
       if (isAnagramicSquare && longest < mapAnagramBToNumbers) {
-        longest = mapAnagramBToNumbers
+        longest = mapAnagramBToNumbers;
       }
     }
   }
@@ -5953,84 +5964,93 @@ function anagramicSquares(words) {
   return longest;
 }
 
-function getLongestAnagram(anagrams) {
-  let longest = 0
+function getLongestAnagram(anagrams: string[][]) {
+  let longest = 0;
 
   for (let i = 0; i < anagrams.length; ++i) {
-    const [a] = anagrams[i]
-    if (longest < a.length) longest = a.length
+    const [a] = anagrams[i];
+    if (longest < a.length) longest = a.length;
   }
 
-  return longest
+  return longest;
 }
 
-function getAnagrams(words) {
-  const anagrams = []
+function getAnagrams(words: string[]) {
+  const anagrams: string[][] = [];
 
   for (let i = 0; i < words.length; ++i) {
-    const firstWord = words[i].split("").sort().join("")
+    const firstWord = words[i].split("").sort().join("");
 
     for (let j = i + 1; j < words.length; ++j) {
-      const nextWord = words[j].split("").sort().join("")
+      const nextWord = words[j].split("").sort().join("");
 
       if (nextWord !== firstWord) continue;
 
-      anagrams.push([words[i], words[j]])
+      anagrams.push([words[i], words[j]]);
     }
   }
 
-
-  return anagrams
+  return anagrams;
 }
 
-function createAnagramiceSquareTable(limit) {
-  const squareTable = {}
-  let i = 4
+function createAnagramiceSquareTable(limit: number) {
+  const squareTable = {} as { [key: number]: number[] };
+  let i = 4;
 
-  while(true) {
-    const square = i * i
-    const squareLength = square.toString().length
-    const squareDigits = square.toString().split("")
-    const hasRepeats = new Set(squareDigits).size !== squareLength
-    const hasZero = squareDigits.includes("0")
+  while (true) {
+    const square = i * i;
+    const squareLength = square.toString().length;
+    const squareDigits = square.toString().split("");
+    const hasRepeats = new Set(squareDigits).size !== squareLength;
+    const hasZero = squareDigits.includes("0");
 
-    if (squareLength > limit) break
+    if (squareLength > limit) break;
     if (hasRepeats || hasZero) {
-      ++i
-      continue
-    }
-    
-    if (!squareTable[squareLength]) {
-      squareTable[squareLength] = []
-      squareTable[squareLength].push(square)
-    } else {
-      squareTable[squareLength].push(square)
+      ++i;
+      continue;
     }
 
-    ++i
+    if (!squareTable[squareLength]) {
+      squareTable[squareLength] = [];
+      squareTable[squareLength].push(square);
+    } else {
+      squareTable[squareLength].push(square);
+    }
+
+    ++i;
   }
 
-  const tableKeys = Object.keys(squareTable)
-  const anagramicTable = {}
+  const tableKeys = Object.keys(squareTable).map(Number);
+  const anagramicTable = {} as {[key: number]: Set<number>};
 
   for (const key of tableKeys) {
-    const currSquares = squareTable[key]
+    const currSquares = squareTable[key];
 
-    if (!anagramicTable[key]) anagramicTable[key] = new Set()
+    if (!anagramicTable[key]) anagramicTable[key] = new Set();
 
     for (let i = 0; i < currSquares.length; ++i) {
-      const firstNum = currSquares[i].toString().split("").sort((a,b) => a - b).join("")
+      const firstNum = currSquares[i]
+        .toString()
+        .split("")
+        .map(Number)
+        .sort((a, b) => a - b)
+        .join("");
       for (let j = i + 1; j < currSquares.length; ++j) {
-        const secondNum = currSquares[j].toString().split("").sort((a,b) => a - b).join("")
+        const secondNum = currSquares[j]
+          .toString()
+          .split("")
+          .map(Number)
+          .sort((a, b) => a - b)
+          .join("");
 
         if (firstNum === secondNum) {
-          anagramicTable[key].add(currSquares[i]).add(currSquares[j])
+          anagramicTable[key].add(currSquares[i]).add(currSquares[j]);
         }
       }
     }
   }
 
-  return anagramicTable
+  return anagramicTable;
 }
 
 // Problem 99: Largest exponential
@@ -6044,36 +6064,36 @@ function createAnagramiceSquareTable(limit) {
 
 // https://www.quora.com/How-do-I-calculate-numbers-with-high-exponents-in-the-fastest-way
 function largestExponential(baseExp: number[][]) {
-  const nums = []
+  const nums = [];
 
   for (let i = 0; i < baseExp.length; ++i) {
-    const [base, exp] = baseExp[i]
-    const num = Math.log(base) * exp
+    const [base, exp] = baseExp[i];
+    const num = Math.log(base) * exp;
 
-    nums.push(num)
+    nums.push(num);
   }
 
-  nums.shift()
+  nums.shift();
 
-  const max = Math.max(...nums)
-  const index = nums.indexOf(max) + 1
+  const max = Math.max(...nums);
+  const index = nums.indexOf(max) + 1;
 
-  return baseExp[index]
+  return baseExp[index];
 }
 
 // Problem 100: Arranged probability
-// If a box contains twenty-one colored discs, composed of fifteen blue discs and six red discs, and two discs were taken at random, 
+// If a box contains twenty-one colored discs, composed of fifteen blue discs and six red discs, and two discs were taken at random,
 // it can be seen that the probability of taking two blue discs.
 
 // P(BB)=1521×1420=12
- 
-// The next such arrangement, for which there is exactly a 50% chance of taking two blue discs at random, 
+
+// The next such arrangement, for which there is exactly a 50% chance of taking two blue discs at random,
 // is a box containing eighty-five blue discs and thirty-five red discs.
 
 // By finding the first arrangement to contain over limit discs in total, determine the number of blue discs that the box would contain.
 
 // This problem has probably two solutions
-// First on is full quadratic diophantine solver which is complex 
+// First on is full quadratic diophantine solver which is complex
 // Second is Sloane's integer sequence
 // You can see it here: https://oeis.org/A011900
 // Both hints can be found in hackerrank discussion secion
@@ -6087,7 +6107,7 @@ function arrangedProbability(limit: number) {
     }
   }
 
-  return 0
+  return 0;
 }
 
 function a(n: number): number {
