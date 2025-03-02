@@ -44,7 +44,7 @@ function optimumPolynomial() {
 
     const basisPolynomials = sequence
       .map((_, idx) => idx + 1)
-      .map((_, j, arr) => (x) => {
+      .map((_, j, arr) => (x: number) => {
         let prod = 1;
 
         for (let m = 0; m <= k; ++m) {
@@ -65,7 +65,7 @@ function optimumPolynomial() {
   return fits.reduce((acc, n) => acc + n);
 }
 
-function L(x, k, l, arr) {
+function L(x: number, k: number, l: ((x: number) => number)[], arr: number[]) {
   let sum = 0;
 
   for (let j = 0; j <= k; ++j) {
