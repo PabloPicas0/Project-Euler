@@ -14,7 +14,7 @@
 // See:
 // https://en.wikipedia.org/wiki/Barycentric_coordinate_system#Barycentric_coordinates_on_triangles
 // https://stackoverflow.com/questions/2049582/how-to-determine-if-a-point-is-in-a-2d-triangle
-function triangleContainment(triangles) {
+function triangleContainment(triangles: number[][][]) {
   const origin = [0, 0];
   let origins = 0;
 
@@ -28,11 +28,11 @@ function triangleContainment(triangles) {
   return origins;
 }
 
-function sarea(a, b, c) {
+function sarea(a: number[], b: number[], c: number[]) {
   return (a[0] - c[0]) * (b[1] - c[1]) - (b[0] - c[0]) * (a[1] - c[1]);
 }
 
-function hasPoint(point, a, b, c) {
+function hasPoint(point: number[], a: number[], b: number[], c: number[]) {
   const d1 = sarea(point, a, b);
   const d2 = sarea(point, b, c);
   const d3 = sarea(point, c, a);
