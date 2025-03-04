@@ -43,7 +43,7 @@ function pandigitalFibonacciEnds() {
   }
 }
 
-function truncPow(x, n) {
+function truncPow(x: number, n: number) {
   let res = 1
 
   for (let i = 0; i < n; ++i) {
@@ -54,6 +54,6 @@ function truncPow(x, n) {
   return res
 }
 
-function isPandigital(str, toCompare) {
+function isPandigital(str: string, toCompare: string) {
   return str.split("").sort().join("") === toCompare
 }
