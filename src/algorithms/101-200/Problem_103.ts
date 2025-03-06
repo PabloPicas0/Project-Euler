@@ -47,7 +47,7 @@ function optimumSpecialSumSet() {
   return newOptimum.toString().replace(/,/g, "");
 }
 
-function search(optimumSet, depth, nearOptimumSum) {
+function search(optimumSet: Set<number>, depth: number, nearOptimumSum: number): number[] {
   if (depth === optimumSet.size) {
     if (setSum(optimumSet) >= nearOptimumSum) return [];
 
@@ -81,10 +81,10 @@ function search(optimumSet, depth, nearOptimumSum) {
   }
 }
 
-function createSetOfSubsets(set) {
-  const subsets = [[]];
-  const subsetsC = [];
-  const pairs = [];
+function createSetOfSubsets(set: number[]) {
+  const subsets: number[][] = [[]];
+  const subsetsC: number[][] = [];
+  const pairs: Set<number>[][] = [];
 
   for (const element of set) {
     const newSubsets = subsets.map((subset) => subset.concat(element));
@@ -109,8 +109,8 @@ function createSetOfSubsets(set) {
   return pairs;
 }
 
-function isSpecial(setOfSubsets, set, depth) {
-  let specialSet = new Set();
+function isSpecial(setOfSubsets: Set<number>[][], set: number[], depth: number) {
+  let specialSet = new Set<number>();
 
   for (let i = 0; i < setOfSubsets.length; ++i) {
     const [subsetB, subsetC] = setOfSubsets[i];
@@ -130,7 +130,7 @@ function isSpecial(setOfSubsets, set, depth) {
   return true;
 }
 
-function setSum(set) {
+function setSum(set: Set<number>) {
   let sum = 0;
 
   const iterator = set.entries();
@@ -142,8 +142,8 @@ function setSum(set) {
   return sum;
 }
 
-function createNextNearPerfectSet(prevSet) {
-  const next = new Set();
+function createNextNearPerfectSet(prevSet: Set<number>) {
+  const next = new Set<number>();
   const prev = Array.from(prevSet);
   const mid = Math.ceil((prev.length - 1) / 2);
   const midVal = prev[mid];
