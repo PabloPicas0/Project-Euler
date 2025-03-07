@@ -110,7 +110,10 @@ function createSetOfSubsets(set: number[]) {
 }
 
 function isSpecial(setOfSubsets: Set<number>[][], set: number[], depth: number) {
-  let specialSet = new Set<number>();
+  let specialSet = new Set();
+  const divideEvenly = Number.isInteger(set.length / 2);
+  const mid = Math.ceil(set.length / 2);
+  const idx = divideEvenly ? mid + 1 : mid;
 
   for (let i = 0; i < setOfSubsets.length; ++i) {
     const [subsetB, subsetC] = setOfSubsets[i];
@@ -120,9 +123,10 @@ function isSpecial(setOfSubsets: Set<number>[][], set: number[], depth: number) 
 
   if (specialSet.size !== 2 ** depth - 2) return false;
 
-  for (let i = 2; i <= 4; ++i) {
+  for (let i = 2; i <= idx; ++i) {
+    const y = i !== idx ? 1 : !divideEvenly ? 1 : 2;
     const subsetB = set.slice(0, i).reduce((a, b) => a + b);
-    const subsetC = set.slice(-i + 1).reduce((a, b) => a + b);
+    const subsetC = set.slice(-i + y).reduce((a, b) => a + b);
 
     if (subsetB < subsetC) return false;
   }
