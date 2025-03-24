@@ -15,7 +15,7 @@
 
 // Note: This problem is related to Problem 103 and Problem 106.
 
-function testingSpecialSubsetSums(sets) {
+function testingSpecialSubsetSums(sets: number[][]) {
   let specialSums = 0;
 
   for (let i = 0; i < sets.length; ++i) {
@@ -34,10 +34,10 @@ function testingSpecialSubsetSums(sets) {
   return specialSums;
 }
 
-function createSetOfSubsets(set) {
-  const subsets = [[]];
-  const subsetsC = [];
-  const pairs = [];
+function createSetOfSubsets(set: number[]) {
+  const subsets: number[][] = [[]];
+  const subsetsC: number[][] = [];
+  const pairs: Set<number>[][] = [];
 
   for (const element of set) {
     const newSubsets = subsets.map((subset) => subset.concat(element));
@@ -62,7 +62,7 @@ function createSetOfSubsets(set) {
   return pairs;
 }
 
-function isSpecial(setOfSubsets, set, depth) {
+function isSpecial(setOfSubsets: Set<number>[][], set: number[], depth: number) {
   let specialSet = new Set();
   const divideEvenly = Number.isInteger(set.length / 2);
   const mid = Math.ceil(set.length / 2);
@@ -87,7 +87,7 @@ function isSpecial(setOfSubsets, set, depth) {
   return true;
 }
 
-function setSum(set) {
+function setSum(set: Set<number>) {
   let sum = 0;
 
   const iterator = set.entries();
