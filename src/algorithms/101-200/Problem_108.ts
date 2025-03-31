@@ -99,13 +99,9 @@ function primeFactors(n, primes) {
 
     if (prime >= 100) return [];
 
-    const factor = n / prime;
-
-    if (Number.isInteger(factor)) {
-      factors.push(prime);
-      n = factor;
-      i = 0;
-      continue;
+    while(Number.isInteger(n / prime)) {
+      factors.push(prime)
+      n = n / prime
     }
 
     i += 1;
@@ -122,25 +118,4 @@ function createSqrtTable(n) {
   }
 
   return table;
-}
-
-function sieve(n) {
-  const numbers = new Array(n).fill(true);
-  const primes = [];
-
-  for (let i = 2; i < Math.sqrt(n); ++i) {
-    if (numbers[i]) {
-      for (let j = i * i; j < n; j += i) {
-        numbers[j] = false;
-      }
-    }
-  }
-
-  for (let i = 2; i < n; ++i) {
-    if (numbers[i]) {
-      primes.push(i);
-    }
-  }
-
-  return primes;
 }
