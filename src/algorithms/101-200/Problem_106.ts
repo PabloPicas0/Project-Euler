@@ -23,8 +23,7 @@ function subsetSumsMetaTesting() {
   const setOfSubsets = createSetOfSubsets(set);
   const seen = new Map()
   let counter = 0
-  
-  console.log(optimumSet.size)
+
   for (let i = 0; i < setOfSubsets.length; ++i) {
     const [subsetB, subsetC] = setOfSubsets[i]
     const x = subsetB.size
@@ -47,15 +46,15 @@ function subsetSumsMetaTesting() {
   return true;
 }
 
-function needToBeTested(sb, sc) {
+function needToBeTested(sb: number[], sc: number[]) {
   return sb.some((s, idx) => s > sc[idx])
 }
 
 
-function createSetOfSubsets(set) {
-  const subsets = [[]];
-  const subsetsC = [];
-  const pairs = [];
+function createSetOfSubsets(set: number[]) {
+  const subsets: number[][] = [[]];
+  const subsetsC: number[][] = [];
+  const pairs: Set<number>[][] = [];
 
   for (const element of set) {
     const newSubsets = subsets.map((subset) => subset.concat(element));
@@ -82,8 +81,8 @@ function createSetOfSubsets(set) {
   return pairs.sort((a,b) => b[0].size - a[0].size);
 }
 
-function isSpecial(setOfSubsets, set, depth) {
-  let specialSet = new Set();
+function isSpecial(setOfSubsets: Set<number>[][], set: number[], depth: number) {
+  let specialSet = new Set<number>();
   const divideEvenly = Number.isInteger(set.length / 2);
   const mid = Math.ceil(set.length / 2);
   const idx = divideEvenly ? mid + 1 : mid;
@@ -108,7 +107,7 @@ function isSpecial(setOfSubsets, set, depth) {
 }
 
 
-function setSum(set) {
+function setSum(set: Set<number>) {
   let sum = 0;
 
   const iterator = set.entries();
