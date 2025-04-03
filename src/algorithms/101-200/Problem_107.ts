@@ -21,9 +21,22 @@
 // https://www.freecodecamp.org/learn/project-euler/project-euler-problems-101-to-200/problem-107-minimal-network
 // https://projecteuler.net/problem=107
 
-function minimalNetwork(network) {
-  const net = [];
-  const minimalNetwork = [];
+type Node = {
+  isVisited: boolean;
+  isConnected: boolean;
+  neighbour: { y: number; x: number };
+  weight: number;
+};
+
+type Network = {
+  weight: number;
+  y: number;
+  x: number;
+}[];
+
+function minimalNetwork(network: number[][]) {
+  const net: Network = [];
+  const minimalNetwork: Network = [];
   const end = network.length;
   const graph = createGraph(network);
   const start = findMostConnectedNode(network);
@@ -34,6 +47,9 @@ function minimalNetwork(network) {
 
   while (queue.length) {
     const current = queue.shift();
+
+    if (!current) break;
+
     const visited = visitNeighbours(graph, { ...current, x: 0 }, end);
     const isInNetwork = nodeIsInNewNetwork(minimalNetwork, current);
 
@@ -45,6 +61,7 @@ function minimalNetwork(network) {
     net.push(current);
     queue.sort((a, b) => a.weight - b.weight);
   }
+
   const reducedNet = minimalNetwork.map((node) => node.weight).reduce((a, b) => a + b);
   const originalNet = net.map((node) => node.weight).reduce((a, b) => a + b);
   const saving = originalNet - reducedNet;
@@ -52,11 +69,11 @@ function minimalNetwork(network) {
   return saving;
 }
 
-function nodeIsInNewNetwork(minimalnetwork, currentNode) {
+function nodeIsInNewNetwork(minimalnetwork: Network, currentNode: Network[0]) {
   return minimalnetwork.some((node) => node.y === currentNode.y);
 }
 
-function visitNeighbours(graph, start, end) {
+function visitNeighbours(graph: { [key: string]: Node }, start: Node["neighbour"], end: number) {
   const queue = [];
   const { x, y } = start;
 
@@ -73,7 +90,7 @@ function visitNeighbours(graph, start, end) {
   return queue;
 }
 
-function findMostConnectedNode(network) {
+function findMostConnectedNode(network: number[][]) {
   return network.reduce(
     (acc, row, idx) => {
       const { connections } = acc;
@@ -85,12 +102,12 @@ function findMostConnectedNode(network) {
 
       return acc;
     },
-    { connections: 0, y: 0, x: 0 },
+    { connections: 0, y: 0, x: 0 }
   );
 }
 
-function createGraph(network) {
-  const graph = {};
+function createGraph(network: number[][]) {
+  const graph = {} as { [key: string]: Node };
 
   for (let y = 0; y < network.length; ++y) {
     for (let x = 0; x < network[y].length; ++x) {
