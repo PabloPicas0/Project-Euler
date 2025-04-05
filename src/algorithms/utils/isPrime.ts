@@ -1,4 +1,4 @@
-function isPrime(num) {
+export function isPrime(num: number) {
     if (num <= 1) return false; // negatives
     if (num % 2 == 0 && num > 2) return false; // even numbers
   
