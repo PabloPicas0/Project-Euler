@@ -8,6 +8,9 @@
 // 15+120=1416+112=1418+18=14
 
 // What is the least value of n for which the number of distinct solutions exceeds one-thousand?
+
+import { sieve } from "../utils/sieve.ts";
+
 function diophantineOne() {
   const limit = 200000;
   const primes = sieve(limit);
@@ -24,7 +27,7 @@ function diophantineOne() {
     }
 
     const possiblePowers = getPossiblePowers(factors);
-    const devisors = [];
+    const devisors: number[] = [];
 
     getDevisors(possiblePowers, 0, [], devisors);
 
@@ -38,8 +41,8 @@ function diophantineOne() {
   return n;
 }
 
-function findPairs(n, devisors) {
-  const pairs = [];
+function findPairs(n: number, devisors: number[]) {
+  const pairs: number[][] = [];
 
   for (let i = 0; i < devisors.length; ++i) {
     const d = devisors[i];
@@ -51,7 +54,7 @@ function findPairs(n, devisors) {
   return pairs;
 }
 
-function getDevisors(devisors, depth, combination, product) {
+function getDevisors(devisors: number[][], depth: number, combination: number[], product: number[]) {
   if (devisors.length === depth) {
     const p = combination.reduce((acc, val) => acc * val);
     // console.log(combination)
@@ -64,12 +67,12 @@ function getDevisors(devisors, depth, combination, product) {
   }
 }
 
-function getPossiblePowers(factors) {
+function getPossiblePowers(factors: number[]) {
   const exponents = primeFactorExponents(factors);
-  const powers = [];
+  const powers: number[][] = [];
 
   for (const [prime, exponent] of Object.entries(exponents)) {
-    const possibleExponents = [];
+    const possibleExponents: number[] = [];
     const p = Number(prime);
 
     for (let i = 0; i <= exponent; ++i) {
@@ -82,16 +85,16 @@ function getPossiblePowers(factors) {
   return powers;
 }
 
-function primeFactorExponents(primeFactors) {
+function primeFactorExponents(primeFactors: number[]) {
   return primeFactors.reduce((acc, factor) => {
     acc[factor] = acc[factor] + 1 || 1;
 
     return acc;
-  }, {});
+  }, {} as {[key: number]: number});
 }
 
-function primeFactors(n, primes) {
-  const factors = [];
+function primeFactors(n: number, primes: number[]) {
+  const factors: number[] = [];
   let i = 0;
 
   while (n > 1) {
@@ -99,9 +102,9 @@ function primeFactors(n, primes) {
 
     if (prime >= 100) return [];
 
-    while(Number.isInteger(n / prime)) {
-      factors.push(prime)
-      n = n / prime
+    while (Number.isInteger(n / prime)) {
+      factors.push(prime);
+      n = n / prime;
     }
 
     i += 1;
@@ -110,8 +113,8 @@ function primeFactors(n, primes) {
   return factors;
 }
 
-function createSqrtTable(n) {
-  const table = {};
+function createSqrtTable(n: number) {
+  const table: {[key: number]: number} = {};
 
   for (let i = 1; i <= n; ++i) {
     table[i] = i * i;
