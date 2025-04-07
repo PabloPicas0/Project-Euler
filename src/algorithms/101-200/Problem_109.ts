@@ -37,7 +37,7 @@ function darts() {
   let sum = 0;
 
   for (let i = 2; i < 100; ++i) {
-    const ways = [];
+    const ways: string[][] = [];
     findWays(scores, 0, [], ways, i);
 
     sum += ways.length;
@@ -46,7 +46,7 @@ function darts() {
   return sum;
 }
 
-function findWays(scores, depth, currentWay, ways, targetScore) {
+function findWays(scores: [string, number][], depth: number, currentWay: [string, number][], ways: string[][], targetScore: number) {
   if (depth === 3) {
     const currentScore = currentWay[0][1] + currentWay[1][1] + currentWay[2][1];
 
@@ -85,7 +85,7 @@ function findWays(scores, depth, currentWay, ways, targetScore) {
   }
 }
 
-function isValid(ways, currentWay, depth) {
+function isValid(ways: string[][], currentWay: string[], depth: number) {
   const isLastDuble = currentWay[depth - 1].includes("D");
 
   if (!isLastDuble) return false;
@@ -104,7 +104,7 @@ function isValid(ways, currentWay, depth) {
 }
 
 function createDartScores() {
-  const scores = [];
+  const scores: [string, number][] = [];
 
   for (let i = 1; i <= 20; ++i) {
     scores.push([`S${i}`, i], [`D${i}`, i * 2], [`T${i}`, i * 3]);
