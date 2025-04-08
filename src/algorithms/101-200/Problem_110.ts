@@ -11,19 +11,23 @@
 
 // Again thanks for Stephan Brumme for his thought process in this problem
 // Without it that was out of my scope, I could only be close
-// See:
-// https://euler.stephan-brumme.com/110/
+// See: https://euler.stephan-brumme.com/110/
 // Also worth to mention that fcc can't pass test becouse of constant sorting and checking that take too long time
 // But I confirmed that returned value match this for test case 
 
+import { bigSieve } from "../utils/sieve.ts";
+
 function diophantineTwo() {
   const limit = 4000000;
-  const primes = sieve(100);
-  const exponents = new Array(12).fill(0)
-  const values = [[1n, [...exponents]]]
+  const primes = bigSieve(100);
+  const exponents: number[] = new Array(12).fill(0)
+  const values = [[1n, [...exponents]]] as [bigint, number[]][]
 
   while (true) {
     const current = values.shift()
+
+    if (!current) break
+
     let value = current[0]
     const exponents = current[1]
     
