@@ -35,6 +35,146 @@
 
 // For d = 0 to 9, the sum of all  S(4,d) is 273700. Find the sum of all  S(10,d).
 
+import { swap } from "../utils/swap.ts";
+
 function primesWithRuns() {
-  return true;
+  const primes = [];
+  const n = 10;
+  const suffix = "d";
+  const positions = getPositions(n, suffix, 2);
+
+  // Special 0 case
+  primes.push(...getPossiblePrimes(positions[0], suffix));
+  positions.shift();
+
+  const digits = getDifferentDigits(positions);
+
+  for (let i = 0; i < digits.length; ++i) {
+    let digit = digits[i];
+
+    for (let j = 0; j < digit.length; ++j) {
+      const prime = getPossiblePrimes(digit[j], suffix);
+
+      if (!prime.length) continue;
+
+      primes.push(...prime);
+      break;
+    }
+  }
+
+  const sum = primes.reduce((acc, val) => acc + val);
+
+  return sum;
+}
+
+function getDifferentDigits(positions) {
+  const digits = [positions];
+  const digitsToReplace = new RegExp(1, "g");
+
+  for (let i = 2; i <= 9; ++i) {
+    const digit = [];
+
+    for (let j = 0; j < positions.length; ++j) {
+      const iterator = positions[j].values();
+      const newDigits = new Set();
+
+      for (const value of iterator) {
+        newDigits.add(value.replace(digitsToReplace, i));
+      }
+
+      digit.push(newDigits);
+    }
+
+    digits.push(digit);
+  }
+
+  return digits;
+}
+
+function getPositions(n, suffix, placeholderAmmount) {
+  const positions = [];
+  let r = 1;
+  let d = 0;
+
+  while (r <= placeholderAmmount) {
+    const position = new Set();
+    let max = n - r;
+
+    if (d === 0) {
+      const p = `${d}`.repeat(max - 1) + suffix.repeat(2);
+
+      permute(p, position);
+      positions.push(position);
+
+      d += 1;
+      continue;
+    }
+
+    const p = `${d}`.repeat(max) + suffix.repeat(r);
+    permute(p, position);
+    positions.push(position);
+
+    ++r;
+  }
+
+  return positions;
+}
+
+function getPossiblePrimes(positions, d) {
+  const postionsIterator = positions.values();
+  const primes = [];
+
+  for (let i = 0; i < positions.size; ++i) {
+    const position = postionsIterator.next().value;
+    const placeholderPositions = position.split("").reduce((acc, num, idx) => {
+      if (num == d) acc.push(idx);
+
+      return acc;
+    }, []);
+
+    insertDifferentDigits(position, 0, placeholderPositions, [position], primes);
+  }
+
+  return primes;
+}
+
+function insertDifferentDigits(str, depth, placeholderPositions, newStr, primes) {
+  if (depth === placeholderPositions.length) {
+    const possiblePrime = Number(newStr.pop());
+
+    if (!isPrime(possiblePrime)) return;
+
+    const digitsAreNotSameLength = possiblePrime.toString().length !== str.length;
+
+    if (digitsAreNotSameLength) return;
+
+    primes.push(possiblePrime);
+  } else {
+    const strToInsert = newStr.pop().split("");
+    const position = placeholderPositions[depth];
+
+    for (let i = 0; i <= 9; ++i) {
+      strToInsert[position] = i;
+      newStr.push(strToInsert.join(""));
+      insertDifferentDigits(str, depth + 1, placeholderPositions, newStr, primes);
+    }
+  }
+}
+
+function permute(str, positions, y = str.length, strArr = str.split("")) {
+  if (y === 1) {
+    if (strArr[0] == 0) return;
+
+    positions.add(strArr.join(""));
+  } else {
+    for (let i = 0; i < y; i++) {
+      permute(str, positions, y - 1, strArr);
+
+      if (y % 2 === 0) {
+        swap(strArr, i, y - 1);
+      } else {
+        swap(strArr, 0, y - 1);
+      }
+    }
+  }
 }
