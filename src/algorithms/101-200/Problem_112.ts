@@ -13,5 +13,42 @@
 // Find the least number for which the proportion of bouncy numbers is exactly 99%.
 
 function bouncyNumbers() {
+  let bouncyNumberCount = 0;
+  const max = 2000000;
+
+  for (let i = 100; i < max; ++i) {
+    const numAsStr = i.toString();
+    const isBouncy = !isIncreasing(numAsStr) && !isDecreasing(numAsStr);
+
+    if (!isBouncy) continue;
+
+    bouncyNumberCount += 1;
+
+    const proportion = bouncyNumberCount / i;
+
+    if (proportion === 0.99) return i;
+    // console.log(bouncyNumberCount / i, i, bouncyNumberCount)
+  }
+
+  return true;
+}
+
+function isIncreasing(str: string) {
+  for (let i = str.length - 1; i >= 0; --i) {
+    for (let j = i - 1; j >= 0; --j) {
+      if (str[i] < str[j]) return false;
+    }
+  }
+
+  return true;
+}
+
+function isDecreasing(str: string) {
+  for (let i = 0; i < str.length; ++i) {
+    for (let j = i + 1; j < str.length; ++j) {
+      if (str[i] < str[j]) return false;
+    }
+  }
+
   return true;
 }
