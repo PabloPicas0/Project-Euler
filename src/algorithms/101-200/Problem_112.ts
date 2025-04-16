@@ -27,7 +27,6 @@ function bouncyNumbers() {
     const proportion = bouncyNumberCount / i;
 
     if (proportion === 0.99) return i;
-    // console.log(bouncyNumberCount / i, i, bouncyNumberCount)
   }
 
   return true;
