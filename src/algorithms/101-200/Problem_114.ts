@@ -16,5 +16,23 @@
 // Also it is not optimized for space efficiency
 
 function countingBlockOne() {
-  return true
+  let n = 50;
+  const arr = [1, 1, 1, 2];
+
+  for (let i = 3; i < n; ++i) {
+    const next = 2 * arr[i] - arr[i - 1] + arr[i - 3];
+
+    arr.push(next);
+  }
+
+  const last = arr.length - 1;
+
+  return arr[last];
+}
+
+function count(n: number, m: number) {
+  if (n < m) return 1;
+  if (n === m) return 2;
+
+  return 2 * count(n - 1, m) - count(n - 2, m) + count(n - m - 1, m);
 }
