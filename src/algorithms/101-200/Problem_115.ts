@@ -21,6 +21,43 @@
 // This problem just uses modified version of algo from previous problem
 
 function countingBlockTwo() {
+  const limit = 1000000;
+  const m = 50;
+  let n = 100;
+
+  while (n < 1000) {
+    const count = F(n, m);
+
+    if (count > limit) return n;
+
+    ++n;
+  }
+
   return true;
 }
 
+function F(n, m) {
+  const size = m + 1;
+  const arr = new Array(size).fill(1);
+
+  arr[m] = 2;
+
+  let p = 0;
+  let l = arr.length - 1;
+  let k = arr.length - 2;
+
+  for (let i = m + 1; i < n + 1; ++i) {
+    const next = 2 * arr[l] - arr[k] + arr[p];
+    arr[p] = next;
+
+    p = (p + 1) % size;
+    l = (l + 1) % size;
+    k = (k + 1) % size;
+  }
+
+  arr.sort((a, b) => a - b);
+
+  const last = arr.length - 1;
+
+  return arr[last];
+}
