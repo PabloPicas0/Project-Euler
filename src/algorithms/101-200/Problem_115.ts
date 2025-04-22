@@ -36,9 +36,9 @@ function countingBlockTwo() {
   return true;
 }
 
-function F(n, m) {
+function F(n: number, m: number) {
   const size = m + 1;
-  const arr = new Array(size).fill(1);
+  const arr: number[] = new Array(size).fill(1);
 
   arr[m] = 2;
 
