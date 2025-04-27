@@ -20,16 +20,16 @@ function redGreenBlueOne() {
   return F(50, 2) + F(50, 3) + F(50, 4);
 }
 
-function count(n, m) {
+function count(n: number, m: number): number {
   if (n < m) return 0;
   if (n === m) return 1;
 
   return count(n - 1, m) + count(n - m, m) + 1;
 }
 
-function F(n, m) {
+function F(n: number, m: number) {
   const size = m + 1;
-  const arr = new Array(size).fill(0);
+  const arr: number[] = new Array(size).fill(0);
 
   let p = 0;
   let l = arr.length - 1;
