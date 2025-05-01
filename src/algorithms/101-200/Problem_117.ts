@@ -15,5 +15,16 @@
 // https://oeis.org/A000078/b000078.txt
 
  function redGreenBlueTilesTwo() {
-  return true
+  let n = 53;
+  const arr = [0, 0, 0, 1];
+
+  for (let i = 3; i < n; ++i) {
+    const next = arr[i] + arr[i - 1] + arr[i - 2] + arr[i - 3];
+
+    arr.push(next);
+  }
+
+  const last = arr.length - 1;
+
+  return arr[last];
 }
