@@ -25,7 +25,7 @@
 // Note that D1 D2 is considered different from D2 D1 as they finish on different doubles.
 // However, the combination S1 T1 D1 is considered the same as T1 S1 D1.
 // In addition, we shall not include misses in considering combinations;
-//  for example, D3 is the same as 0 D3 and 0 0 D3.
+// for example, D3 is the same as 0 D3 and 0 0 D3.
 // Incredibly there are 42336 distinct ways of checking out in total. How many distinct ways can a player checkout with a score less than 100?
 
 // S = single
