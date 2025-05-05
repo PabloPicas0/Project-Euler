@@ -1,11 +1,13 @@
 // Problem 108: Diophantine Reciprocals I
 // In the following equation x, y, and n are positive integers.
 
-// 1x+1y=1n
+// 1/x + 1/y = 1/n
 
 // For n = 4 there are exactly three distinct solutions:
 
-// 15+120=1416+112=1418+18=14
+// 1/5 + 1/20 = 1/4
+// 1/6 + 1/12 = 1/4
+// 1/8 + 1/8 = 1/4
 
 // What is the least value of n for which the number of distinct solutions exceeds one-thousand?
 

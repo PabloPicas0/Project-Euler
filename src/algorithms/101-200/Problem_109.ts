@@ -20,7 +20,17 @@
 // and the highest checkout is 170: T20 T20 D25 (two treble 20s and double bull).
 // There are exactly eleven distinct ways to checkout on a score of 6:
 
-// D3D1S2D2S4S1S1S1D1D1S2D2D2D1D1S1T1S3D1S2S2D2D1D1D1D1D1
+// D3
+// D1   D2
+// S2   D2
+// D2   D1
+// S4   D1    D2
+// S1   S1    D1
+// S1   T1    D1
+// S1   S3    D1
+// D1   D1    D1
+// D1   S2    D1
+// S2   S2    D1
 
 // Note that D1 D2 is considered different from D2 D1 as they finish on different doubles.
 // However, the combination S1 T1 D1 is considered the same as T1 S1 D1.

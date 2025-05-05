@@ -1,7 +1,7 @@
 // Problem 110: Diophantine Reciprocals II
 // In the following equation x, y, and n are positive integers.
 
-// 1x+1y=1n
+// 1/x + 1/y = 1/n
 
 // It can be verified that when n = 1260 there are 113 distinct solutions and this is the least value of n for which the total number of distinct solutions exceeds one hundred.
 

@@ -24,7 +24,6 @@ function triangleContainment(triangles: number[][][]) {
     if (hasPoint(origin, a, b, c)) origins += 1;
   }
 
-  console.log(origins);
   return origins;
 }
 
