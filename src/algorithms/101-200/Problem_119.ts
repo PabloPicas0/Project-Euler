@@ -9,7 +9,26 @@
 // Find  a_30
 
 function digitPowerSum() {
+  let exponent = 2;
+  let found: number[] = [];
 
-  return true
+  while (exponent < 9) {
+    for (let base = 2; base < 100; ++base) {
+      const current = base ** exponent;
+      const digitsSum = current
+        .toString()
+        .split("")
+        .reduce((acc, val) => acc + Number(val), 0);
+
+      if (digitsSum < base || digitsSum > base) continue;
+
+
+      found.push(current);
+    }
+
+    ++exponent;
+  }
+
+  const last = found.length - 1;
+  return found[last];
 }
-
