@@ -8,6 +8,17 @@
 // For  3 ≤ a ≤ 1000
 // find  ∑ r_max
 function squareRemainders() {
+  let a = 3;
+  const max = [];
 
-  return true;
+  while (a <= 1000) {
+    let rMax = 2 * a * Math.floor((a - 1) / 2);
+
+    max.push(rMax);
+    ++a;
+  }
+
+  const sum = max.reduce((acc, num) => acc + num);
+
+  return sum;
 }
