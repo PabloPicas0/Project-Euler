@@ -9,7 +9,7 @@
 // find  ∑ r_max
 function squareRemainders() {
   let a = 3;
-  const max = [];
+  const max:number[] = [];
 
   while (a <= 1000) {
     let rMax = 2 * a * Math.floor((a - 1) / 2);
