@@ -15,5 +15,13 @@
 import { fact } from "../utils/bigFact.ts";
 
 function discGamePrize() {
-  return true
+  const rounds = 16;
+  return Math.floor(fact(rounds) / blues(rounds - 1, Math.ceil(rounds / 2)));
+}
+
+function blues(k: number, b: number): number {
+  if (k == 0 && b <= 0) return 1;
+  if (k == 0 && b > 0) return 0;
+
+  return k * blues(k - 1, b) + blues(k - 1, b - 1);
 }
