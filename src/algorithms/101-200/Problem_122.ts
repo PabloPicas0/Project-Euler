@@ -23,8 +23,57 @@
 // We shall define m(k) to be the minimum number of multiplications to compute n^k; 
 // for example m(15)=5.
 
-// For 1≤k≤200, find ∑m(k).
+// For  1≤k≤200, find ∑m(k).
 
 function efficientExponentiation() {
-  return true;
+  let k = 2;
+  let sum = 0;
+
+  while (k <= 200) {
+    const min = findNumOfMultiplications(k);
+
+    sum += min;
+    ++k;
+  }
+  return sum;
+}
+
+function findNumOfMultiplications(k) {
+  let depth = 1;
+
+  while (depth < 15) {
+    const chain = [1];
+    const isFound = search(chain, k, depth);
+
+    if (isFound) {
+      return chain.length;
+    }
+
+    ++depth;
+  }
+
+  return [].length;
+}
+
+function search(chain, exponent, depth) {
+  if (chain.length > depth) {
+    return false;
+  } else {
+    const last = chain.length - 1;
+    const current = chain[last];
+
+    for (let i = 0; i < chain.length; ++i) {
+      const sum = chain[i] + current;
+
+      if (sum === exponent) return true;
+
+      chain.push(sum);
+
+      if (search(chain, exponent, depth)) return true;
+
+      chain.pop();
+    }
+  }
+
+  return false;
 }
