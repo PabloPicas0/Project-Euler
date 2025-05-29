@@ -13,16 +13,9 @@
 // After all this problem is dissapointing 
 // It requires just one formula to solve it 
 
+
+import { binomial } from "../utils/binomial.ts";
+
 function nonBouncyNumbers() {
   return binomial(100 + 10, 10) + binomial(100 + 9, 9) - 2 - 10 * 100;
-}
-
-function binomial(n: number, k: number) {
-  let coof = 1;
-
-  for (let i = 1; i <= k; ++i) {
-    coof *= (n + 1 - i) / i;
-  }
-
-  return coof;
 }
