@@ -20,7 +20,7 @@
 // n^6×n^6=n^12
 // n^12×n^3=n^15
 
-// We shall define m(k) to be the minimum number of multiplications to compute n^k; 
+// We shall define m(k) to be the minimum number of multiplications to compute n^k;
 // for example m(15)=5.
 
 // For  1≤k≤200, find ∑m(k).
@@ -38,7 +38,7 @@ function efficientExponentiation() {
   return sum;
 }
 
-function findNumOfMultiplications(k) {
+function findNumOfMultiplications(k: number) {
   let depth = 1;
 
   while (depth < 15) {
@@ -55,7 +55,7 @@ function findNumOfMultiplications(k) {
   return [].length;
 }
 
-function search(chain, exponent, depth) {
+function search(chain: number[], exponent: number, depth: number) {
   if (chain.length > depth) {
     return false;
   } else {
