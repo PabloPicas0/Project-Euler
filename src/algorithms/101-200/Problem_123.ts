@@ -5,6 +5,21 @@
 // The least value of n for which the remainder first exceeds 109 is 7037.
 // Find the least value of n for which the remainder first exceeds 1010.
 
+import { sieve } from "../utils/sieve.ts";
+
 function primeSquareRemainders() {
-  return true;
+  const primes = sieve(250000);
+  let n = 7037;
+
+  while (n < 21036) {
+    const prime = primes[n];
+    let rMin = 2 * n * prime;
+
+    // +2 cuz first prime is even
+    if (rMin > 10 ** 10) return n + 2;
+
+    ++n;
+  }
+
+  return n;
 }
