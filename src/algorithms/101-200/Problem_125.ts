@@ -7,8 +7,8 @@
 
 // Find the sum of all the numbers less than the limit that are both palindromic and can be written as the sum of consecutive squares.
 
-function palindromicSums(limit) {
-  const ans = [];
+function palindromicSums(limit: number) {
+  const ans: number[] = [];
 
   let j = 2;
 
@@ -41,11 +41,11 @@ function palindromicSums(limit) {
   return sum;
 }
 
-function f(n) {
+function f(n: number) {
   return (n * (n + 1) * (2 * n + 1)) / 6;
 }
 
-function isPalindrome(n) {
+function isPalindrome(n: number) {
   const str = n.toString();
   const len = str.length;
 
