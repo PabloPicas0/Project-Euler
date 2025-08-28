@@ -58,63 +58,63 @@ function isPalindrome(n: number) {
 
 // First try
 
-function palindromicSums(limit) {
-  const polindromes = [];
-  const squares = createSquaresTable(10000);
-  const sums = new Map();
-  const ans = [];
+// function palindromicSums(limit) {
+//   const polindromes = [];
+//   const squares = createSquaresTable(10000);
+//   const sums = new Map();
+//   const ans = [];
 
-  for (let i = 2; i < limit; ++i) {
-    if (isPolindrome(i)) polindromes.push(i);
-  }
+//   for (let i = 2; i < limit; ++i) {
+//     if (isPolindrome(i)) polindromes.push(i);
+//   }
 
-  createSquareSums(sums, squares, 640);
+//   createSquareSums(sums, squares, 640);
 
-  for (let i = 0; i < polindromes.length; ++i) {
-    const polindrome = polindromes[i];
+//   for (let i = 0; i < polindromes.length; ++i) {
+//     const polindrome = polindromes[i];
 
-    if (sums.has(polindrome)) ans.push(polindrome);
-  }
+//     if (sums.has(polindrome)) ans.push(polindrome);
+//   }
 
-  const sum = ans.reduce((acc, val) => acc + val);
-  console.log(sum);
-  console.log(ans);
-  return sum;
-}
+//   const sum = ans.reduce((acc, val) => acc + val);
+//   console.log(sum);
+//   console.log(ans);
+//   return sum;
+// }
 
-function createSquareSums(sums, squares, depth) {
-  if (depth === 1) return;
+// function createSquareSums(sums, squares, depth) {
+//   if (depth === 1) return;
 
-  for (let i = 0; i < squares.length - 1 && i + depth <= squares.length; ++i) {
-    let sum = 0;
+//   for (let i = 0; i < squares.length - 1 && i + depth <= squares.length; ++i) {
+//     let sum = 0;
 
-    for (let j = i; j < i + depth; ++j) {
-      sum += squares[j];
-    }
+//     for (let j = i; j < i + depth; ++j) {
+//       sum += squares[j];
+//     }
 
-    sums.set(sum, true);
-  }
+//     sums.set(sum, true);
+//   }
 
-  return createSquareSums(sums, squares, depth - 1);
-}
+//   return createSquareSums(sums, squares, depth - 1);
+// }
 
-function createSquaresTable(n) {
-  const table = [];
+// function createSquaresTable(n) {
+//   const table = [];
 
-  for (let i = 1; i <= n; ++i) {
-    table.push(i ** 2);
-  }
+//   for (let i = 1; i <= n; ++i) {
+//     table.push(i ** 2);
+//   }
 
-  return table;
-}
+//   return table;
+// }
 
-function isPolindrome(n) {
-  const str = n.toString();
-  const len = str.length;
+// function isPolindrome(n) {
+//   const str = n.toString();
+//   const len = str.length;
 
-  for (let i = 0; i < Math.floor(len / 2); i++) {
-    if (str[i] !== str[len - 1 - i]) return false;
-  }
+//   for (let i = 0; i < Math.floor(len / 2); i++) {
+//     if (str[i] !== str[len - 1 - i]) return false;
+//   }
 
-  return true;
-}
+//   return true;
+// }
