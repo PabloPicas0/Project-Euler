@@ -26,12 +26,12 @@ function cuboidLayers() {
   return true;
 }
 
-function countFirst(x, y, z) {
+function countFirst(x: number, y: number, z: number) {
   return 2 * (x * y + x * z + y * z);
 }
 
-function c(n) {
-  let cuboids = new Set();
+function c(n: number) {
+  let cuboids = new Set<string>();
   let x = 1;
 
   while (true) {
